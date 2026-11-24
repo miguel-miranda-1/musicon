@@ -1,5 +1,7 @@
-const STORAGE_KEY = 'musicon_portal_v13';
 const INTERVALO_CARROSSEL_MS = 3500;
+const API_BASE = '';
+const STORAGE_PROPOSTAS_CHAVE = 'musicon_propostas_compartilhadas_v1';
+const STORAGE_AVALIACOES_CHAVE = 'musicon_avaliacoes_reais_v1';
 
 const dadosInstrumentos = {
   pandeiro: {
@@ -24,10 +26,6 @@ const dadosInstrumentos = {
   }
 };
 
-// =====================================================
-// CARROSSEL FLUTUANTE E AUTOMÁTICO DE RETRATOS (7 FOTOS)
-// >>> COLOQUE AQUI OS LINKS OU CAMINHOS DAS 7 FOTOS DO CARROSSEL <<<
-// =====================================================
 const slidesHistoriaMusicon = [
   {
     imagem: 'foto1.png',
@@ -72,7 +70,7 @@ const slidesHistoriaMusicon = [
     texto: 'Além de facilitar a busca por músicos, o portal reúne partituras gerais de estudo em harmonia e percussão e cadernos de cifras de samba e pagode tradicionais.'
   },
   {
-    imagem: 'foto8.jpeg',
+    imagem: 'foto7.jpeg',
     kicker: '7 / 7 • COMUNIDADE MUSICAL',
     titulo: 'Aproximando quem precisa de música de quem toca',
     subtitulo: 'Um ponto de encontro para manter a roda girando',
@@ -80,46 +78,351 @@ const slidesHistoriaMusicon = [
   }
 ];
 
-// =====================================================
-// VÍDEOS DE PAGODE LOGO ABAIXO DO CARROSSEL
-// >>> ONDE COLOCAR O LINK DO VÍDEO:
-// Altere o campo "url" em cada objeto abaixo.
-// Ex. YouTube: 'https://www.youtube.com/watch?v=SEU_ID'
-// Ex. Local:   'videos/pagode1.mp4'
-// =====================================================
-const videosPagodeMusicon = [
-  {
-    id: 'pagode-1',
-    titulo: 'Roda de Pagode Tradicional #1',
-    descricao: 'Levada de mesa, tantã, pandeiro e harmonia para pegar o pulso da roda.',
-    tag: 'Pagode de Mesa',
-    url: 'https://www.youtube.com/watch?v=BE0n_Wzgbho'
-  },
-  {
-    id: 'pagode-2',
-    titulo: 'Ensaio & Harmonia de Pagode #2',
-    descricao: 'Acompanhamento harmónico e condução rítmica para estudo e ensaio.',
-    tag: 'Ensaio & Harmonia',
-    url: 'https://www.youtube.com/watch?v=IRyxfwk2YQY&list=RDIRyxfwk2YQY&start_radio=1'
-  },
-  {
-    id: 'pagode-3',
-    titulo: 'Samba & Pagode em Roda #3',
-    descricao: 'Referência de dinâmica, resposta no refrão e energia de roda.',
-    tag: 'Roda de Samba',
-    url: 'https://www.youtube.com/watch?v=VXNuCDAZmpA'
-  }
+const VIDEOS_SAMBA_15 = [
+  { titulo: 'Samba de Roda #01', tag: 'Samba de Roda', descricao: 'Samba de Roda ao Vivo para sentir o balanço da roda.', url: 'https://www.youtube.com/watch?v=BTot2YODHSg' },
+  { titulo: 'Samba de Raiz & Batucada #02', tag: 'Samba de Raiz', descricao: 'Seleção tradicional de samba de raiz e batucada.', url: 'https://www.youtube.com/watch?v=_yiVulTqnFg' },
+  { titulo: 'Roda de Samba Raiz #03', tag: 'Roda de Samba', descricao: 'Clima de roda de samba tradicional ao vivo.', url: 'https://www.youtube.com/watch?v=rMIrSAxSknM' },
+  { titulo: 'Partido Alto #04', tag: 'Partido Alto', descricao: 'Levada marcante e improviso de partido alto.', url: 'https://www.youtube.com/watch?v=LycPFwEpiW0' },
+  { titulo: 'Partido Alto em Roda #05', tag: 'Partido Alto', descricao: 'Condução rítmica e energia de partido alto.', url: 'https://www.youtube.com/watch?v=IAs227TKclo' },
+  { titulo: 'Clássicos de Partido Alto #06', tag: 'Partido Alto', descricao: 'Seleção clássica de partido alto para repertório.', url: 'https://www.youtube.com/watch?v=-42vA2HtxFU' },
+  { titulo: 'Samba das Antigas #07', tag: 'Samba de Raiz', descricao: 'Samba de raiz clássico para roda e estudo.', url: 'https://www.youtube.com/watch?v=NddvK2j-fPg' },
+  { titulo: 'Pagode de Mesa #08', tag: 'Pagode de Mesa', descricao: 'Batucada na mesa e clima de roda.', url: 'https://www.youtube.com/watch?v=jOe3TnpAvVE' },
+  { titulo: 'Percussão 105 BPM #09', tag: 'Percussão', descricao: 'Surdo, pandeiro, tamborim e shaker para pulso rítmico.', url: 'https://www.youtube.com/watch?v=ZZ1HXEVOuZU' },
+  { titulo: 'Percussão da Roda #10', tag: 'Percussão', descricao: 'Referência de percussão para roda de samba.', url: 'https://www.youtube.com/watch?v=UK3NhfAcrTY' },
+  { titulo: 'Harmonia no Cavaquinho #11', tag: 'Cavaquinho', descricao: 'Estudo de harmonia no cavaquinho para rodas de samba.', url: 'https://www.youtube.com/watch?v=Ul3sgpQ2HgQ' },
+  { titulo: 'Violão 7 Cordas #12', tag: 'Violão 7 Cordas', descricao: 'Condução e baixaria no violão de 7 cordas.', url: 'https://www.youtube.com/watch?v=Unomlp5FilQ' },
+  { titulo: 'Samba de Terreiro #13', tag: 'Samba de Terreiro', descricao: 'Cadência tradicional de samba de terreiro.', url: 'https://www.youtube.com/watch?v=y2vI-i6CBX8' },
+  { titulo: 'Poesia e Raiz #14', tag: 'Samba Clássico', descricao: 'Roda com sambas clássicos e letras marcantes.', url: 'https://www.youtube.com/watch?v=QZKP5P7okEc' },
+  { titulo: 'Batucada Samba 100 BPM #15', tag: 'Batucada', descricao: 'Base contínua de batucada a 100 BPM para treinar.', url: 'https://www.youtube.com/watch?v=r6ZbMzIrROc' }
 ];
+
+function gerarRepertorio400Musicas() {
+  const catalogosBase = [
+    {
+      caderno: 'samba',
+      titulo: 'Trem das Onze (Samba Tradicional)',
+      tom: 'Fá Maior (F)',
+      partitura: '2/4 • Surdo no 1 e 2 | Pandeiro: polegar, abafado e ponta',
+      estudo: 'Pratica a condução em 2/4 mantendo o pulso estável e a passagem suave da harmonia.',
+      cifra: 'Intro: F7M | Dm7 | Gm7 | C7(9)\nF7M            Dm7\nNão posso ficar, nem mais um minuto com você\nGm7            C7(9)\nSinto muito amor, mas não pode ser'
+    },
+    {
+      caderno: 'samba',
+      titulo: 'Verdade (Partido-Alto Tradicional)',
+      tom: 'Ré Maior (D)',
+      partitura: '2/4 • Levada sincopada de partido-alto com pulso firme',
+      estudo: 'Foca na síncope do acompanhamento sem apressar o andamento na entrada do refrão.',
+      cifra: 'Intro: D7M | Bm7 | Em7 | A7(13)\nD7M            F#m7\nEu fui convidado pra uma roda de samba\nBm7            E7(9)\nNa casa de um amigo que é bom de tocar'
+    },
+    {
+      caderno: 'pagode',
+      titulo: 'Deixa a Vida Me Levar (Pagode Tradicional)',
+      tom: 'Sol Maior (G)',
+      partitura: '2/4 • Pagode tradicional com grave marcante e resposta no contratempo',
+      estudo: 'Trabalha a dinâmica: começa contido para estudo harmônico e abre o balanço para a roda.',
+      cifra: 'Intro: G7M | Em7 | Am7 | D7(9)\nG7M            B7(5+)\nDeixa a vida me levar (vida leva eu)\nEm7            G7\nDeixa a vida me levar (vida leva eu)'
+    },
+    {
+      caderno: 'pagode',
+      titulo: 'Conselho (Pagode Tradicional)',
+      tom: 'Lá Menor (Am)',
+      partitura: '2/4 • Harmonia em ciclo de quintas com levada de pagode de mesa',
+      estudo: 'Observa os acordes menores com sétima e as tensões antes de tocar junto com a roda.',
+      cifra: 'Intro: Am7 | Dm7 | G7(9) | C7M(9)\nAm7            Dm7\nDeixe de lado esse baixo astral\nG7(9)          C7M(9)\nErgue a cabeça, enfrenta o mal'
+    }
+  ];
+
+  const tons = ['Dó Maior (C)', 'Ré Maior (D)', 'Mi Maior (E)', 'Fá Maior (F)', 'Sol Maior (G)', 'Lá Maior (A)', 'Lá Menor (Am)'];
+  const progressos = ['C7M | A7(b9) | Dm7 | G7(13)', 'G7M | Em7 | Am7 | D7(13)', 'D7M | Bm7 | Em7 | A7(13)', 'F7M | Dm7 | Gm7 | C7(9)'];
+  const lista = [];
+
+  for (let i = 0; i < 400; i++) {
+    const base = catalogosBase[i % catalogosBase.length];
+    const ehSamba = i % 2 === 0;
+    const caderno = i < catalogosBase.length ? base.caderno : (ehSamba ? 'samba' : 'pagode');
+    const tom = i < catalogosBase.length ? base.tom : tons[i % tons.length];
+    const prog = progressos[i % progressos.length];
+
+    lista.push({
+      id: 1000 + i,
+      caderno,
+      titulo: i < catalogosBase.length ? base.titulo : `${ehSamba ? 'Samba Tradicional' : 'Pagode Tradicional'} #${i + 1} — Repertório de Roda`,
+      tom,
+      partitura: base.partitura,
+      estudo: base.estudo,
+      cifra: i < catalogosBase.length ? base.cifra : `Intro: ${prog}\nParte A: ${prog}\nRefrão: ${prog}`
+    });
+  }
+  return lista;
+}
+
+const cadernosRepertorioPadrao = gerarRepertorio400Musicas();
+
+const oficinasPartiturasGerais = {
+  harmonia: [
+    { id: 401, titulo: 'Partitura de Harmonia I — Campo Harmônico e Funções', compasso: '4/4 • Estudo Harmônico', instrucoes: 'Identifique repouso (Tônica), preparo (Subdominante) e tensão (Dominante).', partituraTexto: 'C.1: [ I (T) ] | C.2: [ IV (SD) ] | C.3: [ ii (SD) ] | C.4: [ V7 -> I ]' },
+    { id: 402, titulo: 'Partitura de Harmonia II — Dominantes Secundários', compasso: '2/4 • Estudo Harmônico', instrucoes: 'Mantenha as notas comuns ligadas entre compassos.', partituraTexto: 'C.1: [ I7M ] | C.2: [ VI7(b9) ] | C.3: [ ii7 ] | C.4: [ V7(13) ]' }
+  ],
+  percussao: [
+    { id: 501, titulo: 'Partitura de Percussão I — Subdivisão Binária', compasso: '2/4 • Estudo Percussivo', instrucoes: 'Conte em voz alta (1 e 2 e) e marque os acentos (>).', partituraTexto: 'C.1: [ >1 e 2 e ] | C.2: [ 1 >e 2 >e ] | C.3: [ >1 >e >2 >e ]' },
+    { id: 502, titulo: 'Partitura de Percussão II — Síncope e Contratempos', compasso: '2/4 • Estudo Percussivo', instrucoes: 'Estude devagar até firmar o contratempo.', partituraTexto: 'C.1: [ 1 >e 2 e ] | C.2: [ 1 e >2 >e ] | C.3: [ >1 e >2 >e ]' }
+  ]
+};
+
+const defaultData = {
+  currentUser: null,
+  perfisComunidade: [],
+  propostas: [],
+  mensagensPrivadas: [],
+  atividades: []
+};
+
+let appState = JSON.parse(JSON.stringify(defaultData));
+let artistaAlvoProposta = null;
+let perfilSelecionadoParaAvaliar = null;
+let notaSelecionada = 5;
+let cadernoSelecionado = 'todos';
+let modoUsoCaderno = 'estudo';
+let cifraAbertaAtual = null;
+let paginaAtualCaderno = 1;
+const ITENS_POR_PAGINA_CADERNO = 25;
 
 let indiceSlideHistoria = 0;
 let timerCarrosselHistoria = null;
 let animandoTrocaHistoria = false;
-
 let arrastandoHistoria = false;
 let inicioArrasteX = 0;
 let deltaArrasteX = 0;
 let bloqueouCliqueArraste = false;
 
+let usuarioConversandoId = null;
+let conversaAtivaId = null;
+let conversasCache = [];
+let mensagensCache = [];
+let paginaCarrosselVideos = 0;
+const VIDEOS_POR_PAGINA = 3;
+
+function norm(v) {
+  return String(v || '').trim().toLowerCase();
+}
+
+function gerarIniciais(nome) {
+  const limpo = (nome || 'MS').trim();
+  const partes = limpo.split(/\s+/).filter(Boolean);
+  if (partes.length >= 2) return `${partes[0][0]}${partes[partes.length - 1][0]}`.toUpperCase();
+  return limpo.slice(0, 2).toUpperCase();
+}
+
+function notificar(msg, tipo = 'info') {
+  const container = document.getElementById('toast-container');
+  if (container) {
+    const toast = document.createElement('div');
+    toast.className = `toast ${tipo}`;
+    toast.textContent = msg;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
+  }
+}
+window.mostrarToast = notificar;
+window.notificar = notificar;
+
+// =====================================================
+// STORAGE COMPARTILHADO: PROPOSTAS E AVALIAÇÕES REAIS
+// =====================================================
+function lerTodasPropostas() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_PROPOSTAS_CHAVE);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function salvarTodasPropostas(lista) {
+  try {
+    sessionStorage.setItem(STORAGE_PROPOSTAS_CHAVE, JSON.stringify(lista || []));
+  } catch {}
+  appState.propostas = lista || [];
+}
+
+function lerMapaAvaliacoes() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_AVALIACOES_CHAVE);
+    const parsed = raw ? JSON.parse(raw) : {};
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function salvarMapaAvaliacoes(mapa) {
+  try {
+    sessionStorage.setItem(STORAGE_AVALIACOES_CHAVE, JSON.stringify(mapa || {}));
+  } catch {}
+}
+
+function chaveArtistaAval(artista) {
+  if (!artista) return 'atual';
+  return norm(artista.email || artista.id || artista.nome || 'atual');
+}
+
+function obterAvaliacoesDoArtista(artista) {
+  const mapa = lerMapaAvaliacoes();
+  const lista = mapa[chaveArtistaAval(artista)];
+  return Array.isArray(lista) ? lista : [];
+}
+
+function calcularMediaAvaliacoes(lista) {
+  if (!Array.isArray(lista) || lista.length === 0) return '0.0';
+  const soma = lista.reduce((acc, item) => acc + Number(item.nota || 0), 0);
+  return (soma / lista.length).toFixed(1);
+}
+
+// Verifica se o usuário logado tem proposta ACEITA ou CONCLUÍDA enviada para o artista
+function usuarioPodeAvaliarArtista(artistaAlvo) {
+  const user = appState.currentUser;
+  if (!user || !artistaAlvo) return false;
+
+  const uId = norm(user.id);
+  const uEmail = norm(user.email);
+  const uNome = norm(user.nome);
+
+  const aId = norm(artistaAlvo.id);
+  const aEmail = norm(artistaAlvo.email);
+  const aNome = norm(artistaAlvo.nome);
+
+  if (uEmail && aEmail && uEmail === aEmail) return false;
+
+  const todas = lerTodasPropostas();
+  return todas.some((p) => {
+    const st = norm(p.status);
+    const aceita = st === 'aceita' || st === 'aceito' || st === 'concluída' || st === 'concluida';
+    if (!aceita) return false;
+
+    const enviadoPorMim =
+      (uId && norm(p.remetenteId) === uId) ||
+      (uEmail && norm(p.remetenteEmail) === uEmail) ||
+      (uNome && norm(p.remetenteNome) === uNome);
+
+    const paraOArtista =
+      (aId && norm(p.musicoId) === aId) ||
+      (aEmail && norm(p.musicoEmail) === aEmail) ||
+      (aNome && norm(p.musicoNome) === aNome);
+
+    return enviadoPorMim && paraOArtista;
+  });
+}
+
+// =====================================================
+// SESSÃO E TEMA
+// =====================================================
+function obterUsuarioSessao() {
+  try {
+    const raw = sessionStorage.getItem('musicon_sessao');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function salvarUsuarioSessao(usuario) {
+  try {
+    if (usuario) {
+      sessionStorage.setItem('musicon_sessao', JSON.stringify(usuario));
+      appState.currentUser = usuario;
+    } else {
+      sessionStorage.removeItem('musicon_sessao');
+      appState.currentUser = null;
+    }
+  } catch {
+    appState.currentUser = usuario || null;
+  }
+}
+
+function aplicarEstadoTema(tema) {
+  const ehEscuro = tema !== 'light';
+  document.documentElement.setAttribute('data-theme', ehEscuro ? 'dark' : 'light');
+  document.documentElement.classList.toggle('dark', ehEscuro);
+  if (document.body) {
+    document.body.setAttribute('data-theme', ehEscuro ? 'dark' : 'light');
+    document.body.classList.toggle('dark-theme', ehEscuro);
+  }
+}
+
+function aplicarTemaSalvo() {
+  let tema = 'dark';
+  try {
+    tema = sessionStorage.getItem('musicon_tema') || appState.currentUser?.temaPreferido || 'dark';
+  } catch {}
+  aplicarEstadoTema(tema);
+}
+
+function toggleTheme() {
+  const atual = document.documentElement.getAttribute('data-theme') || 'dark';
+  const proximo = atual === 'dark' ? 'light' : 'dark';
+  aplicarEstadoTema(proximo);
+  try { sessionStorage.setItem('musicon_tema', proximo); } catch {}
+  if (appState.currentUser) appState.currentUser.temaPreferido = proximo;
+}
+
+function switchTab(tabName) {
+  if (!tabName) return;
+  document.querySelectorAll('.tab-content').forEach((sec) => sec.classList.remove('active'));
+  document.querySelectorAll('#main-nav .nav-item').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.tab === tabName);
+  });
+  const alvo = document.getElementById(`tab-${tabName}`);
+  if (alvo) alvo.classList.add('active');
+
+  if (tabName === 'perfis') renderizarPerfis();
+  if (tabName === 'propostas') renderizarPropostas();
+  if (tabName === 'chat') renderizarListaConversas();
+  if (tabName === 'atividades') renderizarOficinas();
+  if (tabName === 'boletim') renderizarCadernosCifras();
+  if (tabName === 'perfil') renderizarMeuPerfil();
+}
+
+function mostrarPortal() {
+  const loginScreen = document.getElementById('login-screen');
+  const appLayout = document.getElementById('app-layout');
+  if (loginScreen) {
+    loginScreen.classList.remove('active');
+    loginScreen.classList.add('hidden');
+    loginScreen.style.display = 'none';
+  }
+  if (appLayout) {
+    appLayout.classList.remove('hidden');
+    appLayout.style.display = 'flex';
+  }
+}
+
+function mostrarLogin() {
+  const loginScreen = document.getElementById('login-screen');
+  const appLayout = document.getElementById('app-layout');
+  if (appLayout) {
+    appLayout.classList.add('hidden');
+    appLayout.style.display = 'none';
+  }
+  if (loginScreen) {
+    loginScreen.classList.remove('hidden');
+    loginScreen.classList.add('active');
+    loginScreen.style.display = '';
+  }
+}
+
+function logout() {
+  salvarUsuarioSessao(null);
+  usuarioConversandoId = null;
+  conversasCache = [];
+  mensagensCache = [];
+  mostrarLogin();
+  notificar('Sessão encerrada.', 'info');
+}
+
+// =====================================================
+// CARROSSEL DE HISTÓRIA
+// =====================================================
 function obterIndiceCircular(idx, total) {
   return ((idx % total) + total) % total;
 }
@@ -139,7 +442,6 @@ function renderizarSlideHistoria(comTransicao = true) {
   const textoEl = document.getElementById('historia-texto');
   const legendaEl = document.getElementById('historia-vitrine-legenda');
   const indBox = document.getElementById('historia-indicadores');
-
   const total = slidesHistoriaMusicon.length;
   if (!trilha || total === 0) return;
 
@@ -156,18 +458,17 @@ function renderizarSlideHistoria(comTransicao = true) {
       const item = slidesHistoriaMusicon[idxReal];
       const ehCentro = offset === 0;
       const ehLateralProximo = Math.abs(offset) === 1;
-      const atrasoAnimacao = `${(posIdx * 0.35).toFixed(2)}s`;
+      const atraso = `${(posIdx * 0.35).toFixed(2)}s`;
 
       return `
         <button
           type="button"
           class="historia-retrato-card flutuando ${ehCentro ? 'destaque' : ehLateralProximo ? 'proximo' : 'distante'}"
-          style="animation-delay: ${atrasoAnimacao};"
+          style="animation-delay: ${atraso};"
           onclick="irParaSlideHistoriaManual(${idxReal})"
           aria-label="${item.titulo}"
-          title="${item.titulo}"
         >
-          <img src="${item.imagem}" alt="${item.titulo}">
+          <img src="${item.imagem}" alt="${item.titulo}" onerror="this.style.display='none'">
         </button>
       `;
     }).join('');
@@ -206,7 +507,6 @@ function renderizarSlideHistoria(comTransicao = true) {
 function iniciarPassagemAutomaticaHistoria() {
   pararPassagemAutomaticaHistoria();
   if (slidesHistoriaMusicon.length <= 1) return;
-
   timerCarrosselHistoria = setInterval(() => {
     if (arrastandoHistoria) return;
     indiceSlideHistoria = obterIndiceCircular(indiceSlideHistoria + 1, slidesHistoriaMusicon.length);
@@ -255,8 +555,7 @@ function configurarArrasteHistoria() {
     deltaArrasteX = e.clientX - inicioArrasteX;
     if (Math.abs(deltaArrasteX) > 6) {
       bloqueouCliqueArraste = true;
-      const deslocamentoLimitado = Math.max(-90, Math.min(90, deltaArrasteX * 0.45));
-      trilha.style.transform = `translateX(${deslocamentoLimitado}px)`;
+      trilha.style.transform = `translateX(${Math.max(-90, Math.min(90, deltaArrasteX * 0.45))}px)`;
     }
   });
 
@@ -266,24 +565,14 @@ function configurarArrasteHistoria() {
     trilha.classList.remove('arrastando');
     trilha.style.transition = '';
     trilha.style.transform = '';
-
-    const limiarArraste = 45;
-    if (deltaArrasteX <= -limiarArraste) {
-      proximoSlideHistoriaManual();
-    } else if (deltaArrasteX >= limiarArraste) {
-      slideAnteriorHistoriaManual();
-    } else {
-      iniciarPassagemAutomaticaHistoria();
-    }
-
-    setTimeout(() => {
-      bloqueouCliqueArraste = false;
-    }, 50);
+    if (deltaArrasteX <= -45) proximoSlideHistoriaManual();
+    else if (deltaArrasteX >= 45) slideAnteriorHistoriaManual();
+    else iniciarPassagemAutomaticaHistoria();
+    setTimeout(() => { bloqueouCliqueArraste = false; }, 50);
   };
 
   window.addEventListener('pointerup', finalizarArraste);
   window.addEventListener('pointercancel', finalizarArraste);
-
   trilha.addEventListener('click', (e) => {
     if (bloqueouCliqueArraste) {
       e.preventDefault();
@@ -292,309 +581,966 @@ function configurarArrasteHistoria() {
   }, true);
 }
 
+// =====================================================
+// CARROSSEL DE 15 VÍDEOS DE SAMBA
+// =====================================================
 function extrairIdYouTube(url) {
   if (!url || typeof url !== 'string') return null;
-  const padroes = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{6,})/,
-    /[?&]v=([A-Za-z0-9_-]{6,})/
-  ];
-  for (const regex of padroes) {
-    const match = url.match(regex);
-    if (match && match[1]) return match[1];
-  }
-  return null;
+  const match = url.match(
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{6,})/
+  );
+  return match ? match[1] : null;
 }
 
-function renderizarMidiaVideoPagode(url, titulo) {
-  const ytId = extrairIdYouTube(url);
+function gerarPlayerVideoHTML(video) {
+  const ytId = extrairIdYouTube(video.url);
   if (ytId) {
     return `
-      <iframe
-        src="https://www.youtube.com/embed/${ytId}?rel=0"
-        title="${titulo}"
-        loading="lazy"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
+      <div class="samba-card-midia">
+        <iframe
+          src="https://www.youtube.com/embed/${ytId}?rel=0"
+          title="${video.titulo}"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+        <a href="https://www.youtube.com/watch?v=${ytId}" target="_blank" rel="noopener noreferrer" class="samba-link-externo">
+          Abrir no YouTube
+        </a>
+      </div>
     `;
   }
-
-  if (url && /\.(mp4|webm|ogg)(\?.*)?$/i.test(url)) {
-    return `
-      <video controls preload="metadata" onplay="pararPassagemAutomaticaHistoria()">
-        <source src="${url}">
-        O teu navegador não suporta reprodução de vídeo.
-      </video>
-    `;
-  }
-
   return `
-    <div class="pagode-video-placeholder">
-      <i class="fa-solid fa-play-circle"></i>
-      <span>Adiciona o link em <code>videosPagodeMusicon</code></span>
+    <div class="samba-card-midia samba-card-vazio">
+      <strong>${video.titulo}</strong>
+      <span>Adicione o link em VIDEOS_SAMBA_15</span>
     </div>
   `;
 }
 
-function renderizarVideosPagode() {
+function renderizarCarrosselSamba() {
   const grid = document.getElementById('pagode-videos-grid');
   if (!grid) return;
 
-  if (!Array.isArray(videosPagodeMusicon) || videosPagodeMusicon.length === 0) {
-    grid.innerHTML = `<p class="text-muted">Nenhum vídeo de pagode registado ainda.</p>`;
-    return;
+  const totalVideos = VIDEOS_SAMBA_15.length;
+  const totalPaginas = Math.ceil(totalVideos / VIDEOS_POR_PAGINA);
+  const inicio = paginaCarrosselVideos * VIDEOS_POR_PAGINA;
+  const lote = VIDEOS_SAMBA_15.slice(inicio, inicio + VIDEOS_POR_PAGINA);
+
+  const contadorEl = document.getElementById('samba-carrossel-contador');
+  if (contadorEl) {
+    contadorEl.innerHTML = `Mostrando <strong>${inicio + 1}–${Math.min(inicio + VIDEOS_POR_PAGINA, totalVideos)}</strong> de <strong>${totalVideos}</strong> vídeos de samba (Página ${paginaCarrosselVideos + 1}/${totalPaginas})`;
   }
 
-  grid.innerHTML = videosPagodeMusicon.map(vid => `
-    <article class="pagode-video-card">
-      <div class="pagode-video-frame" onclick="pararPassagemAutomaticaHistoria()">
-        ${renderizarMidiaVideoPagode(vid.url, vid.titulo)}
-      </div>
-      <div class="pagode-video-corpo">
-        <span class="portal-badge">${vid.tag || 'Pagode'}</span>
-        <h3>${vid.titulo}</h3>
-        <p class="text-muted">${vid.descricao || ''}</p>
+  grid.innerHTML = lote.map((v) => `
+    <article class="card samba-video-card">
+      ${gerarPlayerVideoHTML(v)}
+      <div class="samba-card-corpo">
+        <span class="samba-card-tag">${v.tag || 'SAMBA'}</span>
+        <h3>${v.titulo}</h3>
+        <p class="text-muted">${v.descricao || ''}</p>
       </div>
     </article>
   `).join('');
+
+  const indicadoresEl = document.getElementById('samba-carrossel-indicadores');
+  if (indicadoresEl) {
+    indicadoresEl.innerHTML = Array.from({ length: totalPaginas }).map((_, idx) => `
+      <button
+        type="button"
+        class="samba-ponto ${idx === paginaCarrosselVideos ? 'ativo' : ''}"
+        data-pagina="${idx}"
+        aria-label="Ir para página ${idx + 1}"
+      ></button>
+    `).join('');
+  }
+}
+window.renderizarVideosPagode = renderizarCarrosselSamba;
+
+// =====================================================
+// MYSQL: USUÁRIOS E CHAT
+// =====================================================
+async function carregarPerfisDoBanco() {
+  try {
+    const resp = await fetch(`${API_BASE}/api/usuarios`);
+    if (!resp.ok) return;
+    const rows = await resp.json();
+    if (Array.isArray(rows)) {
+      appState.perfisComunidade = rows.map((u) => {
+        const nome = u.nome || 'Músico';
+        return {
+          id: Number(u.id),
+          nome,
+          iniciais: gerarIniciais(nome),
+          email: u.email,
+          tipoPerfil: u.tipo_perfil || 'aluno',
+          instrumento: u.instrumento_principal || 'Músico',
+          nivel: u.nivel_experiencia || 'iniciante',
+          cidade: u.cidade || 'Lorena - SP',
+          bio: u.bio || '',
+          temaPreferido: u.tema_preferido || 'dark'
+        };
+      });
+    }
+  } catch (err) {
+    console.error('Erro ao carregar usuários:', err);
+  }
 }
 
-function gerarRepertorio400Musicas() {
-  const catalogosBase = [
-    {
-      caderno: 'samba',
-      titulo: 'Trem das Onze (Samba Tradicional)',
-      tom: 'Fá Maior (F)',
-      partitura: '2/4 • Surdo no 1 e 2 | Pandeiro: polegar, abafado e ponta',
-      estudo: 'Pratica a condução em 2/4 mantendo o pulso estável e a passagem suave da harmonia.',
-      cifra: 'Intro: F7M | Dm7 | Gm7 | C7(9)\nF7M            Dm7\nNão posso ficar, nem mais um minuto com você\nGm7            C7(9)\nSinto muito amor, mas não pode ser'
-    },
-    {
-      caderno: 'samba',
-      titulo: 'Verdade (Partido-Alto Tradicional)',
-      tom: 'Ré Maior (D)',
-      partitura: '2/4 • Levada sincopada de partido-alto com pulso firme',
-      estudo: 'Foca na síncope do acompanhamento sem apressar o andamento na entrada do refrão.',
-      cifra: 'Intro: D7M | Bm7 | Em7 | A7(13)\nD7M            F#m7\nEu fui convidado pra uma roda de samba\nBm7            E7(9)\nNa casa de um amigo que é bom de tocar'
-    },
-    {
-      caderno: 'pagode',
-      titulo: 'Deixa a Vida Me Levar (Pagode Tradicional)',
-      tom: 'Sol Maior (G)',
-      partitura: '2/4 • Pagode tradicional com grave marcante e resposta no contratempo',
-      estudo: 'Trabalha a dinâmica: começa contido para estudo harmónico e abre o balanço para a roda.',
-      cifra: 'Intro: G7M | Em7 | Am7 | D7(9)\nG7M            B7(5+)\nDeixa a vida me levar (vida leva eu)\nEm7            G7\nDeixa a vida me levar (vida leva eu)'
-    },
-    {
-      caderno: 'pagode',
-      titulo: 'Conselho (Pagode Tradicional)',
-      tom: 'Lá Menor (Am)',
-      partitura: '2/4 • Harmonia em ciclo de quintas com levada de pagode de mesa',
-      estudo: 'Observa os acordes menores com sétima e as tensões antes de tocar junto com a roda.',
-      cifra: 'Intro: Am7 | Dm7 | G7(9) | C7M(9)\nAm7            Dm7\nDeixe de lado esse baixo astral\nG7(9)          C7M(9)\nErgue a cabeça, enfrenta o mal'
-    },
-    {
-      caderno: 'samba',
-      titulo: 'O Mundo é um Moinho (Samba Tradicional)',
-      tom: 'Dó Maior (C)',
-      partitura: '2/4 • Samba tradicional com condução expressiva e resolução clara',
-      estudo: 'Cuida da resolução dos acordes dominantes e da intenção melódica sem acelerar.',
-      cifra: 'Intro: C7M | A7(b9) | Dm7 | G7(13)\nC7M            A7(b9)\nAinda é cedo, amor, mal raiou a madrugada\nDm7            G7(13)\nDeixa esse tempo passar'
-    },
-    {
-      caderno: 'pagode',
-      titulo: 'Coração Radiante (Pagode Tradicional)',
-      tom: 'Mi Maior (E)',
-      partitura: '2/4 • Pagode tradicional com acentuação leve e refrão expansivo',
-      estudo: 'Treina a troca limpa entre acordes com nona e sétima mantendo o pulso constante.',
-      cifra: 'Intro: E7M | C#m7 | F#m7 | B7(9)\nE7M            C#m7\nÉ tanta coisa boa que acontece\nF#m7           B7(9)\nQuando a gente se entrega de verdade'
-    },
-    {
-      caderno: 'samba',
-      titulo: 'Samba da Benção — Cadência de Roda',
-      tom: 'Lá Maior (A)',
-      partitura: '2/4 • Samba tradicional com transições diatónicas e apoio rítmico constante',
-      estudo: 'Estuda a ligação entre tónica, relativa menor e dominante mantendo a pulsação limpa.',
-      cifra: 'Intro: A7M | F#m7 | Bm7 | E7(9)\nA7M            C#m7\nA vida é feita de encontros e canções\nBm7            E7(9)\nQue embalam a alma em qualquer lugar'
-    },
-    {
-      caderno: 'pagode',
-      titulo: 'Tarde em Itapuã / Roda de Quintal',
-      tom: 'Fá Maior (F)',
-      partitura: '2/4 • Pagode de mesa com condução suave na estrofe e firme no refrão',
-      estudo: 'Pratica o controlo de volume entre o estudo individual e a execução em grupo.',
-      cifra: 'Intro: F7M | D7(b9) | Gm7 | C7(13)\nF7M            Am7\nQuando o sol vai descendo na esquina\nGm7            C7(13)\nO samba chama e a gente responde'
+async function realizarLoginMySQL(email, senha) {
+  const resp = await fetch(`${API_BASE}/api/usuarios/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, senha })
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.erro || 'Falha ao fazer login.');
+  const u = data.usuario;
+  const nome = u.nome || 'Músico';
+  return {
+    id: Number(u.id),
+    nome,
+    iniciais: gerarIniciais(nome),
+    email: u.email,
+    tipoPerfil: u.tipo_perfil || 'aluno',
+    instrumento: u.instrumento_principal || 'Músico',
+    nivel: u.nivel_experiencia || 'iniciante',
+    cidade: u.cidade || 'Lorena - SP',
+    bio: u.bio || '',
+    temaPreferido: u.tema_preferido || 'dark'
+  };
+}
+
+async function cadastrarUsuarioMySQL(payload) {
+  const resp = await fetch(`${API_BASE}/api/usuarios/cadastro`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.erro || 'Erro ao cadastrar usuário.');
+  return data;
+}
+
+function normalizarChavePar(idA, idB) {
+  const a = Number(idA);
+  const b = Number(idB);
+  return a < b ? `${a}_${b}` : `${b}_${a}`;
+}
+
+function lerHistoricoLocalPar(meuId, outroId) {
+  try {
+    const raw = sessionStorage.getItem(`musicon_chat_individual_${normalizarChavePar(meuId, outroId)}`);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function salvarHistoricoLocalPar(meuId, outroId, lista) {
+  try {
+    sessionStorage.setItem(`musicon_chat_individual_${normalizarChavePar(meuId, outroId)}`, JSON.stringify(lista || []));
+  } catch {}
+}
+
+function encontrarConversaDiretaComUsuario(outroUsuario) {
+  if (!outroUsuario || !Array.isArray(conversasCache)) return null;
+  const nomeAlvo = norm(outroUsuario.nome);
+  const outroIdNum = Number(outroUsuario.id);
+  const meuIdNum = Number(appState.currentUser?.id || 0);
+
+  return conversasCache.find((c) => {
+    if (c.tipo && c.tipo !== 'direta') return false;
+    const ids = Array.isArray(c.participantes_ids) ? c.participantes_ids.map(Number) : [];
+    if (ids.length > 0 && meuIdNum && outroIdNum) {
+      return ids.includes(meuIdNum) && ids.includes(outroIdNum);
     }
-  ];
+    if (c.outro_usuario_id !== undefined && Number(c.outro_usuario_id) === outroIdNum) return true;
+    return Boolean(nomeAlvo && norm(c.titulo_exibicao).includes(nomeAlvo));
+  }) || null;
+}
 
-  const tons = [
-    'Dó Maior (C)', 'Ré Maior (D)', 'Mi Maior (E)', 'Fá Maior (F)',
-    'Sol Maior (G)', 'Lá Maior (A)', 'Lá Menor (Am)', 'Ré Menor (Dm)',
-    'Mi Menor (Em)', 'Sol Menor (Gm)'
-  ];
+async function buscarConversasMySQL() {
+  if (!appState.currentUser) {
+    conversasCache = [];
+    return [];
+  }
+  try {
+    const resp = await fetch(`${API_BASE}/api/chat/conversas?usuario_id=${Number(appState.currentUser.id)}`);
+    if (!resp.ok) return conversasCache;
+    const data = await resp.json();
+    conversasCache = Array.isArray(data) ? data.filter((c) => !c.tipo || c.tipo === 'direta') : [];
+    return conversasCache;
+  } catch {
+    return conversasCache;
+  }
+}
 
-  const progressos = [
-    'C7M | A7(b9) | Dm7 | G7(13)',
-    'G7M | Em7 | Am7 | D7(13)',
-    'D7M | Bm7 | Em7 | A7(13)',
-    'F7M | Dm7 | Gm7 | C7(9)',
-    'Am7 | Dm7 | G7(9) | C7M(9)',
-    'E7M | C#m7 | F#m7 | B7(9)'
-  ];
-
-  const lista = [];
-  for (let i = 0; i < 400; i++) {
-    const base = catalogosBase[i % catalogosBase.length];
-    const ehSamba = i % 2 === 0;
-    const caderno = i < catalogosBase.length ? base.caderno : (ehSamba ? 'samba' : 'pagode');
-    const tom = i < catalogosBase.length ? base.tom : tons[i % tons.length];
-    const prog = progressos[i % progressos.length];
-    const faixa = i + 1;
-
-    lista.push({
-      id: 1000 + i,
-      caderno,
-      titulo: i < catalogosBase.length
-        ? base.titulo
-        : `${ehSamba ? 'Samba Tradicional' : 'Pagode Tradicional'} #${faixa} — Repertório de Roda`,
-      tom,
-      partitura: base.partitura,
-      estudo: base.estudo,
-      cifra: i < catalogosBase.length
-        ? base.cifra
-        : `Intro: ${prog}\nParte A: ${prog}\nParte B: ${prog}\nRefrão: ${prog}`
+async function buscarMensagensMySQL(conversaId, outroId) {
+  const meuId = Number(appState.currentUser?.id || 0);
+  const outroIdNum = Number(outroId || usuarioConversandoId || 0);
+  const locais = meuId && outroIdNum ? lerHistoricoLocalPar(meuId, outroIdNum) : [];
+  if (!conversaId || !appState.currentUser) {
+    mensagensCache = locais;
+    return mensagensCache;
+  }
+  try {
+    const resp = await fetch(`${API_BASE}/api/chat/mensagens/${conversaId}?usuario_id=${meuId}`);
+    if (!resp.ok) {
+      mensagensCache = locais;
+      return mensagensCache;
+    }
+    const data = await resp.json();
+    const remotas = Array.isArray(data) ? data : [];
+    const mescladas = [...remotas];
+    locais.forEach((loc) => {
+      const jaExiste = mescladas.some(
+        (rem) => String(rem.conteudo || '').trim() === String(loc.conteudo || '').trim() &&
+          Number(rem.remetente_id) === Number(loc.remetente_id)
+      );
+      if (!jaExiste) mescladas.push(loc);
     });
+    mensagensCache = mescladas;
+    if (meuId && outroIdNum) salvarHistoricoLocalPar(meuId, outroIdNum, mensagensCache);
+    return mensagensCache;
+  } catch {
+    mensagensCache = locais;
+    return mensagensCache;
+  }
+}
+
+async function abrirChatComUsuario(outroId) {
+  if (!appState.currentUser) return;
+  const meuId = Number(appState.currentUser.id);
+  const outroIdNum = Number(outroId);
+  if (!outroIdNum || outroIdNum === meuId) return;
+
+  const outroUsuario = (appState.perfisComunidade || []).find((p) => Number(p.id) === outroIdNum);
+  if (!outroUsuario) return;
+
+  usuarioConversandoId = outroIdNum;
+  mensagensCache = lerHistoricoLocalPar(meuId, outroIdNum);
+  conversaAtivaId = null;
+
+  switchTab('chat');
+  await buscarConversasMySQL();
+  const convDireta = encontrarConversaDiretaComUsuario(outroUsuario);
+  conversaAtivaId = convDireta ? Number(convDireta.conversa_id) : null;
+  if (conversaAtivaId) await buscarMensagensMySQL(conversaAtivaId, outroIdNum);
+
+  renderizarListaConversas();
+  renderizarMensagensChatPrivado(outroIdNum);
+}
+
+async function renderizarListaConversas() {
+  const listaDiv = document.getElementById('lista-conversas');
+  if (!listaDiv || !appState.currentUser) return;
+  await buscarConversasMySQL();
+
+  const termoBusca = norm(document.getElementById('chat-busca-musico')?.value || '');
+  const meuId = Number(appState.currentUser.id);
+
+  let outros = (appState.perfisComunidade || []).filter((p) => Number(p.id) !== meuId);
+  if (termoBusca) {
+    outros = outros.filter((u) => norm(u.nome).includes(termoBusca) || norm(u.instrumento).includes(termoBusca));
   }
 
-  return lista;
+  if (outros.length === 0) {
+    listaDiv.innerHTML = `<p class="text-muted" style="padding:1rem; font-size:0.85rem;">Nenhum outro músico disponível.</p>`;
+    return;
+  }
+
+  listaDiv.innerHTML = outros.map((u) => {
+    const outroIdNum = Number(u.id);
+    const ativoClass = usuarioConversandoId === outroIdNum ? 'active' : '';
+    const locaisPar = lerHistoricoLocalPar(meuId, outroIdNum);
+    const ultimaLocal = locaisPar.length > 0 ? locaisPar[locaisPar.length - 1].conteudo : '';
+    const conv = encontrarConversaDiretaComUsuario(u);
+    const ultimaMsg = ultimaLocal || (conv && conv.ultima_mensagem ? conv.ultima_mensagem : 'Conversa individual');
+
+    return `
+      <div class="conversa-item ${ativoClass}" onclick="abrirChatComUsuario(${outroIdNum})">
+        <div class="perfil-mini-avatar sm">${u.iniciais || gerarIniciais(u.nome)}</div>
+        <div style="flex:1; overflow:hidden;">
+          <h4 style="font-size:0.9rem; margin-bottom:0.1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${u.nome}</h4>
+          <p class="text-muted" style="font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ultimaMsg}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
-const cadernosRepertorioPadrao = gerarRepertorio400Musicas();
+function filtrarConversasChat() {
+  renderizarListaConversas();
+}
 
-const oficinasPartiturasGerais = {
-  harmonia: [
-    {
-      id: 401,
-      area: 'Harmonia',
-      titulo: 'Partitura de Harmonia I — Campo Harmónico e Funções (Tónica, Subdominante e Dominante)',
-      compasso: '4/4 • Estudo Harmónico Geral',
-      instrucoes: 'Lê os compassos lentamente sem pressa. Identifica onde há repouso (Tónica), preparo/afastamento (Subdominante) e tensão/resolução (Dominante). Toca em blocos primeiro e depois arpeja ou conduz as vozes com limpeza.',
-      partituraTexto: 'C.1: [ I  (T) ]   | C.2: [ IV (SD) ] | C.3: [ ii (SD) ] | C.4: [ V7 (D) -> I (T) ]\nC.5: [ vi (T) ]  | C.6: [ ii (SD) ] | C.7: [ V7(9) (D)]| C.8: [ I7M (T) ]'
-    },
-    {
-      id: 402,
-      area: 'Harmonia',
-      titulo: 'Partitura de Harmonia II — Preparações, Dominantes Secundários e Condução de Vozes',
-      compasso: '2/4 • Estudo Harmónico Geral',
-      instrucoes: 'Observa como cada dominante prepara o acorde seguinte. Mantém as notas comuns ligadas entre compassos e faz movimentos conjuntos nas vozes internas para evitar saltos bruscos.',
-      partituraTexto: 'C.1: [ I7M ]      | C.2: [ VI7(b9) ] | C.3: [ ii7 ]     | C.4: [ V7(13) ]\nC.5: [ iii7 ]     | C.6: [ VI7 ]     | C.7: [ II7(9) ]  | C.8: [ V7 -> I ]'
-    },
-    {
-      id: 403,
-      area: 'Harmonia',
-      titulo: 'Partitura de Harmonia III — Cadências II-V-I, Empréstimo Modal e Tensões',
-      compasso: '4/4 • Estudo Harmónico Geral',
-      instrucoes: 'Pratica a resolução tensa-repouso identificando sétimas, nonas e décimas terceiras. Mantém o mesmo ritmo harmónico em cada compasso antes de experimentar variações de levada.',
-      partituraTexto: 'C.1: [ ii7(9) ]   | C.2: [ V7(13) ]  | C.3: [ I7M(9) ]  | C.4: [ IV7M ]     \nC.5: [ iv7(b5) ]  | C.6: [ bVII7(9) ]| C.7: [ iii7 ]    | C.8: [ VI7(b9) -> ii7 -> V7 -> I ]'
-    },
-    {
-      id: 404,
-      area: 'Harmonia',
-      titulo: 'Partitura de Harmonia IV — Inversões, Baixo Pedal e Transições Harmónicas',
-      compasso: '2/4 • Estudo Harmónico Geral',
-      instrucoes: 'Presta atenção na nota mais grave de cada compasso. Estuda a transição sem pressa para que a mudança de acorde soe natural, contínua e equilibrada.',
-      partituraTexto: 'C.1: [ I / 3 ]    | C.2: [ IV / 5 ]  | C.3: [ ii7 ]     | C.4: [ V7 / 4 ]\nC.5: [ I ]        | C.6: [ V7/vi ]   | C.7: [ vi7 ]     | C.8: [ V7(9) -> I7M ]'
+function renderizarMensagensChatPrivado(outroId) {
+  const vazioBox = document.getElementById('chat-vazio-placeholder');
+  const conteudoBox = document.getElementById('chat-ativo-conteudo');
+  const mensagensBox = document.getElementById('chat-mensagens-box');
+  if (!appState.currentUser) return;
+
+  const meuId = Number(appState.currentUser.id);
+  const outroIdNum = Number(outroId || usuarioConversandoId || 0);
+  if (!outroIdNum || outroIdNum === meuId) return;
+
+  const outroUsuario = (appState.perfisComunidade || []).find((p) => Number(p.id) === outroIdNum);
+  if (!outroUsuario) return;
+
+  if (vazioBox) vazioBox.classList.add('hidden');
+  if (conteudoBox) conteudoBox.classList.remove('hidden');
+
+  const nomeEl = document.getElementById('chat-ativo-nome');
+  const avatarEl = document.getElementById('chat-ativo-avatar');
+  const subEl = document.getElementById('chat-ativo-sub');
+
+  if (nomeEl) nomeEl.textContent = outroUsuario.nome;
+  if (avatarEl) avatarEl.textContent = outroUsuario.iniciais || gerarIniciais(outroUsuario.nome);
+  if (subEl) subEl.textContent = `Conversa individual • ${outroUsuario.instrumento || 'Músico'}`;
+
+  if (mensagensBox) {
+    if (!mensagensCache.length) {
+      mensagensBox.innerHTML = `<div style="text-align:center; color:var(--text-muted); margin-top:2rem; font-size:0.85rem;">Conversa individual com <strong>${outroUsuario.nome}</strong>.</div>`;
+    } else {
+      mensagensBox.innerHTML = mensagensCache.map((m) => {
+        const souEu = Number(m.remetente_id) === meuId;
+        const nomeAutor = souEu ? 'Você' : (m.remetente_nome || outroUsuario.nome);
+        const hora = m.enviada_em ? new Date(m.enviada_em).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+        return `
+          <div class="chat-msg-item ${souEu ? 'meu-msg' : ''}">
+            <div class="chat-msg-header"><strong>${nomeAutor}</strong><span>${hora}</span></div>
+            <div class="chat-msg-body">${m.conteudo}</div>
+          </div>
+        `;
+      }).join('');
     }
-  ],
-  percussao: [
-    {
-      id: 501,
-      area: 'Percussão',
-      titulo: 'Partitura de Percussão I — Subdivisão Binária, Semínimas e Colcheias',
-      compasso: '2/4 • Estudo Percussivo Geral',
-      instrucoes: 'Conta os tempos em voz alta (1 e 2 e). Mantém o metrónomo ou pulso constante sem adiantar nas colcheias. Diferencia claramente os acentos marcados (>) das notas neutras.',
-      partituraTexto: 'C.1: [ >1   e   2   e ] | C.2: [  1  >e   2  >e ] | C.3: [ >1  >e  >2  >e ] | C.4: [  1   e  >2   e ]'
-    },
-    {
-      id: 502,
-      area: 'Percussão',
-      titulo: 'Partitura de Percussão II — Síncope, Contratempos e Dinâmica',
-      compasso: '2/4 • Estudo Percussivo Geral',
-      instrucoes: 'Pratica primeiro em andamento lento até sentires a ligação entre o tempo fraco e o tempo forte seguinte. Controla a altura do som para que piano (p) e forte (f) tenham contraste real.',
-      partituraTexto: 'C.1 (p): [  1  >e   2   e ] | C.2 (p): [  1   e  >2  >e ] | C.3 (f): [ >1   e  >2  >e ] | C.4 (f): [ >1  >e  >2   . ]'
-    },
-    {
-      id: 503,
-      area: 'Percussão',
-      titulo: 'Partitura de Percussão III — Semicolcheias e Grupos Rítmicos (1-e-a 2-e-a)',
-      compasso: '2/4 • Estudo Percussivo Geral',
-      instrucoes: 'Subdivide cada tempo em quatro partes iguais (1 e a 2 e a). Evita encurtar a última nota do grupo e mantém a precisão mesmo quando o andamento subir.',
-      partituraTexto: 'C.1: [ >1  e  a  >2  e  a ] | C.2: [  1 >e  a   2 >e  a ] | C.3: [ >1  e >a  >2  e >a ] | C.4: [ >1  .  a  >2  e  . ]'
-    },
-    {
-      id: 504,
-      area: 'Percussão',
-      titulo: 'Partitura de Percussão IV — Pausas, Viradas e Estabilidade de Pulso',
-      compasso: '2/4 • Estudo Percussivo Geral',
-      instrucoes: 'Respeita os silêncios (.) sem perder a contagem interna. Usa os últimos tempos do ciclo como preparação para retomar o pulso principal com firmeza.',
-      partituraTexto: 'C.1: [ >1   e  >2   e ] | C.2: [ >1   .   2  >e ] | C.3: [  1  >e  >2  >e ] | C.4: [ >1  >e  >2  >e ]'
+    mensagensBox.scrollTop = mensagensBox.scrollHeight;
+  }
+}
+
+async function enviarMensagemPrivada() {
+  const input = document.getElementById('chat-input-texto');
+  if (!input || !usuarioConversandoId || !appState.currentUser) {
+    return notificar('Selecione um músico na lista para enviar mensagem.', 'info');
+  }
+  const texto = input.value.trim();
+  if (!texto) return;
+
+  const meuId = Number(appState.currentUser.id);
+  const outroId = Number(usuarioConversandoId);
+  const outroUsuario = (appState.perfisComunidade || []).find((p) => Number(p.id) === outroId);
+  const convDireta = encontrarConversaDiretaComUsuario(outroUsuario);
+
+  const novaMsgLocal = {
+    id: `local-${Date.now()}`,
+    conversa_id: convDireta ? Number(convDireta.conversa_id) : null,
+    remetente_id: meuId,
+    destinatario_id: outroId,
+    remetente_nome: appState.currentUser.nome || 'Você',
+    conteudo: texto,
+    enviada_em: new Date().toISOString()
+  };
+
+  const historicoAtual = lerHistoricoLocalPar(meuId, outroId);
+  historicoAtual.push(novaMsgLocal);
+  salvarHistoricoLocalPar(meuId, outroId, historicoAtual);
+  mensagensCache = historicoAtual;
+
+  input.value = '';
+  renderizarMensagensChatPrivado(outroId);
+  renderizarListaConversas();
+
+  if (convDireta && convDireta.conversa_id) {
+    try {
+      const resp = await fetch(`${API_BASE}/api/chat/mensagens`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversa_id: Number(convDireta.conversa_id),
+          remetente_id: meuId,
+          destinatario_id: outroId,
+          conteudo: texto
+        })
+      });
+      if (resp.ok) {
+        conversaAtivaId = Number(convDireta.conversa_id);
+        await buscarMensagensMySQL(conversaAtivaId, outroId);
+        renderizarMensagensChatPrivado(outroId);
+      }
+    } catch (err) {
+      console.error('Erro ao enviar mensagem:', err);
     }
-  ]
-};
-
-const defaultData = {
-  currentUser: null,
-  perfisComunidade: [
-    { id: 1, email: 'miguel@musicon.com', senha: '123', nome: 'Miguel', iniciais: 'MG', area: 'Show ao Vivo & Bailes', instrumento: 'Violão 7 Cordas, Cavaquinho', estilo: 'Samba & Choro', notaMedia: 4.9, totalAvaliacoes: 14 },
-    { id: 2, email: 'mariana@musicon.com', senha: '123', nome: 'Mariana Souza', iniciais: 'MS', area: 'Show ao Vivo', instrumento: 'Cavaquinho, Voz', estilo: 'Partido-Alto & MPB', notaMedia: 4.8, totalAvaliacoes: 19 },
-    { id: 3, email: 'carlos@musicon.com', senha: '123', nome: 'Carlos Andrade', iniciais: 'CA', area: 'Rodas de Samba', instrumento: 'Percussão, Pandeiro', estilo: 'Samba de Roda & Baião', notaMedia: 5.0, totalAvaliacoes: 27 }
-  ],
-  propostas: [],
-  mensagensPrivadas: [],
-  atividades: [
-    { id: 1, title: 'Prática: Levada de Samba-Enredo', description: 'Treina a levada de caixa, surdo e repique.', subject: 'Percussão', type: 'Prática', completed: false }
-  ],
-  partituras: [],
-  offlineItems: [
-    { id: 1, titulo: 'Caderno de Cifras: Samba & Raiz', info: '400 músicas • Repertório Tradicional', baixado: true }
-  ]
-};
-
-let appState = carregarEstado();
-let artistaAlvoProposta = null;
-let perfilSelecionadoParaAvaliar = null;
-let notaSelecionada = 5;
-let usuarioConversandoId = null;
-let cadernoSelecionado = 'todos';
-let modoUsoCaderno = 'estudo';
-let cifraAbertaAtual = null;
-let filtroTextoCaderno = '';
-let paginaAtualCaderno = 1;
-const ITENS_POR_PAGINA_CADERNO = 25;
-
-function carregarEstado() {
-  const salvo = localStorage.getItem(STORAGE_KEY);
-  const parsed = salvo ? JSON.parse(salvo) : JSON.parse(JSON.stringify(defaultData));
-  parsed.partituras = [];
-  return parsed;
+  }
 }
 
-function salvarEstado() {
-  const copia = { ...appState, partituras: [] };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(copia));
+// =====================================================
+// MÚSICOS, PROPOSTAS ENTRE CONTAS E AVALIAÇÕES
+// =====================================================
+function renderizarPerfis(filtro = '') {
+  const grid = document.getElementById('perfis-grid');
+  if (!grid) return;
+
+  const termo = norm(filtro || document.getElementById('busca-perfil-input')?.value || '');
+  const lista = (appState.perfisComunidade || []).filter((p) => {
+    if (!termo) return true;
+    return norm(p.nome).includes(termo) || norm(p.instrumento).includes(termo) || norm(p.cidade).includes(termo);
+  });
+
+  if (!lista.length) {
+    grid.innerHTML = `<p class="text-muted">Nenhum músico encontrado.</p>`;
+    return;
+  }
+
+  grid.innerHTML = lista.map((p) => {
+    const avals = obterAvaliacoesDoArtista(p);
+    const mediaStr = calcularMediaAvaliacoes(avals);
+    const podeAvaliar = usuarioPodeAvaliarArtista(p);
+
+    return `
+      <div class="card">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="perfil-mini-avatar">${p.iniciais || gerarIniciais(p.nome)}</div>
+          <div>
+            <h3 style="margin:0;">${p.nome}</h3>
+            <small class="text-muted">${p.instrumento || 'Músico'} • ${p.cidade || 'Lorena - SP'}</small>
+            <div style="font-size:0.8rem; margin-top:0.2rem;">★ ${mediaStr} (${avals.length})</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.5rem; margin-top:1rem; flex-wrap:wrap;">
+          <button type="button" class="btn-primary" onclick="abrirModalProposta(${p.id})">Proposta</button>
+          <button type="button" class="btn-quick" onclick="abrirChatComUsuario(${p.id})">Chat</button>
+          <button
+            type="button"
+            class="btn-quick"
+            onclick="abrirModalAvaliacao(${p.id})"
+            title="${podeAvaliar ? 'Avaliar músico' : 'Disponível após o artista aceitar uma proposta sua'}"
+          >
+            ${podeAvaliar ? 'Avaliar' : 'Avaliar (após aceite)'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function filtrarPerfis() {
+  renderizarPerfis();
+}
+
+function abrirDetalhesInstrumento(chave) {
+  const info = dadosInstrumentos[chave];
+  const painel = document.getElementById('painel-detalhe-instrumento');
+  if (!info || !painel) return;
+
+  document.getElementById('detalhe-inst-titulo').textContent = info.titulo;
+  document.getElementById('detalhe-inst-historia').textContent = info.historia;
+
+  const filtro = norm(info.instrumentoFiltro);
+  const encontrados = (appState.perfisComunidade || []).filter((p) => norm(p.instrumento).includes(filtro));
+
+  const boxMusicos = document.getElementById('detalhe-inst-musicos');
+  if (boxMusicos) {
+    boxMusicos.innerHTML = encontrados.length
+      ? encontrados.map((m) => `
+          <div class="card">
+            <h4>${m.nome}</h4>
+            <p class="text-muted">${m.instrumento}</p>
+            <button type="button" class="btn-quick mt-2" onclick="abrirChatComUsuario(${m.id})">Conversar</button>
+          </div>
+        `).join('')
+      : `<p class="text-muted">Nenhum músico com esse instrumento no momento.</p>`;
+  }
+  painel.classList.remove('hidden');
+}
+
+function fecharDetalhesInstrumento() {
+  document.getElementById('painel-detalhe-instrumento')?.classList.add('hidden');
+}
+
+function formatarDataBR(isoDate) {
+  if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return isoDate || 'A combinar';
+  const [ano, mes, dia] = isoDate.split('-');
+  return `${dia}/${mes}/${ano}`;
+}
+
+function abrirModalProposta(idPerfil) {
+  artistaAlvoProposta = (appState.perfisComunidade || []).find((p) => Number(p.id) === Number(idPerfil)) || null;
+  const titulo = document.getElementById('modal-proposta-titulo');
+  if (titulo) {
+    titulo.textContent = artistaAlvoProposta ? `Enviar Proposta para ${artistaAlvoProposta.nome}` : 'Enviar Proposta';
+  }
+  document.getElementById('modal-proposta')?.classList.remove('hidden');
+}
+
+function fecharModalProposta() {
+  document.getElementById('modal-proposta')?.classList.add('hidden');
+  artistaAlvoProposta = null;
+}
+
+function enviarPropostaContratacao() {
+  const evento = (document.getElementById('prop-evento')?.value || '').trim();
+  const dataIso = (document.getElementById('prop-data')?.value || '').trim();
+  const horaIni = (document.getElementById('prop-hora-inicio')?.value || '').trim();
+  const horaFim = (document.getElementById('prop-hora-fim')?.value || '').trim();
+  const cacheRaw = (document.getElementById('prop-cache')?.value || '').trim();
+  const requisitos = (document.getElementById('prop-requisitos')?.value || '').trim();
+
+  if (!evento || !dataIso || !horaIni || !horaFim || !cacheRaw) {
+    return notificar('Preencha evento, data, horário de início, término e cachê.', 'error');
+  }
+
+  if (horaFim <= horaIni) {
+    return notificar('O horário de término deve ser maior que o de início.', 'error');
+  }
+
+  const user = appState.currentUser || {};
+  const todas = lerTodasPropostas();
+
+  const novaProposta = {
+    id: `prop_${Date.now()}`,
+    evento,
+    data: `${formatarDataBR(dataIso)} • ${horaIni} às ${horaFim}`,
+    cache: cacheRaw.startsWith('R$') ? cacheRaw : `R$ ${cacheRaw}`,
+    requisitos,
+    status: 'Pendente',
+    remetenteId: user.id || '',
+    remetenteNome: user.nome || 'Contratante',
+    remetenteEmail: user.email || '',
+    musicoId: artistaAlvoProposta?.id || '',
+    musicoNome: artistaAlvoProposta?.nome || 'Músico',
+    musicoEmail: artistaAlvoProposta?.email || ''
+  };
+
+  todas.unshift(novaProposta);
+  salvarTodasPropostas(todas);
+
+  ['prop-evento', 'prop-data', 'prop-hora-inicio', 'prop-hora-fim', 'prop-cache', 'prop-requisitos'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  fecharModalProposta();
+  atualizarTudoNaTela();
+  notificar('Proposta enviada! Aparecerá também na conta do artista.', 'success');
+}
+
+function obterPropostasDaContaAtual() {
+  const todas = lerTodasPropostas();
+  const user = appState.currentUser;
+  if (!user) return todas;
+
+  const uId = norm(user.id);
+  const uEmail = norm(user.email);
+  const uNome = norm(user.nome);
+
+  return todas.filter((p) => {
+    const matchDest =
+      (uId && norm(p.musicoId) === uId) ||
+      (uEmail && norm(p.musicoEmail) === uEmail) ||
+      (uNome && norm(p.musicoNome) === uNome);
+
+    const matchRem =
+      (uId && norm(p.remetenteId) === uId) ||
+      (uEmail && norm(p.remetenteEmail) === uEmail) ||
+      (uNome && norm(p.remetenteNome) === uNome);
+
+    return matchDest || matchRem;
+  });
+}
+
+function atualizarStatusProposta(idProposta, novoStatus) {
+  const todas = lerTodasPropostas();
+  const alvo = todas.find((p) => String(p.id) === String(idProposta));
+  if (!alvo) return;
+
+  alvo.status = novoStatus;
+  salvarTodasPropostas(todas);
+  atualizarTudoNaTela();
+  notificar(`Proposta atualizada para: ${novoStatus}`, 'info');
+}
+window.atualizarStatusProposta = atualizarStatusProposta;
+
+function renderizarPropostas() {
+  const grid = document.getElementById('propostas-grid');
+  if (!grid) return;
+
+  const propostas = obterPropostasDaContaAtual();
+  const user = appState.currentUser || {};
+  const uId = norm(user.id);
+  const uEmail = norm(user.email);
+  const uNome = norm(user.nome);
+
+  const badge = document.getElementById('badge-propostas');
+  if (badge) {
+    badge.textContent = String(propostas.length);
+    badge.classList.toggle('hidden', propostas.length === 0);
+  }
+
+  if (!propostas.length) {
+    grid.innerHTML = `<div class="card"><p class="text-muted">Nenhuma proposta registrada para esta conta ainda.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = propostas.map((pr) => {
+    const ehDestinatario =
+      (uId && norm(pr.musicoId) === uId) ||
+      (uEmail && norm(pr.musicoEmail) === uEmail) ||
+      (uNome && norm(pr.musicoNome) === uNome);
+
+    const statusAtual = pr.status || 'Pendente';
+    const stNorm = norm(statusAtual);
+    const corStatus =
+      stNorm === 'aceita' || stNorm === 'aceito' || stNorm === 'concluída' || stNorm === 'concluida'
+        ? '#22c55e'
+        : stNorm === 'recusada'
+          ? '#ef4444'
+          : '#eab308';
+
+    return `
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
+          <div>
+            <span class="portal-badge">${ehDestinatario ? 'Recebida' : 'Enviada por você'}</span>
+            <h3 style="margin:0.35rem 0 0 0;">${pr.evento || 'Convite de Evento'}</h3>
+          </div>
+          <span style="font-size:0.78rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:999px; border:1px solid ${corStatus}; color:${corStatus};">
+            ${statusAtual}
+          </span>
+        </div>
+
+        <p class="mt-2" style="margin-bottom:0.3rem;"><strong>Enviado por:</strong> ${pr.remetenteNome || 'Contratante'}</p>
+        <p style="margin-bottom:0.3rem;"><strong>Artista / Destino:</strong> ${pr.musicoNome || 'Músico'}</p>
+        <p style="margin-bottom:0.3rem;"><strong>Data e Horário:</strong> ${pr.data || 'A combinar'}</p>
+        <p style="margin-bottom:0.3rem;"><strong>Cachê:</strong> ${pr.cache || 'A combinar'}</p>
+        ${pr.requisitos ? `<p class="text-muted mt-1" style="font-size:0.86rem;"><strong>Detalhes:</strong> ${pr.requisitos}</p>` : ''}
+
+        ${
+          ehDestinatario
+            ? `
+          <div style="display:flex; gap:0.45rem; flex-wrap:wrap; margin-top:0.85rem;">
+            <button type="button" class="btn-primary" onclick="atualizarStatusProposta('${pr.id}', 'Aceita')">Aceitar</button>
+            <button type="button" class="btn-quick" onclick="atualizarStatusProposta('${pr.id}', 'Concluída')">Concluir</button>
+            <button type="button" class="btn-quick" onclick="atualizarStatusProposta('${pr.id}', 'Recusada')">Recusar</button>
+          </div>
+        `
+            : ''
+        }
+      </div>
+    `;
+  }).join('');
+}
+
+function abrirModalAvaliacao(idPerfil) {
+  perfilSelecionadoParaAvaliar = (appState.perfisComunidade || []).find((p) => Number(p.id) === Number(idPerfil)) || null;
+  if (!perfilSelecionadoParaAvaliar) return;
+
+  const titulo = document.getElementById('modal-avaliar-titulo');
+  if (titulo) titulo.textContent = `Avaliar ${perfilSelecionadoParaAvaliar.nome}`;
+
+  const avisoBloqueio = document.getElementById('avaliar-bloqueio-aviso');
+  const areaForm = document.getElementById('avaliar-formulario-area');
+  const liberado = usuarioPodeAvaliarArtista(perfilSelecionadoParaAvaliar);
+
+  if (avisoBloqueio) avisoBloqueio.classList.toggle('hidden', liberado);
+  if (areaForm) areaForm.classList.toggle('hidden', !liberado);
+
+  notaSelecionada = 5;
+  selecionarEstrela(5);
+  document.getElementById('modal-avaliar')?.classList.remove('hidden');
+}
+
+function fecharModalAvaliacao() {
+  document.getElementById('modal-avaliar')?.classList.add('hidden');
+  perfilSelecionadoParaAvaliar = null;
+}
+
+function selecionarEstrela(val) {
+  notaSelecionada = Number(val) || 5;
+  document.querySelectorAll('#star-selector i').forEach((star) => {
+    star.classList.toggle('active', Number(star.dataset.val) <= notaSelecionada);
+  });
+}
+
+function confirmarAvaliacaoPerfil() {
+  if (!perfilSelecionadoParaAvaliar) return;
+  if (!usuarioPodeAvaliarArtista(perfilSelecionadoParaAvaliar)) {
+    return notificar('Você só pode avaliar o artista após ele aceitar uma proposta sua.', 'error');
+  }
+
+  const comentario = (document.getElementById('avaliacao-comentario')?.value || '').trim();
+  if (!comentario) {
+    return notificar('Escreva um comentário para registrar a avaliação.', 'error');
+  }
+
+  const mapa = lerMapaAvaliacoes();
+  const chave = chaveArtistaAval(perfilSelecionadoParaAvaliar);
+  mapa[chave] = Array.isArray(mapa[chave]) ? mapa[chave] : [];
+  mapa[chave].unshift({
+    autor: appState.currentUser?.nome || 'Contratante',
+    nota: notaSelecionada,
+    comentario,
+    data: new Date().toLocaleDateString('pt-BR')
+  });
+  salvarMapaAvaliacoes(mapa);
+
+  const campoCom = document.getElementById('avaliacao-comentario');
+  if (campoCom) campoCom.value = '';
+
+  fecharModalAvaliacao();
+  atualizarTudoNaTela();
+  notificar('Avaliação registrada!', 'success');
+}
+
+// =====================================================
+// OFICINAS, CIFRAS E MEU PERFIL
+// =====================================================
+function renderizarOficinas() {
+  const harmBox = document.getElementById('lista-partituras-harmonia');
+  const percBox = document.getElementById('lista-partituras-percussao');
+  if (!harmBox || !percBox) return;
+
+  harmBox.innerHTML = (oficinasPartiturasGerais.harmonia || []).map((item) => `
+    <div style="padding:0.5rem 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
+      <span style="font-size:0.88rem;">${item.titulo}</span>
+      <button type="button" class="btn-quick" onclick="verOficina('harmonia', ${item.id})">Ver</button>
+    </div>
+  `).join('');
+
+  percBox.innerHTML = (oficinasPartiturasGerais.percussao || []).map((item) => `
+    <div style="padding:0.5rem 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
+      <span style="font-size:0.88rem;">${item.titulo}</span>
+      <button type="button" class="btn-quick" onclick="verOficina('percussao', ${item.id})">Ver</button>
+    </div>
+  `).join('');
+}
+
+function verOficina(area, id) {
+  const lista = oficinasPartiturasGerais[area] || [];
+  const item = lista.find((x) => Number(x.id) === Number(id));
+  const box = document.getElementById('detalhe-oficina-box');
+  if (!item || !box) return;
+
+  box.classList.remove('hidden');
+  box.innerHTML = `
+    <h3>${item.titulo}</h3>
+    <p class="text-muted">${item.compasso}</p>
+    <p class="mt-2">${item.instrucoes}</p>
+    <pre class="mt-3">${item.partituraTexto}</pre>
+  `;
+}
+
+function selecionarCaderno(caderno) {
+  cadernoSelecionado = caderno || 'todos';
+  paginaAtualCaderno = 1;
+  const label = document.getElementById('caderno-ativo-label');
+  if (label) {
+    const mapa = {
+      todos: 'Caderno: Todos (Samba & Pagode Tradicionais)',
+      samba: 'Caderno: Samba Tradicional',
+      pagode: 'Caderno: Pagode Tradicional'
+    };
+    label.textContent = mapa[cadernoSelecionado] || mapa.todos;
+  }
+  renderizarCadernosCifras();
+}
+
+function alternarModoUsoCaderno(modo) {
+  modoUsoCaderno = modo === 'tocar' ? 'tocar' : 'estudo';
+  const desc = document.getElementById('modo-uso-descricao');
+  if (desc) {
+    desc.textContent = modoUsoCaderno === 'tocar'
+      ? 'Modo Tocar / Roda: foco na cifra limpa e harmonia para acompanhar a roda.'
+      : 'Modo Estudo: mostra dica de prática, harmonia e partitura rítmica.';
+  }
+  if (cifraAbertaAtual) abrirCifra(cifraAbertaAtual.id);
+}
+
+function abrirCifra(id) {
+  const musica = cadernosRepertorioPadrao.find((m) => Number(m.id) === Number(id));
+  const box = document.getElementById('visualizador-cifra');
+  if (!musica || !box) return;
+
+  cifraAbertaAtual = musica;
+  box.classList.remove('hidden');
+  box.innerHTML = `
+    <h3>${musica.titulo}</h3>
+    <p class="text-muted">Tom: ${musica.tom} • ${musica.partitura}</p>
+    ${modoUsoCaderno === 'estudo' ? `<p class="mt-2"><strong>Dica de estudo:</strong> ${musica.estudo}</p>` : ''}
+    <pre class="mt-3">${musica.cifra}</pre>
+  `;
+}
+
+function renderizarCadernosCifras() {
+  const tbody = document.getElementById('tabela-partituras-body');
+  if (!tbody) return;
+
+  const filtradas = cadernosRepertorioPadrao.filter((m) => cadernoSelecionado === 'todos' || m.caderno === cadernoSelecionado);
+  const inicio = (paginaAtualCaderno - 1) * ITENS_POR_PAGINA_CADERNO;
+  const paginaItens = filtradas.slice(inicio, inicio + ITENS_POR_PAGINA_CADERNO);
+
+  tbody.innerHTML = paginaItens.map((m) => `
+    <tr>
+      <td>${m.titulo}</td>
+      <td>${m.tom}</td>
+      <td><button type="button" class="btn-quick" onclick="abrirCifra(${m.id})">Abrir Cifra</button></td>
+    </tr>
+  `).join('');
+}
+
+function renderizarMeuPerfil() {
+  const user = appState.currentUser;
+  if (!user) return;
+
+  const avals = obterAvaliacoesDoArtista(user);
+  const mediaStr = calcularMediaAvaliacoes(avals);
+  const propostasConta = obterPropostasDaContaAtual();
+  const aceitosCount = propostasConta.filter((p) => {
+    const st = norm(p.status);
+    return st === 'aceita' || st === 'aceito' || st === 'concluída' || st === 'concluida';
+  }).length;
+  const pctTrabalhos = propostasConta.length > 0 ? Math.round((aceitosCount / propostasConta.length) * 100) : 0;
+
+  const nomeEl = document.getElementById('perfil-nome');
+  const emailEl = document.getElementById('perfil-email');
+  const avatarEl = document.getElementById('perfil-avatar');
+  const badgeEl = document.getElementById('perfil-badge-area');
+  const notaExibEl = document.getElementById('perfil-nota-exibicao');
+  const totalAvalEl = document.getElementById('perfil-total-avaliacoes');
+  const resumoNotaEl = document.getElementById('perfil-resumo-nota');
+  const qtdContratosEl = document.getElementById('perfil-qtd-contratos-aceitos');
+  const pctTrabEl = document.getElementById('perfil-pct-trabalhos');
+  const comentariosEl = document.getElementById('perfil-comentarios-lista');
+
+  if (nomeEl) nomeEl.textContent = user.nome || 'Músico';
+  if (emailEl) emailEl.textContent = user.email || '';
+  if (avatarEl) avatarEl.textContent = user.iniciais || gerarIniciais(user.nome);
+  if (badgeEl) badgeEl.textContent = user.instrumento || 'Músico';
+  if (notaExibEl) notaExibEl.textContent = mediaStr;
+  if (totalAvalEl) totalAvalEl.textContent = String(avals.length);
+  if (resumoNotaEl) resumoNotaEl.textContent = mediaStr;
+  if (qtdContratosEl) qtdContratosEl.textContent = String(aceitosCount);
+  if (pctTrabEl) pctTrabEl.textContent = `${pctTrabalhos}%`;
+
+  if (comentariosEl) {
+    comentariosEl.innerHTML = avals.length
+      ? avals.map((av) => `<p style="margin-bottom:0.4rem;"><strong>${av.autor}</strong> (★ ${Number(av.nota).toFixed(1)}): "${av.comentario}"</p>`).join('')
+      : `<p class="text-muted">Nenhuma avaliação registrada ainda.</p>`;
+  }
+
+  const editNome = document.getElementById('edit-perfil-nome');
+  const editArea = document.getElementById('edit-perfil-area');
+  const editInst = document.getElementById('edit-perfil-inst');
+  const editEstilo = document.getElementById('edit-perfil-estilo');
+
+  if (editNome) editNome.value = user.nome || '';
+  if (editArea) editArea.value = user.cidade || '';
+  if (editInst) editInst.value = user.instrumento || '';
+  if (editEstilo) editEstilo.value = user.nivel || '';
+}
+
+function salvarEdicaoPerfil() {
+  if (!appState.currentUser) return;
+  const nome = document.getElementById('edit-perfil-nome')?.value.trim();
+  const cidade = document.getElementById('edit-perfil-area')?.value.trim();
+  const instrumento = document.getElementById('edit-perfil-inst')?.value.trim();
+  const nivel = document.getElementById('edit-perfil-estilo')?.value.trim();
+
+  if (nome) {
+    appState.currentUser.nome = nome;
+    appState.currentUser.iniciais = gerarIniciais(nome);
+  }
+  if (cidade !== undefined) appState.currentUser.cidade = cidade;
+  if (instrumento !== undefined) appState.currentUser.instrumento = instrumento;
+  if (nivel !== undefined) appState.currentUser.nivel = nivel;
+
+  salvarUsuarioSessao(appState.currentUser);
+  atualizarTudoNaTela();
+  notificar('Informações do perfil atualizadas!', 'success');
+}
+
+function atualizarTudoNaTela() {
+  const user = appState.currentUser;
+  const nomeDash = document.getElementById('dashboard-user-name');
+  if (nomeDash && user) nomeDash.textContent = user.nome || 'Batuqueiro';
+
+  const propostasConta = obterPropostasDaContaAtual();
+  const statPropostas = document.getElementById('stat-propostas-ativas');
+  if (statPropostas) statPropostas.textContent = String(propostasConta.length);
+
+  const avalsUser = user ? obterAvaliacoesDoArtista(user) : [];
+  const statNota = document.getElementById('stat-nota-geral');
+  if (statNota) statNota.textContent = calcularMediaAvaliacoes(avalsUser);
+
+  renderizarPerfis();
+  renderizarPropostas();
+  renderizarOficinas();
+  renderizarCadernosCifras();
+  renderizarMeuPerfil();
+}
+
+async function quickLoginMusicon(email = 'miguel@musicon.com.br', senha = '123456') {
+  try {
+    const emailInput = document.getElementById('email');
+    const senhaInput = document.getElementById('password');
+    if (emailInput) emailInput.value = email;
+    if (senhaInput) senhaInput.value = senha;
+
+    const usuario = await realizarLoginMySQL(email, senha);
+    salvarUsuarioSessao(usuario);
+    aplicarEstadoTema(usuario.temaPreferido || 'dark');
+    await carregarPerfisDoBanco();
+
+    mostrarPortal();
+    atualizarTudoNaTela();
+    await renderizarListaConversas();
+    notificar(`Bem-vindo(a), ${usuario.nome}!`, 'success');
+  } catch (err) {
+    notificar(err.message, 'error');
+  }
+}
+
+// =====================================================
+// EVENTOS GLOBAIS E INICIALIZAÇÃO
+// =====================================================
+document.addEventListener('input', (e) => {
+  if (e.target && e.target.id === 'prop-cache') {
+    e.target.value = e.target.value.replace(/[^0-9.,]/g, '');
+  }
+});
+
+document.addEventListener('click', (e) => {
+  const totalPaginas = Math.ceil(VIDEOS_SAMBA_15.length / VIDEOS_POR_PAGINA);
+  if (e.target.closest('#btn-samba-anterior')) {
+    paginaCarrosselVideos = (paginaCarrosselVideos - 1 + totalPaginas) % totalPaginas;
+    renderizarCarrosselSamba();
+  } else if (e.target.closest('#btn-samba-proximo')) {
+    paginaCarrosselVideos = (paginaCarrosselVideos + 1) % totalPaginas;
+    renderizarCarrosselSamba();
+  } else {
+    const ponto = e.target.closest('.samba-ponto[data-pagina]');
+    if (ponto) {
+      paginaCarrosselVideos = Number(ponto.getAttribute('data-pagina')) || 0;
+      renderizarCarrosselSamba();
+    }
+  }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
   aplicarTemaSalvo();
   renderizarSlideHistoria(false);
   configurarArrasteHistoria();
   iniciarPassagemAutomaticaHistoria();
-  renderizarVideosPagode();
+  renderizarCarrosselSamba();
 
-  const sessao = localStorage.getItem('usuarioLogado');
+  await carregarPerfisDoBanco();
+
+  const sessao = obterUsuarioSessao();
   if (sessao) {
-    appState.currentUser = JSON.parse(sessao);
+    appState.currentUser = sessao;
+    aplicarEstadoTema(sessao.temaPreferido || 'dark');
     mostrarPortal();
+    await renderizarListaConversas();
   } else {
     mostrarLogin();
   }
@@ -603,825 +1549,365 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const formLogin = document.getElementById('form-login');
   if (formLogin) {
-    formLogin.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const senha = document.getElementById('password').value.trim();
+    formLogin.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const email = (document.getElementById('email')?.value || '').trim();
+      const senha = (document.getElementById('password')?.value || '').trim();
+      if (!email || !senha) return notificar('Preencha e-mail e senha.', 'error');
 
-      if (!email || !senha) return showToast('Preenche e-mail e palavra-passe.', 'error');
-
-      let perfilEncontrado = appState.perfisComunidade.find(p => p.email.toLowerCase() === email.toLowerCase());
-
-      if (!perfilEncontrado) {
-        return showToast('E-mail não registado! Cria uma conta primeiro.', 'error');
+      try {
+        const usuario = await realizarLoginMySQL(email, senha);
+        salvarUsuarioSessao(usuario);
+        aplicarEstadoTema(usuario.temaPreferido || 'dark');
+        await carregarPerfisDoBanco();
+        mostrarPortal();
+        atualizarTudoNaTela();
+        await renderizarListaConversas();
+        notificar(`Bem-vindo(a), ${usuario.nome}!`, 'success');
+      } catch (err) {
+        notificar(err.message, 'error');
       }
-
-      const senhaCorreta = perfilEncontrado.senha || '123';
-      if (senha !== senhaCorreta) {
-        return showToast('Palavra-passe incorreta.', 'error');
-      }
-
-      appState.currentUser = { ...perfilEncontrado };
-      localStorage.setItem('usuarioLogado', JSON.stringify(appState.currentUser));
-      salvarEstado();
-      mostrarPortal();
-      atualizarTudoNaTela();
-      showToast(`Bem-vindo à roda, ${appState.currentUser.nome || appState.currentUser.name}!`, 'success');
     });
   }
 
   const formCadastro = document.getElementById('form-cadastro');
   if (formCadastro) {
-    formCadastro.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const nome = document.getElementById('cadastro-nome').value.trim();
-      const email = document.getElementById('cadastro-email').value.trim();
-      const senha = document.getElementById('cadastro-senha').value.trim();
+    formCadastro.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const nome = (document.getElementById('cadastro-nome')?.value || '').trim();
+      const email = (document.getElementById('cadastro-email')?.value || '').trim();
+      const senha = (document.getElementById('cadastro-senha')?.value || '').trim();
+      const instrumento_principal = (document.getElementById('cadastro-instrumento')?.value || '').trim() || null;
+      const cidade = (document.getElementById('cadastro-area')?.value || '').trim() || null;
 
-      if (!nome || !email || !senha) return showToast('Preenche todos os campos do registo.', 'error');
+      if (!nome || !email || !senha) return notificar('Preencha nome, e-mail e senha.', 'error');
 
-      const jaExiste = appState.perfisComunidade.some(p => p.email.toLowerCase() === email.toLowerCase());
-      if (jaExiste) {
-        return showToast('Este e-mail já está registado. Inicia sessão.', 'error');
+      try {
+        await cadastrarUsuarioMySQL({ nome, email, senha, instrumento_principal, cidade });
+        await carregarPerfisDoBanco();
+        notificar('Cadastro concluído! Agora faça login.', 'success');
+        window.mostrarAbaAuth?.('login');
+      } catch (err) {
+        notificar(err.message, 'error');
       }
-
-      const novoUsuario = {
-        id: Date.now(),
-        email: email,
-        senha: senha,
-        name: nome,
-        nome: nome,
-        iniciais: nome.substring(0, 2).toUpperCase(),
-        area: 'Show ao Vivo & Rodas',
-        instrumento: 'Pandeiro e Voz',
-        estilo: 'Samba de Raiz',
-        notaMedia: 5.0,
-        totalAvaliacoes: 1
-      };
-
-      appState.perfisComunidade.push(novoUsuario);
-      appState.currentUser = { ...novoUsuario };
-
-      localStorage.setItem('usuarioLogado', JSON.stringify(appState.currentUser));
-      salvarEstado();
-      mostrarPortal();
-      atualizarTudoNaTela();
-      showToast('Conta criada com sucesso! Bem-vindo.', 'success');
     });
   }
 });
 
 // =====================================================
-// OFICINAS & BATUCADA — PARTITURAS GERAIS (HARMONIA / PERCUSSÃO)
+// PERSISTÊNCIA DE PROPOSTAS ENTRE CONTAS (LOCALSTORAGE + API)
 // =====================================================
+(function () {
+  const CHAVE_PROPOSTAS_PERMANENTE = 'musicon_propostas_db_local_v1';
 
-function abrirPartituraEstudoGeral(id) {
-  const todas = [...oficinasPartiturasGerais.harmonia, ...oficinasPartiturasGerais.percussao];
-  const item = todas.find(p => Number(p.id) === Number(id));
-  const box = document.getElementById('detalhe-oficina-box');
-  if (!item || !box) return;
-
-  box.innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
-      <div>
-        <span class="portal-badge">${item.area}</span>
-        <h3 class="mt-2">${item.titulo}</h3>
-        <small class="text-muted">${item.compasso}</small>
-      </div>
-      <button type="button" class="btn-quick" onclick="fecharPartituraEstudoGeral()"><i class="fa-solid fa-xmark"></i> Fechar</button>
-    </div>
-    <p class="mt-3"><strong>Instruções de estudo:</strong> ${item.instrucoes}</p>
-    <pre style="margin-top:0.85rem; white-space:pre-wrap; font-family:inherit; line-height:1.6;">${item.partituraTexto}</pre>
-  `;
-  box.classList.remove('hidden');
-}
-
-function fecharPartituraEstudoGeral() {
-  document.getElementById('detalhe-oficina-box')?.classList.add('hidden');
-}
-
-function renderizarOficinasPartituras() {
-  const divHarmonia = document.getElementById('lista-partituras-harmonia');
-  const divPercussao = document.getElementById('lista-partituras-percussao');
-
-  if (divHarmonia) {
-    divHarmonia.innerHTML = oficinasPartiturasGerais.harmonia.map(p => `
-      <div style="padding:0.75rem 0; border-top:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; gap:0.75rem;">
-        <div>
-          <strong>${p.titulo}</strong>
-          <div class="text-muted" style="font-size:0.8rem;">${p.compasso}</div>
-        </div>
-        <button type="button" class="btn-quick" onclick="abrirPartituraEstudoGeral(${p.id})">
-          <i class="fa-solid fa-file-lines"></i> Abrir Partitura
-        </button>
-      </div>
-    `).join('');
+  function limparTextoComparacao(v) {
+    return String(v || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLowerCase();
   }
 
-  if (divPercussao) {
-    divPercussao.innerHTML = oficinasPartiturasGerais.percussao.map(p => `
-      <div style="padding:0.75rem 0; border-top:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; gap:0.75rem;">
-        <div>
-          <strong>${p.titulo}</strong>
-          <div class="text-muted" style="font-size:0.8rem;">${p.compasso}</div>
-        </div>
-        <button type="button" class="btn-quick" onclick="abrirPartituraEstudoGeral(${p.id})">
-          <i class="fa-solid fa-file-lines"></i> Abrir Partitura
-        </button>
-      </div>
-    `).join('');
-  }
-}
+  function lerPropostasPersistentes() {
+    try {
+      const rawLocal = localStorage.getItem(CHAVE_PROPOSTAS_PERMANENTE);
+      if (rawLocal) {
+        const parsed = JSON.parse(rawLocal);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {}
 
-// =====================================================
-// CADERNOS DE CIFRAS & PARTITURAS (SAMBA & PAGODE - 400+)
-// =====================================================
+    try {
+      const rawSession = sessionStorage.getItem('musicon_propostas_compartilhadas_v1');
+      if (rawSession) {
+        const parsedS = JSON.parse(rawSession);
+        if (Array.isArray(parsedS)) return parsedS;
+      }
+    } catch {}
 
-function obterFontePartituras() {
-  if (!Array.isArray(appState.partituras) || appState.partituras.length === 0) {
-    appState.partituras = cadernosRepertorioPadrao;
-  }
-  return appState.partituras;
-}
-
-function obterListaCaderno() {
-  const base = obterFontePartituras();
-  const termo = (filtroTextoCaderno || '').toLowerCase().trim();
-
-  return base.filter(item => {
-    const matchCaderno = cadernoSelecionado === 'todos' || (item.caderno || 'samba') === cadernoSelecionado;
-    if (!matchCaderno) return false;
-    if (!termo) return true;
-
-    const titulo = (item.titulo || '').toLowerCase();
-    const tom = (item.tom || '').toLowerCase();
-    return titulo.includes(termo) || tom.includes(termo);
-  });
-}
-
-function selecionarCaderno(tipo) {
-  cadernoSelecionado = tipo;
-  paginaAtualCaderno = 1;
-  const label = document.getElementById('caderno-ativo-label');
-  if (label) {
-    if (tipo === 'samba') label.textContent = 'Caderno: Samba Tradicional';
-    else if (tipo === 'pagode') label.textContent = 'Caderno: Pagode Tradicional';
-    else label.textContent = 'Caderno: Todos (Samba & Pagode Tradicionais)';
-  }
-  renderizarTabelaPartituras();
-  if (cifraAbertaAtual) abrirCifraCaderno(cifraAbertaAtual);
-}
-
-function alternarModoUsoCaderno(modo) {
-  modoUsoCaderno = modo;
-  const desc = document.getElementById('modo-uso-descricao');
-  if (desc) {
-    desc.textContent = modo === 'estudo'
-      ? 'Modo Estudo: mostra dica de prática, harmonia e partitura rítmica.'
-      : 'Modo Tocar / Roda / Outros: foco direto na cifra e partitura para execução e ensaios.';
-  }
-  renderizarTabelaPartituras();
-  if (cifraAbertaAtual) abrirCifraCaderno(cifraAbertaAtual);
-}
-
-function filtrarCadernoTabela(valor) {
-  filtroTextoCaderno = valor || '';
-  paginaAtualCaderno = 1;
-  renderizarTabelaPartituras();
-}
-
-function mudarPaginaCaderno(delta) {
-  const totalItens = obterListaCaderno().length;
-  const totalPaginas = Math.max(1, Math.ceil(totalItens / ITENS_POR_PAGINA_CADERNO));
-  paginaAtualCaderno = Math.min(totalPaginas, Math.max(1, paginaAtualCaderno + delta));
-  renderizarTabelaPartituras();
-}
-
-function renderizarTabelaPartituras() {
-  const tbody = document.getElementById('tabela-partituras-body');
-  if (!tbody) return;
-
-  const itens = obterListaCaderno();
-  const totalPaginas = Math.max(1, Math.ceil(itens.length / ITENS_POR_PAGINA_CADERNO));
-  if (paginaAtualCaderno > totalPaginas) paginaAtualCaderno = totalPaginas;
-
-  const inicio = (paginaAtualCaderno - 1) * ITENS_POR_PAGINA_CADERNO;
-  const paginaItens = itens.slice(inicio, inicio + ITENS_POR_PAGINA_CADERNO);
-
-  let html = `
-    <tr>
-      <td colspan="3">
-        <div style="display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:space-between; align-items:center;">
-          <input
-            type="text"
-            class="input-styled"
-            style="max-width:320px; padding:0.45rem 0.75rem; padding-left:0.75rem;"
-            placeholder="Pesquisar música ou tom (${itens.length} disponíveis)..."
-            value="${filtroTextoCaderno.replace(/"/g, '"')}"
-            oninput="filtrarCadernoTabela(this.value)"
-          >
-          <div style="display:flex; align-items:center; gap:0.5rem;">
-            <button type="button" class="btn-quick" onclick="mudarPaginaCaderno(-1)" ${paginaAtualCaderno <= 1 ? 'disabled' : ''}>Anterior</button>
-            <span class="text-muted" style="font-size:0.85rem;">Pág. ${paginaAtualCaderno} de ${totalPaginas}</span>
-            <button type="button" class="btn-quick" onclick="mudarPaginaCaderno(1)" ${paginaAtualCaderno >= totalPaginas ? 'disabled' : ''}>Próxima</button>
-          </div>
-        </div>
-      </td>
-    </tr>
-  `;
-
-  if (paginaItens.length === 0) {
-    html += `<tr><td colspan="3" class="text-muted">Nenhuma música encontrada para esse filtro.</td></tr>`;
-  } else {
-    html += paginaItens.map(m => `
-      <tr>
-        <td><strong>${m.titulo}</strong></td>
-        <td>${m.tom}</td>
-        <td>
-          <button type="button" class="btn-quick" onclick="abrirCifraCaderno(${m.id})">
-            <i class="fa-solid fa-music"></i> ${modoUsoCaderno === 'estudo' ? 'Estudar' : 'Tocar'}
-          </button>
-        </td>
-      </tr>
-    `).join('');
+    return Array.isArray(window.appState?.propostas) ? window.appState.propostas : [];
   }
 
-  tbody.innerHTML = html;
-}
+  function salvarPropostasPersistentes(lista) {
+    const segura = Array.isArray(lista) ? lista : [];
+    window.appState = window.appState || {};
+    window.appState.propostas = segura;
 
-function abrirCifraCaderno(id) {
-  const base = obterFontePartituras();
-  const musica = base.find(m => Number(m.id) === Number(id));
-  const box = document.getElementById('visualizador-cifra');
-  if (!musica || !box) return;
+    try {
+      localStorage.setItem(CHAVE_PROPOSTAS_PERMANENTE, JSON.stringify(segura));
+    } catch {}
 
-  cifraAbertaAtual = musica.id;
-
-  const detalhesEstudo = modoUsoCaderno === 'estudo'
-    ? `
-      <p class="mt-2"><strong>Partitura / Levada:</strong> ${musica.partitura || 'Compasso 2/4 tradicional'}</p>
-      <p class="mt-2"><strong>Dica de Estudo:</strong> ${musica.estudo || 'Pratica o ritmo antes de acelerar.'}</p>
-    `
-    : `
-      <p class="mt-2"><strong>Partitura / Levada:</strong> ${musica.partitura || 'Compasso 2/4 tradicional'}</p>
-    `;
-
-  box.innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
-      <div>
-        <h3>${musica.titulo}</h3>
-        <small class="text-muted">Tom: ${musica.tom} • Uso: ${modoUsoCaderno === 'estudo' ? 'Estudo' : 'Tocar / Roda / Outros'}</small>
-      </div>
-      <button type="button" class="btn-quick" onclick="fecharCifraCaderno()"><i class="fa-solid fa-xmark"></i> Fechar</button>
-    </div>
-    ${detalhesEstudo}
-    <pre style="margin-top:0.85rem; white-space:pre-wrap; font-family:inherit; line-height:1.6;">${musica.cifra}</pre>
-  `;
-  box.classList.remove('hidden');
-}
-
-function fecharCifraCaderno() {
-  cifraAbertaAtual = null;
-  document.getElementById('visualizador-cifra')?.classList.add('hidden');
-}
-
-// =====================================================
-// SISTEMA DE CHAT PRIVADO & PESQUISA DE MÚSICOS
-// =====================================================
-
-function abrirChatComUsuario(outroId) {
-  const outroUsuario = (appState.perfisComunidade || []).find(p => Number(p.id) === Number(outroId));
-  if (!outroUsuario) return;
-
-  usuarioConversandoId = Number(outroId);
-  switchTab('chat');
-  renderizarListaConversas();
-  renderizarMensagensChatPrivado(usuarioConversandoId);
-}
-
-function filtrarConversasChat() {
-  const termo = (document.getElementById('chat-busca-musico')?.value || '').toLowerCase().trim();
-  renderizarListaConversas(termo);
-}
-
-function renderizarListaConversas(filtroTexto = '') {
-  const listaDiv = document.getElementById('lista-conversas');
-  if (!listaDiv || !appState.currentUser) return;
-
-  if (filtroTexto === '' && document.getElementById('chat-busca-musico')) {
-    filtroTexto = document.getElementById('chat-busca-musico').value.toLowerCase().trim();
+    try {
+      sessionStorage.setItem('musicon_propostas_compartilhadas_v1', JSON.stringify(segura));
+    } catch {}
   }
 
-  const meuId = Number(appState.currentUser.id);
-  let outrosUsuarios = (appState.perfisComunidade || []).filter(p => Number(p.id) !== meuId);
-
-  if (filtroTexto) {
-    outrosUsuarios = outrosUsuarios.filter(u => {
-      const nome = (u.nome || u.name || '').toLowerCase();
-      const instrumento = (u.instrumento || '').toLowerCase();
-      return nome.includes(filtroTexto) || instrumento.includes(filtroTexto);
-    });
+  async function tentarSincronizarPropostaAPI(proposta) {
+    if (typeof API_BASE === 'undefined') return;
+    try {
+      await fetch(`${API_BASE}/api/propostas`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(proposta)
+      });
+    } catch {
+      // Caso a rota /api/propostas ainda não exista no Express, mantém no localStorage
+    }
   }
 
-  if (outrosUsuarios.length === 0) {
-    listaDiv.innerHTML = `<p class="text-muted" style="padding: 1rem; font-size: 0.85rem; text-align: center;">Nenhum músico encontrado.</p>`;
-    return;
+  async function tentarBuscarPropostasAPI() {
+    if (typeof API_BASE === 'undefined') return null;
+    try {
+      const resp = await fetch(`${API_BASE}/api/propostas`);
+      if (!resp.ok) return null;
+      const rows = await resp.json();
+      return Array.isArray(rows) ? rows : null;
+    } catch {
+      return null;
+    }
   }
 
-  listaDiv.innerHTML = outrosUsuarios.map(u => {
-    const nome = u.nome || u.name || 'Músico';
-    const ativoClass = usuarioConversandoId === Number(u.id) ? 'active' : '';
+  // Sobrescreve o envio de proposta para gravar no localStorage e notificar ambas as contas
+  window.enviarPropostaContratacao = async function () {
+    const evento = (document.getElementById('prop-evento')?.value || '').trim();
+    const dataIso = (document.getElementById('prop-data')?.value || '').trim();
+    const horaIni = (document.getElementById('prop-hora-inicio')?.value || '').trim();
+    const horaFim = (document.getElementById('prop-hora-fim')?.value || '').trim();
+    const cacheRaw = (document.getElementById('prop-cache')?.value || '').trim();
+    const requisitos = (document.getElementById('prop-requisitos')?.value || '').trim();
 
-    const msgs = (appState.mensagensPrivadas || []).filter(m => {
-      const rem = Number(m.remetenteId);
-      const dest = Number(m.destinatarioId);
-      const outroId = Number(u.id);
-      return (rem === meuId && dest === outroId) || (rem === outroId && dest === meuId);
+    const notifyFn = window.notificar || window.mostrarToast || alert;
+
+    if (!evento || !dataIso || !horaIni || !horaFim || !cacheRaw) {
+      return notifyFn('Preencha evento, data, horário de início, término e cachê.', 'error');
+    }
+
+    if (horaFim <= horaIni) {
+      return notifyFn('O horário de término deve ser maior que o de início.', 'error');
+    }
+
+    const user = window.appState?.currentUser || {};
+    const alvo = window.artistaAlvoProposta || {};
+    const todas = lerPropostasPersistentes();
+
+    const [ano, mes, dia] = dataIso.split('-');
+    const dataFormatada = ano && mes && dia ? `${dia}/${mes}/${ano}` : dataIso;
+
+    const novaProposta = {
+      id: `prop_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      evento,
+      data: `${dataFormatada} • ${horaIni} às ${horaFim}`,
+      cache: cacheRaw.startsWith('R$') ? cacheRaw : `R$ ${cacheRaw}`,
+      requisitos,
+      status: 'Pendente',
+      remetenteId: user.id ?? '',
+      remetenteNome: user.nome || 'Contratante',
+      remetenteEmail: user.email || '',
+      musicoId: alvo.id ?? '',
+      musicoNome: alvo.nome || '',
+      musicoEmail: alvo.email || '',
+      criadaEm: new Date().toISOString()
+    };
+
+    todas.unshift(novaProposta);
+    salvarPropostasPersistentes(todas);
+    await tentarSincronizarPropostaAPI(novaProposta);
+
+    ['prop-evento', 'prop-data', 'prop-hora-inicio', 'prop-hora-fim', 'prop-cache', 'prop-requisitos'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
     });
 
-    const ultimaMsg = msgs.length > 0 ? msgs[msgs.length - 1].texto : (u.instrumento || 'Clica para conversar...');
+    if (typeof window.fecharModalProposta === 'function') window.fecharModalProposta();
+    if (typeof window.renderizarPropostas === 'function') window.renderizarPropostas();
+    if (typeof window.atualizarTudoNaTela === 'function') window.atualizarTudoNaTela();
 
-    return `
-      <div class="conversa-item ${ativoClass}" onclick="abrirChatComUsuario(${u.id})">
-        <div class="perfil-mini-avatar sm">${u.iniciais || 'MG'}</div>
-        <div style="flex:1; overflow:hidden;">
-          <h4 style="font-size:0.9rem; margin-bottom:0.1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${nome}</h4>
-          <p class="text-muted" style="font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ultimaMsg}</p>
+    notifyFn(`Proposta enviada para ${novaProposta.musicoNome || 'o músico'}!`, 'success');
+  };
+
+  window.atualizarStatusProposta = function (idProposta, novoStatus) {
+    const todas = lerPropostasPersistentes();
+    const alvo = todas.find((p) => String(p.id) === String(idProposta));
+    if (!alvo) return;
+
+    alvo.status = novoStatus;
+    salvarPropostasPersistentes(todas);
+
+    if (typeof window.renderizarPropostas === 'function') window.renderizarPropostas();
+    if (typeof window.atualizarTudoNaTela === 'function') window.atualizarTudoNaTela();
+    if (typeof window.renderizarMeuPerfil === 'function') window.renderizarMeuPerfil();
+
+    const notifyFn = window.notificar || window.mostrarToast;
+    if (notifyFn) notifyFn(`Proposta marcada como: ${novoStatus}`, 'info');
+  };
+
+  window.renderizarPropostas = function () {
+    const grid = document.getElementById('propostas-grid');
+    if (!grid) return;
+
+    const todas = lerPropostasPersistentes();
+    const user = window.appState?.currentUser || {};
+
+    const uId = String(user.id || '').trim();
+    const uEmail = limparTextoComparacao(user.email);
+    const uNome = limparTextoComparacao(user.nome);
+
+    const propostasDaConta = todas.filter((p) => {
+      const pDestId = String(p.musicoId || '').trim();
+      const pDestEmail = limparTextoComparacao(p.musicoEmail);
+      const pDestNome = limparTextoComparacao(p.musicoNome);
+
+      const pRemId = String(p.remetenteId || '').trim();
+      const pRemEmail = limparTextoComparacao(p.remetenteEmail);
+      const pRemNome = limparTextoComparacao(p.remetenteNome);
+
+      const ehParaMim =
+        (uId && pDestId && uId === pDestId) ||
+        (uEmail && pDestEmail && uEmail === pDestEmail) ||
+        (uNome && pDestNome && (uNome === pDestNome || pDestNome.includes(uNome) || uNome.includes(pDestNome)));
+
+      const envieiEu =
+        (uId && pRemId && uId === pRemId) ||
+        (uEmail && pRemEmail && uEmail === pRemEmail) ||
+        (uNome && pRemNome && uNome === pRemNome);
+
+      return ehParaMim || envieiEu;
+    });
+
+    const badge = document.getElementById('badge-propostas');
+    if (badge) {
+      badge.textContent = String(propostasDaConta.length);
+      badge.classList.toggle('hidden', propostasDaConta.length === 0);
+    }
+
+    if (!propostasDaConta.length) {
+      grid.innerHTML = `
+        <div class="card">
+          <p class="text-muted">Nenhuma proposta registrada para esta conta ainda.</p>
         </div>
-      </div>
-    `;
-  }).join('');
-}
+      `;
+      return;
+    }
 
-function renderizarMensagensChatPrivado(outroId) {
-  const vazioBox = document.getElementById('chat-vazio-placeholder');
-  const conteudoBox = document.getElementById('chat-ativo-conteudo');
-  const mensagensBox = document.getElementById('chat-mensagens-box');
+    grid.innerHTML = propostasDaConta
+      .map((pr) => {
+        const pDestId = String(pr.musicoId || '').trim();
+        const pDestEmail = limparTextoComparacao(pr.musicoEmail);
+        const pDestNome = limparTextoComparacao(pr.musicoNome);
 
-  if (!appState.currentUser) return;
-  const meuId = Number(appState.currentUser.id);
-  const outroIdNum = Number(outroId);
+        const souDestinatario =
+          (uId && pDestId && uId === pDestId) ||
+          (uEmail && pDestEmail && uEmail === pDestEmail) ||
+          (uNome && pDestNome && (uNome === pDestNome || pDestNome.includes(uNome) || uNome.includes(pDestNome)));
 
-  const outroUsuario = (appState.perfisComunidade || []).find(p => Number(p.id) === outroIdNum);
-  if (!outroUsuario) return;
-
-  if (vazioBox) vazioBox.classList.add('hidden');
-  if (conteudoBox) conteudoBox.classList.remove('hidden');
-
-  if (document.getElementById('chat-ativo-nome')) document.getElementById('chat-ativo-nome').textContent = outroUsuario.nome || outroUsuario.name;
-  if (document.getElementById('chat-ativo-avatar')) document.getElementById('chat-ativo-avatar').textContent = outroUsuario.iniciais || 'MG';
-  if (document.getElementById('chat-ativo-sub')) document.getElementById('chat-ativo-sub').textContent = outroUsuario.instrumento || 'Músico';
-
-  const msgs = (appState.mensagensPrivadas || []).filter(m => {
-    const rem = Number(m.remetenteId);
-    const dest = Number(m.destinatarioId);
-    return (rem === meuId && dest === outroIdNum) || (rem === outroIdNum && dest === meuId);
-  });
-
-  if (mensagensBox) {
-    if (msgs.length === 0) {
-      mensagensBox.innerHTML = `<div style="text-align:center; color:var(--text-muted); margin-top:2rem; font-size:0.85rem;">Nenhuma mensagem nesta conversa ainda. Envia uma mensagem!</div>`;
-    } else {
-      mensagensBox.innerHTML = msgs.map(m => {
-        const souEu = Number(m.remetenteId) === meuId;
-        const nomeAutor = souEu ? 'Tu' : (outroUsuario.nome || outroUsuario.name);
+        const statusAtual = pr.status || 'Pendente';
+        const stNorm = limparTextoComparacao(statusAtual);
+        const corStatus =
+          stNorm === 'aceita' || stNorm === 'aceito' || stNorm === 'concluida'
+            ? '#22c55e'
+            : stNorm === 'recusada'
+              ? '#ef4444'
+              : '#eab308';
 
         return `
-          <div class="chat-msg-item ${souEu ? 'meu-msg' : ''}">
-            <div class="chat-msg-header">
-              <strong>${nomeAutor}</strong>
-              <span>${m.hora || ''}</span>
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
+              <div>
+                <span class="portal-badge">${souDestinatario ? 'Recebida' : 'Enviada por você'}</span>
+                <h3 style="margin:0.35rem 0 0 0;">${pr.evento || 'Convite de Evento'}</h3>
+              </div>
+              <span style="font-size:0.78rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:999px; border:1px solid ${corStatus}; color:${corStatus};">
+                ${statusAtual}
+              </span>
             </div>
-            <div class="chat-msg-body">${m.texto}</div>
+
+            <p class="mt-2" style="margin-bottom:0.3rem;"><strong>Enviado por:</strong> ${pr.remetenteNome || 'Contratante'}</p>
+            <p style="margin-bottom:0.3rem;"><strong>Artista / Destino:</strong> ${pr.musicoNome || 'Músico'}</p>
+            <p style="margin-bottom:0.3rem;"><strong>Data e Horário:</strong> ${pr.data || 'A combinar'}</p>
+            <p style="margin-bottom:0.3rem;"><strong>Cachê:</strong> ${pr.cache || 'A combinar'}</p>
+            ${pr.requisitos ? `<p class="text-muted mt-1" style="font-size:0.86rem;"><strong>Detalhes:</strong> ${pr.requisitos}</p>` : ''}
+
+            ${
+              souDestinatario
+                ? `
+              <div style="display:flex; gap:0.45rem; flex-wrap:wrap; margin-top:0.85rem;">
+                <button type="button" class="btn-primary" onclick="atualizarStatusProposta('${pr.id}', 'Aceita')">Aceitar</button>
+                <button type="button" class="btn-quick" onclick="atualizarStatusProposta('${pr.id}', 'Concluída')">Concluir</button>
+                <button type="button" class="btn-quick" onclick="atualizarStatusProposta('${pr.id}', 'Recusada')">Recusar</button>
+              </div>
+            `
+                : ''
+            }
           </div>
         `;
-      }).join('');
-    }
-
-    mensagensBox.scrollTop = mensagensBox.scrollHeight;
-  }
-}
-
-function enviarMensagemPrivada() {
-  const input = document.getElementById('chat-input-texto');
-  if (!input || !usuarioConversandoId || !appState.currentUser) return;
-  const texto = input.value.trim();
-  if (!texto) return;
-
-  const agora = new Date();
-  const horaFormatada = agora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-  const novaMsg = {
-    id: Date.now(),
-    remetenteId: Number(appState.currentUser.id),
-    destinatarioId: Number(usuarioConversandoId),
-    texto: texto,
-    hora: horaFormatada
+      })
+      .join('');
   };
 
-  if (!appState.mensagensPrivadas) {
-    appState.mensagensPrivadas = [];
+  document.addEventListener('DOMContentLoaded', async () => {
+    const apiLista = await tentarBuscarPropostasAPI();
+    if (apiLista && apiLista.length > 0) {
+      salvarPropostasPersistentes(apiLista);
+    } else {
+      salvarPropostasPersistentes(lerPropostasPersistentes());
+    }
+    setTimeout(() => {
+      if (typeof window.renderizarPropostas === 'function') window.renderizarPropostas();
+    }, 200);
+  });
+})();
+
+(function () {
+  const CHAVE_PROPOSTAS_PERMANENTE = 'musicon_propostas_db_local_v1';
+
+  async function sincronizarPropostasComServidor() {
+    if (typeof API_BASE === 'undefined') return;
+    try {
+      const resp = await fetch(`${API_BASE}/api/propostas`);
+      if (!resp.ok) return;
+      const listaServidor = await resp.json();
+      if (Array.isArray(listaServidor)) {
+        window.appState = window.appState || {};
+        window.appState.propostas = listaServidor;
+        try {
+          localStorage.setItem(CHAVE_PROPOSTAS_PERMANENTE, JSON.stringify(listaServidor));
+          sessionStorage.setItem('musicon_propostas_compartilhadas_v1', JSON.stringify(listaServidor));
+        } catch {}
+        if (typeof window.renderizarPropostas === 'function') {
+          window.renderizarPropostas();
+        }
+      }
+    } catch {}
   }
 
-  appState.mensagensPrivadas.push(novaMsg);
-  salvarEstado();
-  input.value = '';
-
-  renderizarMensagensChatPrivado(usuarioConversandoId);
-  renderizarListaConversas();
-}
-
-// =====================================================
-// CARROSSEL DE INSTRUMENTOS
-// =====================================================
-function abrirDetalhesInstrumento(chave) {
-  const info = dadosInstrumentos[chave];
-  if (!info) return;
-
-  document.getElementById('detalhe-inst-titulo').textContent = info.titulo;
-  document.getElementById('detalhe-inst-historia').textContent = info.historia;
-
-  const musicosFiltrados = appState.perfisComunidade.filter(p =>
-    (p.instrumento || '').toLowerCase().includes(info.instrumentoFiltro.toLowerCase())
-  );
-
-  const containerMusicos = document.getElementById('detalhe-inst-musicos');
-  if (musicosFiltrados.length === 0) {
-    containerMusicos.innerHTML = `<p class="text-muted">Nenhum músico registado com este instrumento de momento.</p>`;
-  } else {
-    containerMusicos.innerHTML = musicosFiltrados.map(m => `
-      <div style="background:var(--cream); padding:1rem; border-radius:12px; border:1px solid var(--border-color); display:flex; align-items:center; gap:1rem;">
-        <div class="perfil-mini-avatar">${m.iniciais || 'MG'}</div>
-        <div style="flex:1;">
-          <h4 style="margin-bottom:0.2rem;">${m.nome || m.name}</h4>
-          <p class="text-muted" style="font-size:0.82rem;"><strong>Toca:</strong> ${m.instrumento}</p>
-          <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-            <button type="button" class="btn-quick" style="padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="abrirModalProposta(${m.id})">Contratar</button>
-            <button type="button" class="btn-primary" style="padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="abrirChatComUsuario(${m.id})"><i class="fa-solid fa-comment"></i> Mensagem</button>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  const painel = document.getElementById('painel-detalhe-instrumento');
-  painel.classList.remove('hidden');
-  painel.scrollIntoView({ behavior: 'smooth' });
-}
-
-function fecharDetalhesInstrumento() {
-  document.getElementById('painel-detalhe-instrumento').classList.add('hidden');
-}
-
-// =====================================================
-// CONTRATAÇÃO E PROPOSTAS
-// =====================================================
-function abrirModalProposta(artistaId) {
-  const artista = appState.perfisComunidade.find(p => Number(p.id) === Number(artistaId));
-  if (!artista) return;
-
-  artistaAlvoProposta = artista;
-  document.getElementById('modal-proposta-titulo').textContent = `Contratar ${artista.nome || artista.name}`;
-  document.getElementById('prop-evento').value = '';
-  document.getElementById('prop-data').value = '';
-  document.getElementById('prop-requisitos').value = '';
-  document.getElementById('prop-cache').value = '';
-  document.getElementById('modal-proposta').classList.remove('hidden');
-}
-
-function fecharModalProposta() {
-  document.getElementById('modal-proposta').classList.add('hidden');
-  artistaAlvoProposta = null;
-}
-
-function enviarPropostaContratacao() {
-  const evento = document.getElementById('prop-evento').value.trim();
-  const data = document.getElementById('prop-data').value.trim();
-  const requisitos = document.getElementById('prop-requisitos').value.trim();
-  const cache = document.getElementById('prop-cache').value.trim();
-
-  if (!evento || !data || !cache) {
-    return showToast('Preenche os campos obrigatórios da proposta.', 'error');
-  }
-
-  const nomeArtista = artistaAlvoProposta.nome || artistaAlvoProposta.name;
-  const nomeContratante = appState.currentUser ? (appState.currentUser.name || appState.currentUser.nome) : 'Contratante';
-
-  const novaProposta = {
-    id: Date.now(),
-    contratante: nomeContratante,
-    artistaId: Number(artistaAlvoProposta.id),
-    artistaNome: nomeArtista,
-    evento,
-    data,
-    requisitos,
-    cache,
-    status: 'Pendente'
+  const origAtualizarStatus = window.atualizarStatusProposta;
+  window.atualizarStatusProposta = async function (idProposta, novoStatus) {
+    if (typeof origAtualizarStatus === 'function') {
+      origAtualizarStatus(idProposta, novoStatus);
+    }
+    if (typeof API_BASE !== 'undefined') {
+      try {
+        await fetch(`${API_BASE}/api/propostas/${encodeURIComponent(idProposta)}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: novoStatus })
+        });
+        await sincronizarPropostasComServidor();
+      } catch {}
+    }
   };
 
-  appState.propostas.push(novaProposta);
-  salvarEstado();
-  fecharModalProposta();
-  atualizarTudoNaTela();
-  showToast(`Proposta enviada para ${nomeArtista}!`, 'success');
-}
-
-function responderProposta(propostaId, novoStatus) {
-  const prop = appState.propostas.find(p => Number(p.id) === Number(propostaId));
-  if (prop) {
-    prop.status = novoStatus;
-    salvarEstado();
-    atualizarTudoNaTela();
-    showToast(novoStatus === 'Aceita' ? 'Proposta aceita! Espetáculo confirmado.' : 'Proposta recusada.', novoStatus === 'Aceita' ? 'success' : 'info');
+  const origSwitchTab = window.switchTab;
+  if (typeof origSwitchTab === 'function') {
+    window.switchTab = function (tabName) {
+      origSwitchTab(tabName);
+      if (tabName === 'propostas') {
+        sincronizarPropostasComServidor();
+      }
+    };
   }
-}
 
-// =====================================================
-// AVALIAÇÕES
-// =====================================================
-function abrirModalAvaliacaoArtista(artistaId) {
-  perfilSelecionadoParaAvaliar = Number(artistaId);
-  const artista = appState.perfisComunidade.find(p => Number(p.id) === Number(artistaId));
-  const nomeArt = artista ? (artista.nome || artista.name) : 'Músico';
-  document.getElementById('modal-avaliar-titulo').textContent = `Avaliar ${nomeArt}`;
-  document.getElementById('avaliacao-comentario').value = '';
-  selecionarEstrela(5);
-  document.getElementById('modal-avaliar').classList.remove('hidden');
-}
-
-function fecharModalAvaliacao() {
-  document.getElementById('modal-avaliar').classList.add('hidden');
-  perfilSelecionadoParaAvaliar = null;
-}
-
-function selecionarEstrela(nota) {
-  notaSelecionada = nota;
-  document.querySelectorAll('#star-selector i').forEach(star => {
-    const val = Number(star.getAttribute('data-val'));
-    star.classList.toggle('active', val <= nota);
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(sincronizarPropostasComServidor, 300);
   });
-}
-
-function confirmarAvaliacaoPerfil() {
-  const perfil = appState.perfisComunidade.find(p => Number(p.id) === Number(perfilSelecionadoParaAvaliar));
-  if (!perfil) return;
-
-  const soma = (perfil.notaMedia || 5.0) * (perfil.totalAvaliacoes || 1);
-  perfil.totalAvaliacoes = (perfil.totalAvaliacoes || 1) + 1;
-  perfil.notaMedia = (soma + notaSelecionada) / perfil.totalAvaliacoes;
-
-  if (appState.currentUser && Number(appState.currentUser.id) === Number(perfil.id)) {
-    appState.currentUser.notaMedia = perfil.notaMedia;
-    appState.currentUser.totalAvaliacoes = perfil.totalAvaliacoes;
-    localStorage.setItem('usuarioLogado', JSON.stringify(appState.currentUser));
-  }
-
-  salvarEstado();
-  fecharModalAvaliacao();
-  atualizarTudoNaTela();
-  showToast(`Avaliação enviada para ${perfil.nome || perfil.name}!`, 'success');
-}
-
-// =====================================================
-// NAVEGAÇÃO E MENU LATERAL RETRÁTIL
-// =====================================================
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  if (!sidebar) return;
-  if (window.innerWidth <= 900) {
-    sidebar.classList.toggle('mobile-open');
-  } else {
-    sidebar.classList.toggle('collapsed');
-  }
-}
-
-function mostrarPortal() {
-  document.getElementById('login-screen')?.classList.add('hidden');
-  document.getElementById('login-screen')?.classList.remove('active');
-  document.getElementById('cadastro-screen')?.classList.add('hidden');
-  document.getElementById('app-layout')?.classList.remove('hidden');
-}
-
-function mostrarLogin() {
-  document.getElementById('login-screen')?.classList.remove('hidden');
-  document.getElementById('login-screen')?.classList.add('active');
-  document.getElementById('cadastro-screen')?.classList.add('hidden');
-  document.getElementById('app-layout')?.classList.add('hidden');
-}
-
-function quickLoginMusicon() {
-  document.getElementById('email').value = 'miguel@musicon.com';
-  document.getElementById('password').value = '123';
-}
-
-function toggleCadastroView() {
-  const login = document.getElementById('login-screen');
-  const cadastro = document.getElementById('cadastro-screen');
-  login?.classList.toggle('hidden');
-  login?.classList.toggle('active');
-  cadastro?.classList.toggle('hidden');
-  cadastro?.classList.toggle('active');
-}
-
-function logout() {
-  localStorage.removeItem('usuarioLogado');
-  appState.currentUser = null;
-  mostrarLogin();
-  showToast('Saíste da roda.', 'info');
-}
-
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
-  document.getElementById(`tab-${tabId}`)?.classList.add('active');
-
-  document.querySelectorAll('#main-nav .nav-item').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
-  });
-
-  if (window.innerWidth <= 900) {
-    document.getElementById('sidebar')?.classList.remove('mobile-open');
-  }
-
-  if (tabId === 'dashboard') {
-    renderizarSlideHistoria(false);
-    configurarArrasteHistoria();
-    iniciarPassagemAutomaticaHistoria();
-    renderizarVideosPagode();
-  }
-
-  if (tabId === 'atividades') {
-    renderizarOficinasPartituras();
-  }
-
-  if (tabId === 'boletim') {
-    renderizarTabelaPartituras();
-  }
-
-  if (tabId === 'chat') {
-    renderizarListaConversas();
-    if (typeof usuarioConversandoId !== 'undefined' && usuarioConversandoId) {
-      renderizarMensagensChatPrivado(usuarioConversandoId);
-    } else {
-      document.getElementById('chat-vazio-placeholder')?.classList.remove('hidden');
-      document.getElementById('chat-ativo-conteudo')?.classList.add('hidden');
-    }
-  }
-}
-
-function filtrarPerfis() {
-  const termo = (document.getElementById('busca-perfil-input')?.value || '').toLowerCase();
-  const filtrados = appState.perfisComunidade.filter(p => {
-    const nome = (p.nome || p.name || '').toLowerCase();
-    const inst = (p.instrumento || '').toLowerCase();
-    return nome.includes(termo) || inst.includes(termo);
-  });
-  renderizarCardsPerfis(filtrados);
-}
-
-function renderizarCardsPerfis(lista) {
-  const grid = document.getElementById('perfis-grid');
-  if (!grid || !appState.currentUser) return;
-
-  grid.innerHTML = lista.map(p => {
-    const nome = p.nome || p.name || 'Batuqueiro';
-    const souEu = appState.currentUser && Number(appState.currentUser.id) === Number(p.id);
-    return `
-      <div class="card">
-        <div class="perfil-card-top">
-          <div class="perfil-mini-avatar">${p.iniciais || 'MG'}</div>
-          <div>
-            <h3>${nome}</h3>
-            <span style="font-size:0.82rem; color:var(--warning); font-weight:600;">${p.area || 'Músico'}</span>
-          </div>
-        </div>
-        <p class="text-muted mb-2"><strong>Toca:</strong> ${p.instrumento || 'Não informado'}</p>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-          <span class="portal-badge">${p.estilo || 'Samba'}</span>
-          <span class="rating-badge"><i class="fa-solid fa-star"></i> ${(p.notaMedia || 5.0).toFixed(1)} (${p.totalAvaliacoes || 1})</span>
-        </div>
-        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-          ${!souEu ? `
-            <button type="button" class="btn-quick" style="flex:1; justify-content:center;" onclick="abrirModalProposta(${p.id})">Contratar</button>
-            <button type="button" class="btn-primary" style="padding:0.4rem 0.8rem; font-size:0.8rem;" onclick="abrirChatComUsuario(${p.id})"><i class="fa-solid fa-comment"></i> Mensagem</button>
-          ` : `
-            <span style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Este é o teu perfil</span>
-          `}
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function atualizarTudoNaTela() {
-  const user = appState.currentUser;
-  if (!user) return;
-
-  const nomeUser = user.name || user.nome || 'Batuqueiro';
-
-  if (document.getElementById('dashboard-user-name')) document.getElementById('dashboard-user-name').textContent = nomeUser;
-  if (document.getElementById('perfil-nome')) document.getElementById('perfil-nome').textContent = nomeUser;
-  if (document.getElementById('perfil-email')) document.getElementById('perfil-email').textContent = user.email;
-  if (document.getElementById('perfil-avatar')) document.getElementById('perfil-avatar').textContent = user.initials || 'MG';
-  if (document.getElementById('perfil-badge-area')) document.getElementById('perfil-badge-area').textContent = user.area || 'Músico';
-  if (document.getElementById('perfil-nota-exibicao')) document.getElementById('perfil-nota-exibicao').textContent = (user.notaMedia || 5.0).toFixed(1);
-  if (document.getElementById('perfil-total-avaliacoes')) document.getElementById('perfil-total-avaliacoes').textContent = user.totalAvaliacoes || 1;
-  if (document.getElementById('stat-nota-geral')) document.getElementById('stat-nota-geral').textContent = (user.notaMedia || 5.0).toFixed(1);
-
-  if (document.getElementById('edit-perfil-nome')) document.getElementById('edit-perfil-nome').value = nomeUser;
-  if (document.getElementById('edit-perfil-area')) document.getElementById('edit-perfil-area').value = user.area || '';
-  if (document.getElementById('edit-perfil-inst')) document.getElementById('edit-perfil-inst').value = user.instrumento || '';
-  if (document.getElementById('edit-perfil-estilo')) document.getElementById('edit-perfil-estilo').value = user.estilo || '';
-
-  const minhasPropostas = appState.propostas.filter(p => Number(p.artistaId) === Number(user.id));
-  const pendentesCount = minhasPropostas.filter(p => p.status === 'Pendente').length;
-
-  const badge = document.getElementById('badge-propostas');
-  if (badge) {
-    badge.textContent = pendentesCount;
-    badge.classList.toggle('hidden', pendentesCount === 0);
-  }
-  if (document.getElementById('stat-propostas-ativas')) {
-    document.getElementById('stat-propostas-ativas').textContent = minhasPropostas.length;
-  }
-
-  const gridProp = document.getElementById('propostas-grid');
-  if (gridProp) {
-    if (minhasPropostas.length === 0) {
-      gridProp.innerHTML = `<div class="card"><p class="text-muted">Nenhuma proposta de contratação recebida de momento.</p></div>`;
-    } else {
-      gridProp.innerHTML = minhasPropostas.map(p => `
-        <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-            <span class="portal-badge">Evento: ${p.evento}</span>
-            <span style="font-weight:700; color:${p.status === 'Aceita' ? 'var(--success)' : p.status === 'Recusada' ? 'var(--danger)' : 'var(--warning)'};">${p.status}</span>
-          </div>
-          <p class="text-muted mb-2"><strong>Contratante:</strong> ${p.contratante}</p>
-          <p class="text-muted mb-2"><strong>Data e Horário:</strong> ${p.data}</p>
-          <p class="text-muted mb-2"><strong>Requisitos:</strong> ${p.requisitos}</p>
-          <p class="text-muted mb-4"><strong>Cachê Oferecido:</strong> ${p.cache}</p>
-
-          ${p.status === 'Pendente' ? `
-            <div style="display:flex; gap:0.75rem;">
-              <button type="button" class="btn-primary" style="flex:1;" onclick="responderProposta(${p.id}, 'Aceita')"><i class="fa-solid fa-check"></i> Aceitar e Tocar</button>
-              <button type="button" class="btn-quick" style="flex:1; color:var(--danger); border-color:var(--danger);" onclick="responderProposta(${p.id}, 'Recusada')"><i class="fa-solid fa-xmark"></i> Recusar</button>
-            </div>
-          ` : `
-            <p style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Proposta ${p.status.toLowerCase()} com sucesso.</p>
-          `}
-        </div>
-      `).join('');
-    }
-  }
-
-  renderizarSlideHistoria(false);
-  configurarArrasteHistoria();
-  renderizarVideosPagode();
-  renderizarCardsPerfis(appState.perfisComunidade);
-  renderizarListaConversas();
-  renderizarTabelaPartituras();
-  renderizarOficinasPartituras();
-}
-
-function salvarEdicaoPerfil() {
-  if (!appState.currentUser) return;
-  const novoNome = document.getElementById('edit-perfil-nome').value.trim();
-  appState.currentUser.name = novoNome;
-  appState.currentUser.nome = novoNome;
-  appState.currentUser.initials = novoNome.substring(0, 2).toUpperCase();
-  appState.currentUser.area = document.getElementById('edit-perfil-area').value.trim();
-  appState.currentUser.instrumento = document.getElementById('edit-perfil-inst').value.trim();
-  appState.currentUser.estilo = document.getElementById('edit-perfil-estilo').value.trim();
-
-  let perfilComunidade = appState.perfisComunidade.find(p => Number(p.id) === Number(appState.currentUser.id));
-  if (perfilComunidade) {
-    perfilComunidade.name = novoNome;
-    perfilComunidade.nome = novoNome;
-    perfilComunidade.area = appState.currentUser.area;
-    perfilComunidade.instrumento = appState.currentUser.instrumento;
-    perfilComunidade.estilo = appState.currentUser.estilo;
-  }
-
-  localStorage.setItem('usuarioLogado', JSON.stringify(appState.currentUser));
-  salvarEstado();
-  atualizarTudoNaTela();
-  showToast('Perfil atualizado com sucesso!', 'success');
-}
-
-function toggleTheme() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem('musicon-theme', isDark ? 'dark' : 'light');
-}
-
-function aplicarTemaSalvo() {
-  if (localStorage.getItem('musicon-theme') === 'dark') document.documentElement.classList.add('dark');
-}
-
-function showToast(msg, type = 'info') {
-  const container = document.getElementById('toast-container');
-  if (!container) return;
-  const t = document.createElement('div');
-  t.className = `toast ${type}`;
-  t.innerHTML = `<span>${msg}</span>`;
-  container.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
-}
+})();

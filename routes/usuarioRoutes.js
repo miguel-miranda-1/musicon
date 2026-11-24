@@ -1,33 +1,10 @@
-const express = require("express");
-
+const express = require('express');
 const router = express.Router();
+const usuarioController = require('../controllers/usuarioController');
 
-const usuarioController =
-    require("../controllers/usuarioController");
-
-
-// ============================================================
-// LISTAR USUÁRIOS
-// ============================================================
-
-router.get(
-    "/usuarios",
-    usuarioController.listarUsuarios
-);
-
-
-// ============================================================
-// CADASTRO DO PRÓPRIO ALUNO
-// ============================================================
-
-router.post(
-    "/usuarios/aluno",
-    usuarioController.cadastrarAluno
-);
-
-
-// ============================================================
-// EXPORTAR ROTAS
-// ============================================================
+router.get('/', usuarioController.listarUsuarios);
+router.post('/cadastro', usuarioController.cadastrarUsuario);
+router.post('/login', usuarioController.loginUsuario);
+router.patch('/:id/tema', usuarioController.atualizarTema);
 
 module.exports = router;

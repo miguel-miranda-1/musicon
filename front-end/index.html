@@ -9,16 +9,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="mensagens.css" />
 </head>
-<body>
+<body data-theme="dark">
   <div id="toast-container" class="toast-container"></div>
 
   <!-- =====================================================
        ECRÃ DE ACESSO SPLIT-SCREEN (FOTO FULL + PAINEL LATERAL)
        ===================================================== -->
   <section id="login-screen" class="auth-split active">
-    <!-- LADO ESQUERDO: FOTO EM ECRÃ INTEIRO + DEGRADÊ + NOME DO SITE -->
     <div class="auth-split-visual">
       <div class="auth-split-overlay"></div>
       <div class="auth-split-brand">
@@ -33,10 +31,8 @@
       </div>
     </div>
 
-    <!-- LADO DIREITO: PAINEL CONTÍNUO COM LOGO 3D E FORMULÁRIOS -->
     <div class="auth-split-panel">
       <div class="auth-panel-inner">
-        <!-- EMBLEMA 3D INTERATIVO MUSICON -->
         <div class="logo-3d-stage" id="logo-3d-stage" title="Arraste ou passe o mouse para girar em 3D">
           <div class="logo-3d-card" id="logo-3d-card">
             <img src="1.png" alt="Logo 3D Musicon" class="logo-3d-img" />
@@ -47,7 +43,6 @@
           </span>
         </div>
 
-        <!-- ABAS ENTRAR / CRIAR CONTA -->
         <div class="auth-switch-tabs">
           <button type="button" id="tab-btn-login" class="auth-switch-tab active" onclick="mostrarAbaAuth('login')">
             Entrar
@@ -57,14 +52,13 @@
           </button>
         </div>
 
-        <!-- FORMULÁRIO DE INÍCIO DE SESSÃO -->
         <form id="form-login" class="auth-clean-form">
           <h2 class="serif-title">Bem-vindo de volta</h2>
           <p class="text-muted mb-4">Entre com o seu e-mail e palavra-passe para acessar o portal.</p>
 
           <div class="clean-field">
             <label for="email">E-mail</label>
-            <input type="email" id="email" placeholder="miguel@musicon.com" required />
+            <input type="email" id="email" placeholder="miguel@musicon.com.br" required />
           </div>
 
           <div class="clean-field mt-3">
@@ -76,12 +70,11 @@
             Entrar na Roda <i class="fa-solid fa-arrow-right"></i>
           </button>
 
-          <button type="button" class="auth-ghost-btn mt-2" onclick="quickLoginMusicon()">
-            <i class="fa-solid fa-bolt"></i> Preencher acesso rápido (Miguel)
+          <button type="button" class="auth-ghost-btn mt-2" onclick="quickLoginMusicon('miguel@musicon.com.br', '123456')">
+            <i class="fa-solid fa-bolt"></i> Acesso rápido (Miguel)
           </button>
         </form>
 
-        <!-- FORMULÁRIO DE CADASTRO -->
         <form id="form-cadastro" class="auth-clean-form hidden">
           <h2 class="serif-title">Junte-se à roda</h2>
           <p class="text-muted mb-4">Crie o seu perfil para receber propostas e conversar com outros músicos.</p>
@@ -99,6 +92,36 @@
           <div class="clean-field mt-3">
             <label for="cadastro-senha">Palavra-passe</label>
             <input type="password" id="cadastro-senha" placeholder="Crie uma palavra-passe" required />
+          </div>
+
+          <div class="clean-field mt-3">
+            <label for="cadastro-instrumento">Instrumento que toca</label>
+            <input type="text" id="cadastro-instrumento" list="cad-sugestoes-instrumentos" placeholder="Ex: Pandeiro, Cavaquinho, Violão 7 Cordas..." />
+            <datalist id="cad-sugestoes-instrumentos">
+              <option value="Pandeiro"></option>
+              <option value="Cavaquinho"></option>
+              <option value="Violão 7 Cordas"></option>
+              <option value="Tantã"></option>
+              <option value="Surdo"></option>
+              <option value="Voz / Intérprete"></option>
+            </datalist>
+          </div>
+
+          <div class="clean-field mt-3">
+            <label for="cadastro-especialidade">Especialidade / Estilo</label>
+            <input type="text" id="cadastro-especialidade" list="cad-sugestoes-especialidades" placeholder="Ex: Samba de Raiz, Pagode de Mesa, Partido-Alto..." />
+            <datalist id="cad-sugestoes-especialidades">
+              <option value="Samba de Raiz"></option>
+              <option value="Pagode de Mesa"></option>
+              <option value="Partido-Alto"></option>
+              <option value="Samba-Enredo"></option>
+              <option value="Choro"></option>
+            </datalist>
+          </div>
+
+          <div class="clean-field mt-3">
+            <label for="cadastro-area">Área de atuação / Região</label>
+            <input type="text" id="cadastro-area" placeholder="Ex: Lorena - SP, Vale do Paraíba, Rodas e Eventos" />
           </div>
 
           <button type="submit" class="btn-primary auth-submit-btn mt-4">
@@ -181,9 +204,7 @@
     </aside>
 
     <main class="main-content">
-      <!-- ===================================================
-           ABA 1: INÍCIO (DASHBOARD)
-           =================================================== -->
+      <!-- ABA 1: INÍCIO -->
       <section id="tab-dashboard" class="tab-content active">
         <div class="hero-banner-custom mb-4">
           <div class="hero-banner-overlay"></div>
@@ -214,8 +235,8 @@
           </div>
 
           <div class="historia-vitrine-legenda" id="historia-vitrine-legenda">
-            <span class="portal-badge" id="historia-kicker">1 / 3 • RODA E RAIZ</span>
-            <h3 id="historia-titulo" class="mt-2">Da mesa de bar para o palco</h3>
+            <span class="portal-badge" id="historia-kicker">1 / 7 • MÚSICA DESDE CRIANÇA</span>
+            <h3 id="historia-titulo" class="mt-2">Música desde a infância</h3>
             <div id="historia-subtitulo" class="text-muted" style="font-size:0.9rem;"></div>
             <p id="historia-texto" class="text-muted"></p>
           </div>
@@ -223,14 +244,31 @@
           <div class="historia-indicadores" id="historia-indicadores"></div>
         </div>
 
-        <div class="pagode-videos-secao mt-4 mb-4" id="secao-videos-pagode">
-          <div class="pagode-videos-cabecalho">
-            <span class="section-kicker">CLIMA DE RODA E MESA</span>
-            <h2 class="serif-title">Pagodes para Sentir a Levada</h2>
+        <!-- CARROSSEL COM 15 VÍDEOS DE SAMBA -->
+        <section class="card pagode-secao-carrossel" id="secao-videos-samba">
+          <div class="pagode-secao-topo">
+            <span class="pagode-subtitulo-topo">CLIMA DE RODA E MESA</span>
+            <h2>Pagodes para Sentir a Levada</h2>
             <p class="text-muted">Referências rápidas de roda, samba e pagode para pegar o balanço.</p>
           </div>
-          <div class="pagode-videos-grid" id="pagode-videos-grid"></div>
-        </div>
+
+          <div class="samba-carrossel-controles">
+            <span id="samba-carrossel-contador" class="samba-carrossel-contador">
+              Mostrando 1–3 de 15 vídeos de samba (Página 1/5)
+            </span>
+            <div class="samba-carrossel-botoes">
+              <button type="button" class="btn-quick" id="btn-samba-anterior">
+                <i class="fa-solid fa-chevron-left"></i> Anterior
+              </button>
+              <button type="button" class="btn-quick" id="btn-samba-proximo">
+                Próximo <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="pagode-videos-grid" class="samba-carrossel-grid"></div>
+          <div id="samba-carrossel-indicadores" class="samba-carrossel-indicadores"></div>
+        </section>
 
         <div class="stats-grid mb-4">
           <div class="card stat-card">
@@ -244,7 +282,7 @@
             <div class="stat-icon-wrap" style="background:rgba(34,197,94,0.14); color:var(--primary-color, #22c55e);">
               <i class="fa-solid fa-award"></i>
             </div>
-            <h2 id="stat-nota-geral" class="mt-2">5.0</h2>
+            <h2 id="stat-nota-geral" class="mt-2">0.0</h2>
             <span class="text-muted" style="font-size:0.85rem;">A sua avaliação na roda</span>
           </div>
           <div class="card stat-card">
@@ -292,30 +330,26 @@
         </div>
       </section>
 
-      <!-- ===================================================
-           ABA 2: MÚSICOS
-           =================================================== -->
+      <!-- ABA 2: MÚSICOS -->
       <section id="tab-perfis" class="tab-content">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
           <div>
             <h1 class="serif-title">Músicos da Comunidade</h1>
-            <p class="text-muted">Pesquise por nome ou instrumento para contratar ou mandar mensagem.</p>
+            <p class="text-muted">Pesquise por nome, instrumento, especialidade ou área para contratar ou mandar mensagem.</p>
           </div>
           <input
             type="text"
             id="busca-perfil-input"
             class="input-styled"
-            style="max-width:300px;"
-            placeholder="Pesquisar músico ou instrumento..."
+            style="max-width:320px;"
+            placeholder="Pesquisar músico, instrumento, especialidade ou área..."
             oninput="filtrarPerfis()"
           />
         </div>
         <div id="perfis-grid" class="cards-grid"></div>
       </section>
 
-      <!-- ===================================================
-           ABA 3: PROPOSTAS
-           =================================================== -->
+      <!-- ABA 3: PROPOSTAS -->
       <section id="tab-propostas" class="tab-content">
         <div class="mb-4">
           <h1 class="serif-title">Propostas Recebidas</h1>
@@ -324,9 +358,7 @@
         <div id="propostas-grid" class="cards-grid"></div>
       </section>
 
-      <!-- ===================================================
-           ABA 4: CHAT PRIVADO
-           =================================================== -->
+      <!-- ABA 4: CHAT PRIVADO -->
       <section id="tab-chat" class="tab-content">
         <div class="mb-4">
           <h1 class="serif-title">Chat com Músicos</h1>
@@ -384,9 +416,7 @@
         </div>
       </section>
 
-      <!-- ===================================================
-           ABA 5: OFICINAS & BATUCADA
-           =================================================== -->
+      <!-- ABA 5: OFICINAS -->
       <section id="tab-atividades" class="tab-content">
         <div class="mb-4">
           <h1 class="serif-title">Oficinas de Harmonia & Percussão</h1>
@@ -410,9 +440,7 @@
         <div id="detalhe-oficina-box" class="card hidden"></div>
       </section>
 
-      <!-- ===================================================
-           ABA 6: CADERNOS DE CIFRAS & PARTITURAS
-           =================================================== -->
+      <!-- ABA 6: CIFRAS & PARTITURAS -->
       <section id="tab-boletim" class="tab-content">
         <div class="mb-4">
           <h1 class="serif-title">Cadernos de Cifras & Partituras</h1>
@@ -463,9 +491,7 @@
         </div>
       </section>
 
-      <!-- ===================================================
-           ABA 7: MEU PERFIL
-           =================================================== -->
+      <!-- ABA 7: MEU PERFIL -->
       <section id="tab-perfil" class="tab-content">
         <div class="card mb-4">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
@@ -474,12 +500,12 @@
               <div>
                 <h1 id="perfil-nome" class="serif-title" style="font-size:1.6rem;">Músico</h1>
                 <p id="perfil-email" class="text-muted"></p>
-                <div style="display:flex; align-items:center; gap:0.6rem; margin-top:0.35rem;">
+                <div style="display:flex; align-items:center; gap:0.6rem; margin-top:0.35rem; flex-wrap:wrap;">
                   <span id="perfil-badge-area" class="portal-badge">Músico</span>
                   <span class="rating-badge">
                     <i class="fa-solid fa-star"></i>
-                    <span id="perfil-nota-exibicao">5.0</span>
-                    (<span id="perfil-total-avaliacoes">1</span>)
+                    <span id="perfil-nota-exibicao">0.0</span>
+                    (<span id="perfil-total-avaliacoes">0</span>)
                   </span>
                 </div>
               </div>
@@ -508,7 +534,7 @@
             <div class="stat-icon-wrap" style="background:rgba(245,158,11,0.16); color:var(--warning, #f59e0b);">
               <i class="fa-solid fa-star"></i>
             </div>
-            <h2 id="perfil-resumo-nota" class="mt-2">5.0</h2>
+            <h2 id="perfil-resumo-nota" class="mt-2">0.0</h2>
             <span class="text-muted" style="font-size:0.85rem;">Avaliação média</span>
           </div>
         </div>
@@ -538,28 +564,81 @@
               <input type="text" id="edit-perfil-nome" class="input-styled" style="padding-left:0.85rem;" />
             </div>
             <div class="form-group">
-              <label for="edit-perfil-area">Atuação</label>
-              <input type="text" id="edit-perfil-area" class="input-styled" style="padding-left:0.85rem;" />
+              <label for="edit-perfil-area">Área de Atuação</label>
+              <input type="text" id="edit-perfil-area" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Lorena - SP, Rodas e Eventos" />
             </div>
             <div class="form-group">
-              <label for="edit-perfil-inst">Instrumentos</label>
-              <input type="text" id="edit-perfil-inst" class="input-styled" style="padding-left:0.85rem;" />
+              <label for="edit-perfil-inst">Instrumentos que Toca</label>
+              <input type="text" id="edit-perfil-inst" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Pandeiro, Cavaquinho, Violão 7 Cordas" />
             </div>
             <div class="form-group">
-              <label for="edit-perfil-estilo">Estilo Musical</label>
-              <input type="text" id="edit-perfil-estilo" class="input-styled" style="padding-left:0.85rem;" />
+              <label for="edit-perfil-estilo">Especialidade / Estilo</label>
+              <input type="text" id="edit-perfil-estilo" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Samba de Raiz, Pagode de Mesa" />
             </div>
           </div>
-          <button type="button" class="btn-primary mt-4" onclick="salvarEdicaoPerfil()">
-            <i class="fa-solid fa-floppy-disk"></i> Guardar Alterações
-          </button>
+          <div style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:1rem;">
+            <button type="button" class="btn-primary" onclick="salvarEdicaoPerfil()">
+              <i class="fa-solid fa-floppy-disk"></i> Guardar Alterações
+            </button>
+            <button type="button" class="btn-quick" onclick="abrirModalOnboarding(true)">
+              <i class="fa-solid fa-sliders"></i> Assistente de Especialidade e Área
+            </button>
+          </div>
         </div>
       </section>
     </main>
   </div>
 
   <!-- =====================================================
-       MODAL DE PROPOSTA DE CONTRATAÇÃO
+       MODAL DE BOAS-VINDAS / ONBOARDING
+       ===================================================== -->
+  <div id="modal-onboarding-musico" class="modal-backdrop hidden">
+    <div class="modal-card card" style="max-width:520px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span class="portal-badge">BEM-VINDO À RODA</span>
+          <h2 id="modal-onboarding-titulo" class="serif-title mt-1">Monte o seu cartão na roda</h2>
+        </div>
+        <button type="button" class="btn-quick" onclick="fecharModalOnboarding(false)" aria-label="Fechar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p class="text-muted mt-2" style="font-size:0.9rem;">
+        Informe o instrumento que você toca, sua especialidade musical e sua área de atuação para que outros músicos e organizadores encontrem você.
+      </p>
+
+      <div class="form-group mt-3">
+        <label for="onboard-instrumento">Instrumento(s) que toca *</label>
+        <input type="text" id="onboard-instrumento" list="cad-sugestoes-instrumentos" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Pandeiro, Cavaquinho, Violão 7 Cordas..." />
+      </div>
+
+      <div class="form-group mt-3">
+        <label for="onboard-especialidade">Especialidade / Estilo musical *</label>
+        <input type="text" id="onboard-especialidade" list="cad-sugestoes-especialidades" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Samba de Raiz, Pagode de Mesa, Partido-Alto..." />
+      </div>
+
+      <div class="form-group mt-3">
+        <label for="onboard-area">Área de atuação / Região *</label>
+        <input type="text" id="onboard-area" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Lorena - SP, Vale do Paraíba, Rodas e Eventos" />
+      </div>
+
+      <div class="form-group mt-3">
+        <label for="onboard-bio">Observações / Repertório (opcional)</label>
+        <input type="text" id="onboard-bio" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Disponível aos finais de semana, samba dos anos 90..." />
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem; margin-top:1.35rem; flex-wrap:wrap;">
+        <button type="button" class="btn-quick" onclick="fecharModalOnboarding(false)">Preencher depois</button>
+        <button type="button" class="btn-primary" onclick="salvarOnboardingMusico()">
+          <i class="fa-solid fa-check"></i> Salvar na Roda
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MODAL DE PROPOSTA ORGANIZADO (DATA + HORÁRIOS + CACHÊ)
        ===================================================== -->
   <div id="modal-proposta" class="modal-backdrop hidden">
     <div class="modal-card card">
@@ -573,19 +652,31 @@
         <input type="text" id="prop-evento" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Roda de Pagode de Domingo" />
       </div>
 
-      <div class="form-group mt-3">
-        <label for="prop-data">Data e Horário *</label>
-        <input type="text" id="prop-data" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: 29/11 às 16h" />
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.65rem;" class="mt-3">
+        <div class="form-group">
+          <label for="prop-data">Data do Evento *</label>
+          <input type="date" id="prop-data" class="input-styled" style="padding-left:0.85rem;" />
+        </div>
+        <div class="form-group">
+          <label for="prop-hora-inicio">Início *</label>
+          <input type="time" id="prop-hora-inicio" class="input-styled" style="padding-left:0.85rem;" />
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.65rem;" class="mt-3">
+        <div class="form-group">
+          <label for="prop-hora-fim">Término *</label>
+          <input type="time" id="prop-hora-fim" class="input-styled" style="padding-left:0.85rem;" />
+        </div>
+        <div class="form-group">
+          <label for="prop-cache">Cachê (R$) *</label>
+          <input type="text" id="prop-cache" inputmode="decimal" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: 250,00" />
+        </div>
       </div>
 
       <div class="form-group mt-3">
         <label for="prop-requisitos">Requisitos / Repertório</label>
         <input type="text" id="prop-requisitos" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Samba tradicional e pagode 90" />
-      </div>
-
-      <div class="form-group mt-3">
-        <label for="prop-cache">Cachê Oferecido *</label>
-        <input type="text" id="prop-cache" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: R$ 250,00" />
       </div>
 
       <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1.25rem;">
@@ -596,7 +687,7 @@
   </div>
 
   <!-- =====================================================
-       MODAL DE AVALIAÇÃO
+       MODAL DE AVALIAÇÃO (SOMENTE SE HOUVER PROPOSTA ACEITA)
        ===================================================== -->
   <div id="modal-avaliar" class="modal-backdrop hidden">
     <div class="modal-card card">
@@ -605,56 +696,133 @@
         <button type="button" class="btn-quick" onclick="fecharModalAvaliacao()"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div id="star-selector" class="mt-3" style="display:flex; gap:0.5rem; font-size:1.5rem; cursor:pointer;">
-        <i class="fa-solid fa-star active" data-val="1" onclick="selecionarEstrela(1)"></i>
-        <i class="fa-solid fa-star active" data-val="2" onclick="selecionarEstrela(2)"></i>
-        <i class="fa-solid fa-star active" data-val="3" onclick="selecionarEstrela(3)"></i>
-        <i class="fa-solid fa-star active" data-val="4" onclick="selecionarEstrela(4)"></i>
-        <i class="fa-solid fa-star active" data-val="5" onclick="selecionarEstrela(5)"></i>
-      </div>
+      <p id="avaliar-bloqueio-aviso" class="text-muted mt-2 hidden" style="font-size:0.9rem;">
+        <i class="fa-solid fa-lock"></i> Você só pode avaliar este artista depois que ele aceitar pelo menos uma proposta enviada por você.
+      </p>
 
-      <div class="form-group mt-3">
-        <label for="avaliacao-comentario">Comentário</label>
-        <textarea id="avaliacao-comentario" class="input-styled" style="padding-left:0.85rem;" rows="3" placeholder="Conta como foi a experiência..."></textarea>
-      </div>
+      <div id="avaliar-formulario-area">
+        <div id="star-selector" class="mt-3" style="display:flex; gap:0.5rem; font-size:1.5rem; cursor:pointer;">
+          <i class="fa-solid fa-star active" data-val="1" onclick="selecionarEstrela(1)"></i>
+          <i class="fa-solid fa-star active" data-val="2" onclick="selecionarEstrela(2)"></i>
+          <i class="fa-solid fa-star active" data-val="3" onclick="selecionarEstrela(3)"></i>
+          <i class="fa-solid fa-star active" data-val="4" onclick="selecionarEstrela(4)"></i>
+          <i class="fa-solid fa-star active" data-val="5" onclick="selecionarEstrela(5)"></i>
+        </div>
 
-      <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1.25rem;">
-        <button type="button" class="btn-quick" onclick="fecharModalAvaliacao()">Cancelar</button>
-        <button type="button" class="btn-primary" onclick="confirmarAvaliacaoPerfil()">Confirmar Avaliação</button>
+        <div class="form-group mt-3">
+          <label for="avaliacao-comentario">Comentário</label>
+          <textarea id="avaliacao-comentario" class="input-styled" style="padding-left:0.85rem;" rows="3" placeholder="Conta como foi a experiência..."></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1.25rem;">
+          <button type="button" class="btn-quick" onclick="fecharModalAvaliacao()">Cancelar</button>
+          <button type="button" class="btn-primary" onclick="confirmarAvaliacaoPerfil()">Confirmar Avaliação</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Funções de apoio para abas de login/cadastro e menu retrátil
-    if (typeof window.mostrarAbaAuth !== 'function') {
-      window.mostrarAbaAuth = function(aba) {
-        const formLogin = document.getElementById('form-login');
-        const formCadastro = document.getElementById('form-cadastro');
-        const btnLogin = document.getElementById('tab-btn-login');
-        const btnCadastro = document.getElementById('tab-btn-cadastro');
+    window.mostrarAbaAuth = function(aba) {
+      const formLogin = document.getElementById('form-login');
+      const formCadastro = document.getElementById('form-cadastro');
+      const btnLogin = document.getElementById('tab-btn-login');
+      const btnCadastro = document.getElementById('tab-btn-cadastro');
 
-        if (aba === 'cadastro') {
-          formLogin?.classList.add('hidden');
-          formCadastro?.classList.remove('hidden');
-          btnLogin?.classList.remove('active');
-          btnCadastro?.classList.add('active');
-        } else {
-          formCadastro?.classList.add('hidden');
-          formLogin?.classList.remove('hidden');
-          btnCadastro?.classList.remove('active');
-          btnLogin?.classList.add('active');
+      if (aba === 'cadastro') {
+        formLogin?.classList.add('hidden');
+        formCadastro?.classList.remove('hidden');
+        btnLogin?.classList.remove('active');
+        btnCadastro?.classList.add('active');
+      } else {
+        formCadastro?.classList.add('hidden');
+        formLogin?.classList.remove('hidden');
+        btnCadastro?.classList.remove('active');
+        btnLogin?.classList.add('active');
+      }
+    };
+
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar')?.classList.toggle('collapsed');
+    };
+
+    window.abrirModalOnboarding = function(forcarEdicao = false) {
+      const modal = document.getElementById('modal-onboarding-musico');
+      if (!modal) return;
+
+      const usuario = window.appState?.currentUser || window.usuarioAtual || null;
+      const jaConfigurou = usuario && (usuario.onboardingConcluido || usuario.instrumentos || usuario.instrumento || usuario.especialidade || usuario.area);
+
+      if (!forcarEdicao && jaConfigurou) return;
+
+      const inpInst = document.getElementById('onboard-instrumento');
+      const inpEsp = document.getElementById('onboard-especialidade');
+      const inpArea = document.getElementById('onboard-area');
+      const inpBio = document.getElementById('onboard-bio');
+
+      if (inpInst) inpInst.value = usuario?.instrumentos || usuario?.instrumento || '';
+      if (inpEsp) inpEsp.value = usuario?.especialidade || usuario?.estilo || '';
+      if (inpArea) inpArea.value = usuario?.area || usuario?.cidade || '';
+      if (inpBio) inpBio.value = usuario?.bio || '';
+
+      modal.classList.remove('hidden');
+    };
+
+    window.fecharModalOnboarding = function(marcarComoVisto = true) {
+      const modal = document.getElementById('modal-onboarding-musico');
+      if (modal) modal.classList.add('hidden');
+
+      if (marcarComoVisto) {
+        const usuario = window.appState?.currentUser || window.usuarioAtual;
+        if (usuario) {
+          usuario.onboardingConcluido = true;
+          try {
+            sessionStorage.setItem('musicon_onboarding_done_' + (usuario.email || usuario.nome || 'default'), '1');
+          } catch (e) {}
         }
-      };
-    }
+      }
+    };
 
-    if (typeof window.toggleSidebar !== 'function') {
-      window.toggleSidebar = function() {
-        document.getElementById('sidebar')?.classList.toggle('collapsed');
-      };
-    }
+    window.salvarOnboardingMusico = function() {
+      const instrumentos = (document.getElementById('onboard-instrumento')?.value || '').trim();
+      const especialidade = (document.getElementById('onboard-especialidade')?.value || '').trim();
+      const area = (document.getElementById('onboard-area')?.value || '').trim();
+      const bio = (document.getElementById('onboard-bio')?.value || '').trim();
 
-    // Interação 3D da logo Musicon
+      if (!instrumentos && !especialidade && !area) {
+        if (typeof window.notificar === 'function') {
+          window.notificar('Preencha ao menos o instrumento, especialidade ou área.', 'info');
+        }
+        return;
+      }
+
+      const alvoUsuario = window.appState?.currentUser || window.usuarioAtual || {};
+      if (instrumentos) {
+        alvoUsuario.instrumentos = instrumentos;
+        alvoUsuario.instrumento = instrumentos;
+      }
+      if (especialidade) {
+        alvoUsuario.especialidade = especialidade;
+        alvoUsuario.estilo = especialidade;
+      }
+      if (area) {
+        alvoUsuario.area = area;
+        alvoUsuario.cidade = area;
+      }
+      if (bio) alvoUsuario.bio = bio;
+      alvoUsuario.onboardingConcluido = true;
+
+      if (window.appState) window.appState.currentUser = alvoUsuario;
+      try {
+        sessionStorage.setItem('musicon_sessao', JSON.stringify(alvoUsuario));
+      } catch (e) {}
+
+      if (typeof window.salvarEdicaoPerfil === 'function') {
+        try { window.salvarEdicaoPerfil(); } catch (e) {}
+      }
+      window.fecharModalOnboarding(true);
+    };
+
     (function initLogo3DInterativa() {
       const stage = document.getElementById('logo-3d-stage');
       const card = document.getElementById('logo-3d-card');
@@ -675,69 +843,49 @@
       function aplicarRotacao(rx, ry, scale = 1.05, mx = 50, my = 50) {
         currentRotX = Math.max(-maxTiltX, Math.min(maxTiltX, rx));
         currentRotY = Math.max(-maxTiltY, Math.min(maxTiltY, ry));
-
         card.style.transform = `rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg) scale(${scale})`;
-
         if (shine) {
           shine.style.setProperty('--mx', `${mx}%`);
           shine.style.setProperty('--my', `${my}%`);
         }
       }
 
-      function resetarPosicao() {
-        isDragging = false;
-        baseRotX = 0;
-        baseRotY = 0;
-        stage.classList.remove('dragging');
-        card.classList.add('resetting');
-        aplicarRotacao(0, 0, 1, 50, 50);
-      }
-
       stage.addEventListener('pointermove', (e) => {
         const rect = stage.getBoundingClientRect();
         if (!rect.width || !rect.height) return;
-
         if (isDragging) {
           const dx = e.clientX - dragStartX;
           const dy = e.clientY - dragStartY;
-          const rx = baseRotX - (dy / rect.height) * (maxTiltX * 2.2);
-          const ry = baseRotY + (dx / rect.width) * (maxTiltY * 2.4);
-          const mx = Math.max(0, Math.min(100, ((ry / maxTiltY) + 1) * 50));
-          const my = Math.max(0, Math.min(100, ((-rx / maxTiltX) + 1) * 50));
-          aplicarRotacao(rx, ry, 1.08, mx, my);
+          aplicarRotacao(baseRotX - dy * 0.28, baseRotY + dx * 0.35, 1.07, 50 + dx * 0.2, 50 + dy * 0.2);
           return;
         }
-
-        card.classList.remove('resetting');
         const relX = (e.clientX - rect.left) / rect.width;
         const relY = (e.clientY - rect.top) / rect.height;
-
-        const rotY = (relX - 0.5) * 2 * maxTiltY;
-        const rotX = (0.5 - relY) * 2 * maxTiltX;
-
-        aplicarRotacao(rotX, rotY, 1.05, (relX * 100).toFixed(1), (relY * 100).toFixed(1));
+        aplicarRotacao((0.5 - relY) * 2 * maxTiltX, (relX - 0.5) * 2 * maxTiltY, 1.05, relX * 100, relY * 100);
       });
 
       stage.addEventListener('pointerdown', (e) => {
         isDragging = true;
-        baseRotX = currentRotX;
-        baseRotY = currentRotY;
         dragStartX = e.clientX;
         dragStartY = e.clientY;
-        card.classList.remove('resetting');
-        stage.classList.add('dragging');
+        baseRotX = currentRotX;
+        baseRotY = currentRotY;
         stage.setPointerCapture?.(e.pointerId);
       });
 
-      stage.addEventListener('pointerup', resetarPosicao);
-      stage.addEventListener('pointercancel', resetarPosicao);
+      const encerrarArraste = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        aplicarRotacao(0, 0, 1, 50, 50);
+      };
+
+      stage.addEventListener('pointerup', encerrarArraste);
+      stage.addEventListener('pointercancel', encerrarArraste);
       stage.addEventListener('pointerleave', () => {
-        if (!isDragging) resetarPosicao();
+        if (!isDragging) aplicarRotacao(0, 0, 1, 50, 50);
       });
     })();
   </script>
-
   <script src="script.js"></script>
-  <script src="mensagens.js"></script>
 </body>
 </html>
