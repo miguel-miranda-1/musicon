@@ -1,5 +1,9 @@
+
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const usuarioRoutes = require("./routes/usuarioRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -9,33 +13,28 @@ const turmaRoutes = require("./routes/turmaRoutes");
 const matriculaRoutes = require("./routes/matriculaRoutes");
 const disciplinaRoutes = require("./routes/disciplinaRoutes");
 const aulaRoutes = require("./routes/aulaRoutes");
-const atividadeRoutes = require("./routes/atividadeRoutes");
 const conteudoOfflineRoutes = require("./routes/conteudoOfflineRoutes");
 const equipamentoRoutes = require("./routes/equipamentoRoutes");
 const infraestruturaAlertaRoutes = require("./routes/infraestruturaAlertaRoutes");
-
-
+const tutorRoutes = require("./routes/tutorRoutes");
+const mensagemRoutes = require("./routes/mensagemRoutes");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(atividadeRoutes);
+app.use(express.urlencoded({ extended: true }));
 
+const pastaFrontend = path.join(__dirname, "front-end");
 
-// Rota inicial
+app.use(express.static(pastaFrontend));
+
 app.get("/", (req, res) => {
-    res.json({
-        mensagem: "API Escola Conectada funcionando!"
-    });
+    res.sendFile(path.join(pastaFrontend, "index.html"));
 });
 
-// Rotas da API
 app.use(usuarioRoutes);
-
-// LOGIN
 app.use("/auth", authRoutes);
-
 app.use(professorRoutes);
 app.use(alunoRoutes);
 app.use(turmaRoutes);
@@ -46,8 +45,30 @@ app.use(conteudoOfflineRoutes);
 app.use(equipamentoRoutes);
 app.use(infraestruturaAlertaRoutes);
 
-const PORTA = 3000;
+app.use("/api/tutor", tutorRoutes);
+app.use(mensagemRoutes);
+
+app.use((req, res) => {
+    res.status(404).json({
+        erro: "Rota não encontrada.",
+        caminho: req.originalUrl
+    });
+});
+
+app.use((erro, req, res, next) => {
+    console.error("Erro no servidor:", erro);
+
+    if (res.headersSent) {
+        return next(erro);
+    }
+
+    res.status(500).json({
+        erro: "Ocorreu um erro interno no servidor."
+    });
+});
+
+const PORTA = process.env.PORT || 3000;
 
 app.listen(PORTA, () => {
-    console.log(`Servidor rodando em http://localhost:${PORTA}`);
+    console.log(`Escola Conectada rodando em http://localhost:${PORTA}`);
 });

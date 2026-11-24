@@ -1,2114 +1,1427 @@
-const CHAVE_DADOS = 'escolaConectadaDados';
+const STORAGE_KEY = 'musicon_portal_v13';
+const INTERVALO_CARROSSEL_MS = 3500;
 
-const db = {
-  activeRole: 'aluno',
-  currentUser: null,
-
-  users: [
-    {
-      id: 1,
-      name: 'Ana Clara',
-      email: 'ana@escola.com',
-      role: 'coordenador',
-      initials: 'AC',
-      ra: '852369'
-    },
-    {
-      id: 2,
-      name: 'Prof. Miguel',
-      email: 'miguel@escola.com',
-      role: 'professor',
-      initials: 'PM',
-      ra: '788693'
-    },
-    {
-      id: 3,
-      name: 'João Lucas',
-      email: 'joao@escola.com',
-      role: 'aluno',
-      initials: 'JL',
-      ra: '2026001'
-    }
-  ],
-
-  subjects: [
-    'Matemática',
-    'Português',
-    'Ciências',
-    'História',
-    'Geografia',
-    'Inglês',
-    'Artes',
-    'Educação Física',
-    'Biologia',
-    'Física',
-    'Química'
-  ],
-
-  boletim: [
-    { subject: 'Matemática', b1: 8, b2: 7.5, b3: 8.5, b4: 9 },
-    { subject: 'Português', b1: 7.5, b2: 8, b3: 7, b4: 8.5 },
-    { subject: 'Ciências', b1: 9, b2: 8.5, b3: 9, b4: 8.5 },
-    { subject: 'História', b1: 6.5, b2: 7, b3: 6, b4: 7 },
-    { subject: 'Geografia', b1: 8, b2: 8.5, b3: 7.5, b4: 9 },
-    { subject: 'Inglês', b1: 8.5, b2: 9, b3: 8, b4: 8.5 }
-  ],
-
-  atividades: [
-    {
-      id: 1,
-      title: 'Pesquisa: Revolução Industrial',
-      description: 'Pesquise as principais transformações provocadas pela Revolução Industrial.',
-      subject: 'História',
-      type: 'Pesquisa',
-      date: '15 de setembro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    },
-    {
-      id: 2,
-      title: 'Exercícios: faça sua rotina Diária',
-      description: 'Descreva sua rotina diária em inglês.',
-      subject: 'Inglês',
-      type: 'Exercício',
-      date: '15 de outubro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    },
-    {
-      id: 3,
-      title: 'Redação: Narrativa Pessoal',
-      description: 'Escreva uma narrativa pessoal com começo, desenvolvimento e conclusão.',
-      subject: 'Português',
-      type: 'Redação',
-      date: '15 de outubro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    },
-    {
-      id: 4,
-      title: 'Pesquisa: Como funciona o ciclo da água',
-      description: 'Explique as etapas do ciclo da água.',
-      subject: 'Ciências',
-      type: 'Pesquisa',
-      date: '15 de outubro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    },
-    {
-      id: 5,
-      title: 'Exercícios: Equações de 1º e 2º grau',
-      description: 'Resolva os exercícios propostos pelo professor.',
-      subject: 'Matemática',
-      type: 'Exercício',
-      date: '16 de outubro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    },
-    {
-      id: 6,
-      title: 'Projeto: Maquete de Bioma',
-      description: 'Apresente uma maquete e explique as características do bioma escolhido.',
-      subject: 'Geografia',
-      type: 'Projeto',
-      date: '18 de outubro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    },
-    {
-      id: 7,
-      title: 'Questionário: Leis de Newton',
-      description: 'Responda às questões sobre as leis de Newton.',
-      subject: 'Física',
-      type: 'Quiz',
-      date: '20 de outubro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    },
-    {
-      id: 8,
-      title: 'Pesquisa: Ligações Químicas',
-      description: 'Explique os principais tipos de ligações químicas.',
-      subject: 'Química',
-      type: 'Pesquisa',
-      date: '21 de outubro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    },
-    {
-      id: 9,
-      title: 'Atividade: Ecossistemas',
-      description: 'Explique a relação entre os seres vivos e o ambiente.',
-      subject: 'Biologia',
-      type: 'Exercício',
-      date: '22 de outubro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    },
-    {
-      id: 10,
-      title: 'Pesquisa: pesquise sobre Arte Moderna',
-      description: 'Apresente as características da Arte Moderna.',
-      subject: 'Artes',
-      type: 'Projeto',
-      date: '23 de setembro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    },
-    {
-      id: 11,
-      title: 'Pesquisa: Saúde e qualidade de vida',
-      description: 'Explique hábitos que contribuem para a saúde e a qualidade de vida.',
-      subject: 'Educação Física',
-      type: 'Pesquisa',
-      date: '24 de setembro',
-      points: 10,
-      turma: '3EM ',
-      completed: false,
-      answer: null
-    }
-  ],
-
-  submissions: [
-    {
-      id: 1,
-      studentId: 3,
-      studentName: 'João Lucas',
-      atividadeId: 3,
-      ativTitle: 'Redação: Narrativa Pessoal',
-      text: 'A atividade foi realizada pelo aluno.',
-      date: 'Entrega de demonstração',
-      graded: false,
-      grade: null
-    }
-  ],
-
-  frequencia: [],
-
-  aulas: []
+const dadosInstrumentos = {
+  pandeiro: {
+    titulo: "O Pandeiro: A Alma Rítmica do Samba",
+    historia: "De origem milenar e ancestral, o pandeiro encontrou no Brasil e nas rodas de choro e samba o seu habitat definitivo. Com suas platinelas brilhantes e pele ajustável, ele não é apenas um marcador de tempo, mas um verdadeiro conversador rítmico capaz de solar, sustentar o balanço e ditar o ritmo da festa inteira.",
+    instrumentoFiltro: "Pandeiro"
+  },
+  cavaquinho: {
+    titulo: "O Cavaquinho: O Brilho da Harmonia",
+    historia: "Trazido pelos portugueses e abraçado pelo povo brasileiro, o cavaquinho é o instrumento que faz a ponte entre a levada rítmica e a melodia. Nas rodas de partido-alto e samba raiz, sua levada cortante dá o molho inconfundível que anima qualquer calçada.",
+    instrumentoFiltro: "Cavaquinho"
+  },
+  violao7: {
+    titulo: "O Violão de 7 Cordas: As Baixarias e o Choro",
+    historia: "A sétima corda grave (afinada em Dó) revolucionou a música popular brasileira ao permitir que o violão executasse as famosas 'baixarias' — linhas melódicas que preenchem os espaços entre os acordes e conduzem com elegância a harmonia do samba e do choro.",
+    instrumentoFiltro: "Violão"
+  },
+  surdo: {
+    titulo: "O Surdo: O Coração da Bateria",
+    historia: "O surdo é o tambor de maior diâmetro e o responsável pelos graves profundos (o 'tum-tum') que marcam o compasso e fazem o chão tremer nas escolas de samba e nos blocos de rua. É a pulsação visceral que dita o passo de todos os batuqueiros.",
+    instrumentoFiltro: "Percussão"
+  }
 };
 
-let selectedAtivForModal = null;
+// =====================================================
+// CARROSSEL FLUTUANTE E AUTOMÁTICO DE RETRATOS (7 FOTOS)
+// >>> COLOQUE AQUI OS LINKS OU CAMINHOS DAS 7 FOTOS DO CARROSSEL <<<
+// =====================================================
+const slidesHistoriaMusicon = [
+  {
+    imagem: 'foto1.png',
+    kicker: '1 / 7 • MÚSICA DESDE CRIANÇA',
+    titulo: 'Música desde a infância',
+    subtitulo: 'O primeiro contato com o som e as rodas veio cedo',
+    texto: 'Desde criança sempre tive contato com a música, o ritmo e as rodas. Esse vínculo de infância despertou o amor por tocar e o desejo de criar algo para a comunidade musical.'
+  },
+  {
+    imagem: 'foto2.png',
+    kicker: '2 / 7 • RAÍZES E CONVIVÊNCIA',
+    titulo: 'Crescer ouvindo e sentindo o som de perto',
+    subtitulo: 'Acompanhar ensaios e encontros moldou meu olhar',
+    texto: 'Acompanhar de perto ensaios, encontros e o dia a dia de quem faz música mostrou a importância de dar espaço e visibilidade a quem mantém a cultura viva.'
+  },
+  {
+    imagem: 'foto3.png',
+    kicker: '3 / 7 • FALTA DE MÚSICOS NO MERCADO',
+    titulo: 'Quando falta músico disponível na hora',
+    subtitulo: 'Um problema comum em rodas, eventos e apresentações',
+    texto: 'Muitas vezes é difícil achar músicos livres quando surge um evento, ensaio ou roda. A falta de contato rápido acaba atrapalhando quem precisa de som ou quer tocar.'
+  },
+  {
+    imagem: 'foto4.png',
+    kicker: '4 / 7 • NASCIMENTO DO MUSICON',
+    titulo: 'Criei o site para facilitar a procura por músicos',
+    subtitulo: 'A união da minha história com uma necessidade real',
+    texto: 'A criação do Musicon veio exatamente da minha ligação com a música desde pequeno e da vontade de facilitar encontrar músicos quando alguém precisar.'
+  },
+  {
+    imagem: 'foto5.png',
+    kicker: '5 / 7 • CONTATO RÁPIDO E DIRETO',
+    titulo: 'Perfis, propostas e conversa no mesmo lugar',
+    subtitulo: 'Menos correria para achar quem combina com a roda',
+    texto: 'Quem procura músico pode ver os perfis, enviar proposta e conversar diretamente pelo chat sem perder tempo procurando em vários lugares.'
+  },
+  {
+    imagem: 'foto6.png',
+    kicker: '6 / 7 • ESTUDO E REPERTÓRIO',
+    titulo: 'Apoio para estudo, ensaio e roda',
+    subtitulo: 'Harmonia, percussão e cadernos de cifras reunidos',
+    texto: 'Além de facilitar a busca por músicos, o portal reúne partituras gerais de estudo em harmonia e percussão e cadernos de cifras de samba e pagode tradicionais.'
+  },
+  {
+    imagem: 'foto8.jpeg',
+    kicker: '7 / 7 • COMUNIDADE MUSICAL',
+    titulo: 'Aproximando quem precisa de música de quem toca',
+    subtitulo: 'Um ponto de encontro para manter a roda girando',
+    texto: 'O Musicon nasceu para encurtar caminhos, fortalecer parcerias e ajudar a nunca faltar músico quando a roda chamar.'
+  }
+];
 
-// ============================================================
-// ARMAZENAMENTO LOCAL
-// ============================================================
+// =====================================================
+// VÍDEOS DE PAGODE LOGO ABAIXO DO CARROSSEL
+// >>> ONDE COLOCAR O LINK DO VÍDEO:
+// Altere o campo "url" em cada objeto abaixo.
+// Ex. YouTube: 'https://www.youtube.com/watch?v=SEU_ID'
+// Ex. Local:   'videos/pagode1.mp4'
+// =====================================================
+const videosPagodeMusicon = [
+  {
+    id: 'pagode-1',
+    titulo: 'Roda de Pagode Tradicional #1',
+    descricao: 'Levada de mesa, tantã, pandeiro e harmonia para pegar o pulso da roda.',
+    tag: 'Pagode de Mesa',
+    url: 'https://www.youtube.com/watch?v=BE0n_Wzgbho'
+  },
+  {
+    id: 'pagode-2',
+    titulo: 'Ensaio & Harmonia de Pagode #2',
+    descricao: 'Acompanhamento harmónico e condução rítmica para estudo e ensaio.',
+    tag: 'Ensaio & Harmonia',
+    url: 'https://www.youtube.com/watch?v=IRyxfwk2YQY&list=RDIRyxfwk2YQY&start_radio=1'
+  },
+  {
+    id: 'pagode-3',
+    titulo: 'Samba & Pagode em Roda #3',
+    descricao: 'Referência de dinâmica, resposta no refrão e energia de roda.',
+    tag: 'Roda de Samba',
+    url: 'https://www.youtube.com/watch?v=VXNuCDAZmpA'
+  }
+];
 
-function salvarDados() {
-  try {
-    localStorage.setItem(
-      CHAVE_DADOS,
-      JSON.stringify({
-        users: db.users,
-        subjects: db.subjects,
-        boletim: db.boletim,
-        atividades: db.atividades,
-        submissions: db.submissions,
-        frequencia: db.frequencia,
-        aulas: db.aulas
-      })
-    );
-  } catch (erro) {
-    console.error('Erro ao salvar dados:', erro);
-    showToast('Não foi possível salvar os dados no navegador.', 'error');
+let indiceSlideHistoria = 0;
+let timerCarrosselHistoria = null;
+let animandoTrocaHistoria = false;
+
+let arrastandoHistoria = false;
+let inicioArrasteX = 0;
+let deltaArrasteX = 0;
+let bloqueouCliqueArraste = false;
+
+function obterIndiceCircular(idx, total) {
+  return ((idx % total) + total) % total;
+}
+
+function pararPassagemAutomaticaHistoria() {
+  if (timerCarrosselHistoria) {
+    clearInterval(timerCarrosselHistoria);
+    timerCarrosselHistoria = null;
   }
 }
 
-function carregarDados() {
-  try {
-    const salvo = localStorage.getItem(CHAVE_DADOS);
+function renderizarSlideHistoria(comTransicao = true) {
+  const trilha = document.getElementById('historia-vitrine-trilha');
+  const kickerEl = document.getElementById('historia-kicker');
+  const tituloEl = document.getElementById('historia-titulo');
+  const subtituloEl = document.getElementById('historia-subtitulo');
+  const textoEl = document.getElementById('historia-texto');
+  const legendaEl = document.getElementById('historia-vitrine-legenda');
+  const indBox = document.getElementById('historia-indicadores');
 
-    if (!salvo) return;
+  const total = slidesHistoriaMusicon.length;
+  if (!trilha || total === 0) return;
 
-    const dados = JSON.parse(salvo);
+  const aplicarConteudo = () => {
+    const slideAtual = slidesHistoriaMusicon[indiceSlideHistoria];
+    if (kickerEl) kickerEl.textContent = slideAtual.kicker;
+    if (tituloEl) tituloEl.textContent = slideAtual.titulo;
+    if (subtituloEl) subtituloEl.textContent = slideAtual.subtitulo;
+    if (textoEl) textoEl.textContent = slideAtual.texto;
 
-    if (Array.isArray(dados.users)) db.users = dados.users;
-    if (Array.isArray(dados.subjects)) db.subjects = dados.subjects;
-    if (Array.isArray(dados.boletim)) db.boletim = dados.boletim;
-    if (Array.isArray(dados.atividades)) db.atividades = dados.atividades;
-    if (Array.isArray(dados.submissions)) db.submissions = dados.submissions;
-    if (Array.isArray(dados.frequencia)) db.frequencia = dados.frequencia;
-    if (Array.isArray(dados.aulas)) db.aulas = dados.aulas;
-  } catch (erro) {
-    console.error('Erro ao carregar dados:', erro);
+    const offsets = [-2, -1, 0, 1, 2];
+    trilha.innerHTML = offsets.map((offset, posIdx) => {
+      const idxReal = obterIndiceCircular(indiceSlideHistoria + offset, total);
+      const item = slidesHistoriaMusicon[idxReal];
+      const ehCentro = offset === 0;
+      const ehLateralProximo = Math.abs(offset) === 1;
+      const atrasoAnimacao = `${(posIdx * 0.35).toFixed(2)}s`;
+
+      return `
+        <button
+          type="button"
+          class="historia-retrato-card flutuando ${ehCentro ? 'destaque' : ehLateralProximo ? 'proximo' : 'distante'}"
+          style="animation-delay: ${atrasoAnimacao};"
+          onclick="irParaSlideHistoriaManual(${idxReal})"
+          aria-label="${item.titulo}"
+          title="${item.titulo}"
+        >
+          <img src="${item.imagem}" alt="${item.titulo}">
+        </button>
+      `;
+    }).join('');
+
+    if (indBox) {
+      indBox.innerHTML = slidesHistoriaMusicon.map((_, idx) => `
+        <button
+          type="button"
+          class="historia-ponto ${idx === indiceSlideHistoria ? 'ativo' : ''}"
+          onclick="irParaSlideHistoriaManual(${idx})"
+          aria-label="Ir para o slide ${idx + 1}"
+        ></button>
+      `).join('');
+    }
+  };
+
+  if (!comTransicao || animandoTrocaHistoria) {
+    aplicarConteudo();
+    return;
+  }
+
+  animandoTrocaHistoria = true;
+  trilha.classList.add('trocando');
+  if (legendaEl) legendaEl.classList.add('trocando');
+
+  setTimeout(() => {
+    aplicarConteudo();
+    requestAnimationFrame(() => {
+      trilha.classList.remove('trocando');
+      if (legendaEl) legendaEl.classList.remove('trocando');
+      animandoTrocaHistoria = false;
+    });
+  }, 180);
+}
+
+function iniciarPassagemAutomaticaHistoria() {
+  pararPassagemAutomaticaHistoria();
+  if (slidesHistoriaMusicon.length <= 1) return;
+
+  timerCarrosselHistoria = setInterval(() => {
+    if (arrastandoHistoria) return;
+    indiceSlideHistoria = obterIndiceCircular(indiceSlideHistoria + 1, slidesHistoriaMusicon.length);
+    renderizarSlideHistoria(true);
+  }, INTERVALO_CARROSSEL_MS);
+}
+
+function proximoSlideHistoriaManual() {
+  indiceSlideHistoria = obterIndiceCircular(indiceSlideHistoria + 1, slidesHistoriaMusicon.length);
+  renderizarSlideHistoria(true);
+  iniciarPassagemAutomaticaHistoria();
+}
+
+function slideAnteriorHistoriaManual() {
+  indiceSlideHistoria = obterIndiceCircular(indiceSlideHistoria - 1, slidesHistoriaMusicon.length);
+  renderizarSlideHistoria(true);
+  iniciarPassagemAutomaticaHistoria();
+}
+
+function irParaSlideHistoriaManual(idx) {
+  if (idx >= 0 && idx < slidesHistoriaMusicon.length) {
+    indiceSlideHistoria = idx;
+    renderizarSlideHistoria(true);
+    iniciarPassagemAutomaticaHistoria();
   }
 }
 
-// ============================================================
-// INICIALIZAÇÃO
-// ============================================================
+function configurarArrasteHistoria() {
+  const trilha = document.getElementById('historia-vitrine-trilha');
+  if (!trilha || trilha.dataset.dragBound === 'true') return;
+  trilha.dataset.dragBound = 'true';
+
+  trilha.addEventListener('pointerdown', (e) => {
+    if (e.button !== undefined && e.button !== 0 && e.pointerType === 'mouse') return;
+    arrastandoHistoria = true;
+    bloqueouCliqueArraste = false;
+    inicioArrasteX = e.clientX;
+    deltaArrasteX = 0;
+    trilha.classList.add('arrastando');
+    trilha.style.transition = 'none';
+    pararPassagemAutomaticaHistoria();
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (!arrastandoHistoria) return;
+    deltaArrasteX = e.clientX - inicioArrasteX;
+    if (Math.abs(deltaArrasteX) > 6) {
+      bloqueouCliqueArraste = true;
+      const deslocamentoLimitado = Math.max(-90, Math.min(90, deltaArrasteX * 0.45));
+      trilha.style.transform = `translateX(${deslocamentoLimitado}px)`;
+    }
+  });
+
+  const finalizarArraste = () => {
+    if (!arrastandoHistoria) return;
+    arrastandoHistoria = false;
+    trilha.classList.remove('arrastando');
+    trilha.style.transition = '';
+    trilha.style.transform = '';
+
+    const limiarArraste = 45;
+    if (deltaArrasteX <= -limiarArraste) {
+      proximoSlideHistoriaManual();
+    } else if (deltaArrasteX >= limiarArraste) {
+      slideAnteriorHistoriaManual();
+    } else {
+      iniciarPassagemAutomaticaHistoria();
+    }
+
+    setTimeout(() => {
+      bloqueouCliqueArraste = false;
+    }, 50);
+  };
+
+  window.addEventListener('pointerup', finalizarArraste);
+  window.addEventListener('pointercancel', finalizarArraste);
+
+  trilha.addEventListener('click', (e) => {
+    if (bloqueouCliqueArraste) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+}
+
+function extrairIdYouTube(url) {
+  if (!url || typeof url !== 'string') return null;
+  const padroes = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{6,})/,
+    /[?&]v=([A-Za-z0-9_-]{6,})/
+  ];
+  for (const regex of padroes) {
+    const match = url.match(regex);
+    if (match && match[1]) return match[1];
+  }
+  return null;
+}
+
+function renderizarMidiaVideoPagode(url, titulo) {
+  const ytId = extrairIdYouTube(url);
+  if (ytId) {
+    return `
+      <iframe
+        src="https://www.youtube.com/embed/${ytId}?rel=0"
+        title="${titulo}"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    `;
+  }
+
+  if (url && /\.(mp4|webm|ogg)(\?.*)?$/i.test(url)) {
+    return `
+      <video controls preload="metadata" onplay="pararPassagemAutomaticaHistoria()">
+        <source src="${url}">
+        O teu navegador não suporta reprodução de vídeo.
+      </video>
+    `;
+  }
+
+  return `
+    <div class="pagode-video-placeholder">
+      <i class="fa-solid fa-play-circle"></i>
+      <span>Adiciona o link em <code>videosPagodeMusicon</code></span>
+    </div>
+  `;
+}
+
+function renderizarVideosPagode() {
+  const grid = document.getElementById('pagode-videos-grid');
+  if (!grid) return;
+
+  if (!Array.isArray(videosPagodeMusicon) || videosPagodeMusicon.length === 0) {
+    grid.innerHTML = `<p class="text-muted">Nenhum vídeo de pagode registado ainda.</p>`;
+    return;
+  }
+
+  grid.innerHTML = videosPagodeMusicon.map(vid => `
+    <article class="pagode-video-card">
+      <div class="pagode-video-frame" onclick="pararPassagemAutomaticaHistoria()">
+        ${renderizarMidiaVideoPagode(vid.url, vid.titulo)}
+      </div>
+      <div class="pagode-video-corpo">
+        <span class="portal-badge">${vid.tag || 'Pagode'}</span>
+        <h3>${vid.titulo}</h3>
+        <p class="text-muted">${vid.descricao || ''}</p>
+      </div>
+    </article>
+  `).join('');
+}
+
+function gerarRepertorio400Musicas() {
+  const catalogosBase = [
+    {
+      caderno: 'samba',
+      titulo: 'Trem das Onze (Samba Tradicional)',
+      tom: 'Fá Maior (F)',
+      partitura: '2/4 • Surdo no 1 e 2 | Pandeiro: polegar, abafado e ponta',
+      estudo: 'Pratica a condução em 2/4 mantendo o pulso estável e a passagem suave da harmonia.',
+      cifra: 'Intro: F7M | Dm7 | Gm7 | C7(9)\nF7M            Dm7\nNão posso ficar, nem mais um minuto com você\nGm7            C7(9)\nSinto muito amor, mas não pode ser'
+    },
+    {
+      caderno: 'samba',
+      titulo: 'Verdade (Partido-Alto Tradicional)',
+      tom: 'Ré Maior (D)',
+      partitura: '2/4 • Levada sincopada de partido-alto com pulso firme',
+      estudo: 'Foca na síncope do acompanhamento sem apressar o andamento na entrada do refrão.',
+      cifra: 'Intro: D7M | Bm7 | Em7 | A7(13)\nD7M            F#m7\nEu fui convidado pra uma roda de samba\nBm7            E7(9)\nNa casa de um amigo que é bom de tocar'
+    },
+    {
+      caderno: 'pagode',
+      titulo: 'Deixa a Vida Me Levar (Pagode Tradicional)',
+      tom: 'Sol Maior (G)',
+      partitura: '2/4 • Pagode tradicional com grave marcante e resposta no contratempo',
+      estudo: 'Trabalha a dinâmica: começa contido para estudo harmónico e abre o balanço para a roda.',
+      cifra: 'Intro: G7M | Em7 | Am7 | D7(9)\nG7M            B7(5+)\nDeixa a vida me levar (vida leva eu)\nEm7            G7\nDeixa a vida me levar (vida leva eu)'
+    },
+    {
+      caderno: 'pagode',
+      titulo: 'Conselho (Pagode Tradicional)',
+      tom: 'Lá Menor (Am)',
+      partitura: '2/4 • Harmonia em ciclo de quintas com levada de pagode de mesa',
+      estudo: 'Observa os acordes menores com sétima e as tensões antes de tocar junto com a roda.',
+      cifra: 'Intro: Am7 | Dm7 | G7(9) | C7M(9)\nAm7            Dm7\nDeixe de lado esse baixo astral\nG7(9)          C7M(9)\nErgue a cabeça, enfrenta o mal'
+    },
+    {
+      caderno: 'samba',
+      titulo: 'O Mundo é um Moinho (Samba Tradicional)',
+      tom: 'Dó Maior (C)',
+      partitura: '2/4 • Samba tradicional com condução expressiva e resolução clara',
+      estudo: 'Cuida da resolução dos acordes dominantes e da intenção melódica sem acelerar.',
+      cifra: 'Intro: C7M | A7(b9) | Dm7 | G7(13)\nC7M            A7(b9)\nAinda é cedo, amor, mal raiou a madrugada\nDm7            G7(13)\nDeixa esse tempo passar'
+    },
+    {
+      caderno: 'pagode',
+      titulo: 'Coração Radiante (Pagode Tradicional)',
+      tom: 'Mi Maior (E)',
+      partitura: '2/4 • Pagode tradicional com acentuação leve e refrão expansivo',
+      estudo: 'Treina a troca limpa entre acordes com nona e sétima mantendo o pulso constante.',
+      cifra: 'Intro: E7M | C#m7 | F#m7 | B7(9)\nE7M            C#m7\nÉ tanta coisa boa que acontece\nF#m7           B7(9)\nQuando a gente se entrega de verdade'
+    },
+    {
+      caderno: 'samba',
+      titulo: 'Samba da Benção — Cadência de Roda',
+      tom: 'Lá Maior (A)',
+      partitura: '2/4 • Samba tradicional com transições diatónicas e apoio rítmico constante',
+      estudo: 'Estuda a ligação entre tónica, relativa menor e dominante mantendo a pulsação limpa.',
+      cifra: 'Intro: A7M | F#m7 | Bm7 | E7(9)\nA7M            C#m7\nA vida é feita de encontros e canções\nBm7            E7(9)\nQue embalam a alma em qualquer lugar'
+    },
+    {
+      caderno: 'pagode',
+      titulo: 'Tarde em Itapuã / Roda de Quintal',
+      tom: 'Fá Maior (F)',
+      partitura: '2/4 • Pagode de mesa com condução suave na estrofe e firme no refrão',
+      estudo: 'Pratica o controlo de volume entre o estudo individual e a execução em grupo.',
+      cifra: 'Intro: F7M | D7(b9) | Gm7 | C7(13)\nF7M            Am7\nQuando o sol vai descendo na esquina\nGm7            C7(13)\nO samba chama e a gente responde'
+    }
+  ];
+
+  const tons = [
+    'Dó Maior (C)', 'Ré Maior (D)', 'Mi Maior (E)', 'Fá Maior (F)',
+    'Sol Maior (G)', 'Lá Maior (A)', 'Lá Menor (Am)', 'Ré Menor (Dm)',
+    'Mi Menor (Em)', 'Sol Menor (Gm)'
+  ];
+
+  const progressos = [
+    'C7M | A7(b9) | Dm7 | G7(13)',
+    'G7M | Em7 | Am7 | D7(13)',
+    'D7M | Bm7 | Em7 | A7(13)',
+    'F7M | Dm7 | Gm7 | C7(9)',
+    'Am7 | Dm7 | G7(9) | C7M(9)',
+    'E7M | C#m7 | F#m7 | B7(9)'
+  ];
+
+  const lista = [];
+  for (let i = 0; i < 400; i++) {
+    const base = catalogosBase[i % catalogosBase.length];
+    const ehSamba = i % 2 === 0;
+    const caderno = i < catalogosBase.length ? base.caderno : (ehSamba ? 'samba' : 'pagode');
+    const tom = i < catalogosBase.length ? base.tom : tons[i % tons.length];
+    const prog = progressos[i % progressos.length];
+    const faixa = i + 1;
+
+    lista.push({
+      id: 1000 + i,
+      caderno,
+      titulo: i < catalogosBase.length
+        ? base.titulo
+        : `${ehSamba ? 'Samba Tradicional' : 'Pagode Tradicional'} #${faixa} — Repertório de Roda`,
+      tom,
+      partitura: base.partitura,
+      estudo: base.estudo,
+      cifra: i < catalogosBase.length
+        ? base.cifra
+        : `Intro: ${prog}\nParte A: ${prog}\nParte B: ${prog}\nRefrão: ${prog}`
+    });
+  }
+
+  return lista;
+}
+
+const cadernosRepertorioPadrao = gerarRepertorio400Musicas();
+
+const oficinasPartiturasGerais = {
+  harmonia: [
+    {
+      id: 401,
+      area: 'Harmonia',
+      titulo: 'Partitura de Harmonia I — Campo Harmónico e Funções (Tónica, Subdominante e Dominante)',
+      compasso: '4/4 • Estudo Harmónico Geral',
+      instrucoes: 'Lê os compassos lentamente sem pressa. Identifica onde há repouso (Tónica), preparo/afastamento (Subdominante) e tensão/resolução (Dominante). Toca em blocos primeiro e depois arpeja ou conduz as vozes com limpeza.',
+      partituraTexto: 'C.1: [ I  (T) ]   | C.2: [ IV (SD) ] | C.3: [ ii (SD) ] | C.4: [ V7 (D) -> I (T) ]\nC.5: [ vi (T) ]  | C.6: [ ii (SD) ] | C.7: [ V7(9) (D)]| C.8: [ I7M (T) ]'
+    },
+    {
+      id: 402,
+      area: 'Harmonia',
+      titulo: 'Partitura de Harmonia II — Preparações, Dominantes Secundários e Condução de Vozes',
+      compasso: '2/4 • Estudo Harmónico Geral',
+      instrucoes: 'Observa como cada dominante prepara o acorde seguinte. Mantém as notas comuns ligadas entre compassos e faz movimentos conjuntos nas vozes internas para evitar saltos bruscos.',
+      partituraTexto: 'C.1: [ I7M ]      | C.2: [ VI7(b9) ] | C.3: [ ii7 ]     | C.4: [ V7(13) ]\nC.5: [ iii7 ]     | C.6: [ VI7 ]     | C.7: [ II7(9) ]  | C.8: [ V7 -> I ]'
+    },
+    {
+      id: 403,
+      area: 'Harmonia',
+      titulo: 'Partitura de Harmonia III — Cadências II-V-I, Empréstimo Modal e Tensões',
+      compasso: '4/4 • Estudo Harmónico Geral',
+      instrucoes: 'Pratica a resolução tensa-repouso identificando sétimas, nonas e décimas terceiras. Mantém o mesmo ritmo harmónico em cada compasso antes de experimentar variações de levada.',
+      partituraTexto: 'C.1: [ ii7(9) ]   | C.2: [ V7(13) ]  | C.3: [ I7M(9) ]  | C.4: [ IV7M ]     \nC.5: [ iv7(b5) ]  | C.6: [ bVII7(9) ]| C.7: [ iii7 ]    | C.8: [ VI7(b9) -> ii7 -> V7 -> I ]'
+    },
+    {
+      id: 404,
+      area: 'Harmonia',
+      titulo: 'Partitura de Harmonia IV — Inversões, Baixo Pedal e Transições Harmónicas',
+      compasso: '2/4 • Estudo Harmónico Geral',
+      instrucoes: 'Presta atenção na nota mais grave de cada compasso. Estuda a transição sem pressa para que a mudança de acorde soe natural, contínua e equilibrada.',
+      partituraTexto: 'C.1: [ I / 3 ]    | C.2: [ IV / 5 ]  | C.3: [ ii7 ]     | C.4: [ V7 / 4 ]\nC.5: [ I ]        | C.6: [ V7/vi ]   | C.7: [ vi7 ]     | C.8: [ V7(9) -> I7M ]'
+    }
+  ],
+  percussao: [
+    {
+      id: 501,
+      area: 'Percussão',
+      titulo: 'Partitura de Percussão I — Subdivisão Binária, Semínimas e Colcheias',
+      compasso: '2/4 • Estudo Percussivo Geral',
+      instrucoes: 'Conta os tempos em voz alta (1 e 2 e). Mantém o metrónomo ou pulso constante sem adiantar nas colcheias. Diferencia claramente os acentos marcados (>) das notas neutras.',
+      partituraTexto: 'C.1: [ >1   e   2   e ] | C.2: [  1  >e   2  >e ] | C.3: [ >1  >e  >2  >e ] | C.4: [  1   e  >2   e ]'
+    },
+    {
+      id: 502,
+      area: 'Percussão',
+      titulo: 'Partitura de Percussão II — Síncope, Contratempos e Dinâmica',
+      compasso: '2/4 • Estudo Percussivo Geral',
+      instrucoes: 'Pratica primeiro em andamento lento até sentires a ligação entre o tempo fraco e o tempo forte seguinte. Controla a altura do som para que piano (p) e forte (f) tenham contraste real.',
+      partituraTexto: 'C.1 (p): [  1  >e   2   e ] | C.2 (p): [  1   e  >2  >e ] | C.3 (f): [ >1   e  >2  >e ] | C.4 (f): [ >1  >e  >2   . ]'
+    },
+    {
+      id: 503,
+      area: 'Percussão',
+      titulo: 'Partitura de Percussão III — Semicolcheias e Grupos Rítmicos (1-e-a 2-e-a)',
+      compasso: '2/4 • Estudo Percussivo Geral',
+      instrucoes: 'Subdivide cada tempo em quatro partes iguais (1 e a 2 e a). Evita encurtar a última nota do grupo e mantém a precisão mesmo quando o andamento subir.',
+      partituraTexto: 'C.1: [ >1  e  a  >2  e  a ] | C.2: [  1 >e  a   2 >e  a ] | C.3: [ >1  e >a  >2  e >a ] | C.4: [ >1  .  a  >2  e  . ]'
+    },
+    {
+      id: 504,
+      area: 'Percussão',
+      titulo: 'Partitura de Percussão IV — Pausas, Viradas e Estabilidade de Pulso',
+      compasso: '2/4 • Estudo Percussivo Geral',
+      instrucoes: 'Respeita os silêncios (.) sem perder a contagem interna. Usa os últimos tempos do ciclo como preparação para retomar o pulso principal com firmeza.',
+      partituraTexto: 'C.1: [ >1   e  >2   e ] | C.2: [ >1   .   2  >e ] | C.3: [  1  >e  >2  >e ] | C.4: [ >1  >e  >2  >e ]'
+    }
+  ]
+};
+
+const defaultData = {
+  currentUser: null,
+  perfisComunidade: [
+    { id: 1, email: 'miguel@musicon.com', senha: '123', nome: 'Miguel', iniciais: 'MG', area: 'Show ao Vivo & Bailes', instrumento: 'Violão 7 Cordas, Cavaquinho', estilo: 'Samba & Choro', notaMedia: 4.9, totalAvaliacoes: 14 },
+    { id: 2, email: 'mariana@musicon.com', senha: '123', nome: 'Mariana Souza', iniciais: 'MS', area: 'Show ao Vivo', instrumento: 'Cavaquinho, Voz', estilo: 'Partido-Alto & MPB', notaMedia: 4.8, totalAvaliacoes: 19 },
+    { id: 3, email: 'carlos@musicon.com', senha: '123', nome: 'Carlos Andrade', iniciais: 'CA', area: 'Rodas de Samba', instrumento: 'Percussão, Pandeiro', estilo: 'Samba de Roda & Baião', notaMedia: 5.0, totalAvaliacoes: 27 }
+  ],
+  propostas: [],
+  mensagensPrivadas: [],
+  atividades: [
+    { id: 1, title: 'Prática: Levada de Samba-Enredo', description: 'Treina a levada de caixa, surdo e repique.', subject: 'Percussão', type: 'Prática', completed: false }
+  ],
+  partituras: [],
+  offlineItems: [
+    { id: 1, titulo: 'Caderno de Cifras: Samba & Raiz', info: '400 músicas • Repertório Tradicional', baixado: true }
+  ]
+};
+
+let appState = carregarEstado();
+let artistaAlvoProposta = null;
+let perfilSelecionadoParaAvaliar = null;
+let notaSelecionada = 5;
+let usuarioConversandoId = null;
+let cadernoSelecionado = 'todos';
+let modoUsoCaderno = 'estudo';
+let cifraAbertaAtual = null;
+let filtroTextoCaderno = '';
+let paginaAtualCaderno = 1;
+const ITENS_POR_PAGINA_CADERNO = 25;
+
+function carregarEstado() {
+  const salvo = localStorage.getItem(STORAGE_KEY);
+  const parsed = salvo ? JSON.parse(salvo) : JSON.parse(JSON.stringify(defaultData));
+  parsed.partituras = [];
+  return parsed;
+}
+
+function salvarEstado() {
+  const copia = { ...appState, partituras: [] };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(copia));
+}
 
 document.addEventListener('DOMContentLoaded', () => {
-  carregarDados();
-  configurarEventos();
-  verificarUsuarioLogado();
-  atualizarConexaoOffline();
+  aplicarTemaSalvo();
+  renderizarSlideHistoria(false);
+  configurarArrasteHistoria();
+  iniciarPassagemAutomaticaHistoria();
+  renderizarVideosPagode();
+
+  const sessao = localStorage.getItem('usuarioLogado');
+  if (sessao) {
+    appState.currentUser = JSON.parse(sessao);
+    mostrarPortal();
+  } else {
+    mostrarLogin();
+  }
+
+  atualizarTudoNaTela();
+
+  const formLogin = document.getElementById('form-login');
+  if (formLogin) {
+    formLogin.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('password').value.trim();
+
+      if (!email || !senha) return showToast('Preenche e-mail e palavra-passe.', 'error');
+
+      let perfilEncontrado = appState.perfisComunidade.find(p => p.email.toLowerCase() === email.toLowerCase());
+
+      if (!perfilEncontrado) {
+        return showToast('E-mail não registado! Cria uma conta primeiro.', 'error');
+      }
+
+      const senhaCorreta = perfilEncontrado.senha || '123';
+      if (senha !== senhaCorreta) {
+        return showToast('Palavra-passe incorreta.', 'error');
+      }
+
+      appState.currentUser = { ...perfilEncontrado };
+      localStorage.setItem('usuarioLogado', JSON.stringify(appState.currentUser));
+      salvarEstado();
+      mostrarPortal();
+      atualizarTudoNaTela();
+      showToast(`Bem-vindo à roda, ${appState.currentUser.nome || appState.currentUser.name}!`, 'success');
+    });
+  }
+
+  const formCadastro = document.getElementById('form-cadastro');
+  if (formCadastro) {
+    formCadastro.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nome = document.getElementById('cadastro-nome').value.trim();
+      const email = document.getElementById('cadastro-email').value.trim();
+      const senha = document.getElementById('cadastro-senha').value.trim();
+
+      if (!nome || !email || !senha) return showToast('Preenche todos os campos do registo.', 'error');
+
+      const jaExiste = appState.perfisComunidade.some(p => p.email.toLowerCase() === email.toLowerCase());
+      if (jaExiste) {
+        return showToast('Este e-mail já está registado. Inicia sessão.', 'error');
+      }
+
+      const novoUsuario = {
+        id: Date.now(),
+        email: email,
+        senha: senha,
+        name: nome,
+        nome: nome,
+        iniciais: nome.substring(0, 2).toUpperCase(),
+        area: 'Show ao Vivo & Rodas',
+        instrumento: 'Pandeiro e Voz',
+        estilo: 'Samba de Raiz',
+        notaMedia: 5.0,
+        totalAvaliacoes: 1
+      };
+
+      appState.perfisComunidade.push(novoUsuario);
+      appState.currentUser = { ...novoUsuario };
+
+      localStorage.setItem('usuarioLogado', JSON.stringify(appState.currentUser));
+      salvarEstado();
+      mostrarPortal();
+      atualizarTudoNaTela();
+      showToast('Conta criada com sucesso! Bem-vindo.', 'success');
+    });
+  }
 });
 
-function configurarEventos() {
-  const filtroMateria = document.getElementById('filtro-atividade-materia');
-  const filtroStatus = document.getElementById('filtro-atividade-status');
-  const filtroCoord = document.getElementById('coord-filtro-materia');
-  const selectRole = document.getElementById('new-user-role');
+// =====================================================
+// OFICINAS & BATUCADA — PARTITURAS GERAIS (HARMONIA / PERCUSSÃO)
+// =====================================================
 
-  if (filtroMateria) {
-    filtroMateria.addEventListener('change', renderAtividadesTab);
-  }
+function abrirPartituraEstudoGeral(id) {
+  const todas = [...oficinasPartiturasGerais.harmonia, ...oficinasPartiturasGerais.percussao];
+  const item = todas.find(p => Number(p.id) === Number(id));
+  const box = document.getElementById('detalhe-oficina-box');
+  if (!item || !box) return;
 
-  if (filtroStatus) {
-    filtroStatus.addEventListener('change', renderAtividadesTab);
-  }
-
-  if (filtroCoord) {
-    filtroCoord.addEventListener('change', renderCoordAtividades);
-  }
-
-  if (selectRole) {
-    selectRole.addEventListener('change', atualizarCampoRM);
-  }
-
-  const formResposta = document.getElementById('form-responder-atividade');
-
-  if (formResposta) {
-    formResposta.addEventListener('submit', handleResponderAtividade);
-  }
-
-  const formAtividade = document.getElementById('form-nova-atividade');
-
-  if (formAtividade) {
-    formAtividade.addEventListener('submit', handleNovaAtividadeSubmit);
-  }
-
-  const formCadastro = document.getElementById('form-cadastro-aluno');
-
-  if (formCadastro) {
-    formCadastro.addEventListener('submit', handleCadastroAlunoSubmit);
-  }
+  box.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+      <div>
+        <span class="portal-badge">${item.area}</span>
+        <h3 class="mt-2">${item.titulo}</h3>
+        <small class="text-muted">${item.compasso}</small>
+      </div>
+      <button type="button" class="btn-quick" onclick="fecharPartituraEstudoGeral()"><i class="fa-solid fa-xmark"></i> Fechar</button>
+    </div>
+    <p class="mt-3"><strong>Instruções de estudo:</strong> ${item.instrucoes}</p>
+    <pre style="margin-top:0.85rem; white-space:pre-wrap; font-family:inherit; line-height:1.6;">${item.partituraTexto}</pre>
+  `;
+  box.classList.remove('hidden');
 }
 
-// ============================================================
-// UTILITÁRIOS
-// ============================================================
-
-function gerarIniciais(nome) {
-  if (!nome) return 'US';
-
-  return nome
-    .trim()
-    .split(/\s+/)
-    .map(parte => parte[0])
-    .join('')
-    .substring(0, 2)
-    .toUpperCase();
+function fecharPartituraEstudoGeral() {
+  document.getElementById('detalhe-oficina-box')?.classList.add('hidden');
 }
 
-function formatRole(role) {
-  const nomes = {
-    aluno: 'ALUNO',
-    professor: 'PROFESSOR',
-    coordenador: 'COORDENADOR'
-  };
-
-  return nomes[role] || String(role || '').toUpperCase();
-}
-
-function escaparHTML(valor) {
-  return String(valor ?? '').replace(/[&<>"']/g, caractere => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  })[caractere]);
-}
-
-function formatarNota(nota) {
-  if (nota === null || nota === undefined || nota === '') return '—';
-
-  return Number(nota).toLocaleString('pt-BR', {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 2
-  });
-}
-
-function getSubjectTagClass(subject) {
-  const classes = {
-    'Matemática': 'tag-math',
-    'Português': 'tag-port',
-    'Ciências': 'tag-sci',
-    'História': 'tag-hist',
-    'Geografia': 'tag-geo',
-    'Inglês': 'tag-ing',
-    'Artes': 'tag-art',
-    'Educação Física': 'tag-edf',
-    'Biologia': 'tag-bio',
-    'Física': 'tag-fis',
-    'Química': 'tag-qui'
-  };
-
-  return classes[subject] || 'tag-math';
-}
-
-function obterNotaMedia(item) {
-  const notas = [item.b1, item.b2, item.b3, item.b4]
-    .filter(nota => nota !== null && nota !== undefined && nota !== '');
-
-  if (!notas.length) return null;
-
-  return notas.reduce((soma, nota) => soma + Number(nota), 0) / notas.length;
-}
-
-function obterBoletimMateria(materia) {
-  let item = db.boletim.find(nota => nota.subject === materia);
-
-  if (!item) {
-    item = {
-      subject: materia,
-      b1: null,
-      b2: null,
-      b3: null,
-      b4: null
-    };
-
-    db.boletim.push(item);
-  }
-
-  return item;
-}
-
-function obterAlunoAtual() {
-  return db.currentUser?.name || 'Aluno';
-}
-
-function obterIdAlunoAtual() {
-  return db.currentUser?.id ?? null;
-}
-
-// ============================================================
-// MENSAGENS
-// ============================================================
-
-function showToast(message, type = 'success') {
-  const container = document.getElementById('toast-container');
-
-  if (!container) {
-    console.log(message);
-    return;
-  }
-
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-
-  const icone = type === 'success'
-    ? 'fa-check-circle'
-    : type === 'error'
-      ? 'fa-circle-xmark'
-      : 'fa-info-circle';
-
-  const icon = document.createElement('i');
-  icon.className = `fa-solid ${icone}`;
-
-  const texto = document.createElement('span');
-  texto.textContent = message;
-
-  toast.append(icon, texto);
-  container.appendChild(toast);
-
-  setTimeout(() => toast.remove(), 3500);
-}
-
-// ============================================================
-// LOGIN E PERFIS
-// ============================================================
-
-function setRole(role) {
-  db.activeRole = role;
-
-  document.querySelectorAll('.role-btn').forEach(button => {
-    button.classList.toggle('active', button.dataset.role === role);
-  });
-}
-
-function mostrarPortal() {
-  document.getElementById('login-screen')?.classList.add('hidden');
-  document.getElementById('login-screen')?.classList.remove('active');
-  document.getElementById('app-layout')?.classList.remove('hidden');
-}
-
-function mostrarLogin() {
-  document.getElementById('app-layout')?.classList.add('hidden');
-  document.getElementById('login-screen')?.classList.remove('hidden');
-  document.getElementById('login-screen')?.classList.add('active');
-}
-
-function doLogin(user) {
-  if (!user) return;
-
-  db.currentUser = user;
-  db.activeRole = user.role;
-
-  localStorage.setItem('usuarioLogado', JSON.stringify(user));
-
-  mostrarPortal();
-  setupSidebarForRole(user.role);
-
-  showToast(`Bem-vindo(a), ${user.name}!`);
-}
-
-function verificarUsuarioLogado() {
-  const salvo = localStorage.getItem('usuarioLogado');
-
-  if (!salvo) {
-    mostrarLogin();
-    return;
-  }
-
-  try {
-    const user = JSON.parse(salvo);
-
-    if (!user || !user.role || !user.id) {
-      localStorage.removeItem('usuarioLogado');
-      mostrarLogin();
-      return;
-    }
-
-    db.currentUser = user;
-    db.activeRole = user.role;
-
-    mostrarPortal();
-    setupSidebarForRole(user.role);
-  } catch (erro) {
-    localStorage.removeItem('usuarioLogado');
-    mostrarLogin();
-  }
-}
-
-function quickLogin(role) {
-  setRole(role);
-
-  const user = db.users.find(item => item.role === role);
-
-  if (!user) {
-    showToast('Conta de demonstração não encontrada.', 'error');
-    return;
-  }
-
-  document.getElementById('email').value = user.email;
-  document.getElementById('password').value = '12345678';
-
-  showToast('Dados preenchidos. Clique em Entrar no Portal.', 'info');
-}
-
-async function handleLoginSubmit(event) {
-  event.preventDefault();
-
-  const email = document.getElementById('email')?.value.trim();
-  const senha = document.getElementById('password')?.value;
-
-  if (!email || !senha) {
-    showToast('Preencha o e-mail e a senha.', 'info');
-    return;
-  }
-
-  // Primeiro tenta autenticar pelo backend.
-  try {
-    const resposta = await fetch('http://localhost:3000/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, senha })
-    });
-
-    const dados = await resposta.json().catch(() => ({}));
-
-    if (resposta.ok && dados.usuario) {
-      const usuarioAPI = dados.usuario;
-      const tipo = String(usuarioAPI.tipo || '').toUpperCase();
-
-      const mapaRoles = {
-        ALUNO: 'aluno',
-        PROFESSOR: 'professor',
-        GESTOR: 'coordenador',
-        COORDENADOR: 'coordenador'
-      };
-
-      const role = mapaRoles[tipo];
-
-      if (!role) {
-        showToast('Tipo de usuário não reconhecido.', 'error');
-        return;
-      }
-
-      const user = {
-        id: usuarioAPI.id_usuario,
-        name: usuarioAPI.nome || 'Usuário',
-        email: usuarioAPI.email || email,
-        role,
-        initials: gerarIniciais(usuarioAPI.nome),
-        ra: usuarioAPI.rm || usuarioAPI.ra || ''
-      };
-
-      const existente = db.users.find(item => item.email === user.email);
-
-      if (existente) {
-        Object.assign(existente, user);
-      } else {
-        db.users.push(user);
-      }
-
-      salvarDados();
-      doLogin(user);
-      return;
-    }
-
-    // Se o backend respondeu com erro, não tenta ignorar a senha.
-    showToast(dados.erro || dados.mensagem || 'E-mail ou senha incorretos.', 'error');
-    return;
-  } catch (erro) {
-    console.warn('Backend indisponível; verificando contas locais de demonstração.');
-  }
-
-  // Modo de demonstração: funciona sem backend para testar o front-end.
-  const user = db.users.find(item =>
-    item.email.toLowerCase() === email.toLowerCase()
-  );
-
-  if (user && senha === '12345678') {
-    doLogin(user);
-    showToast('Você entrou no modo de demonstração.', 'info');
-    return;
-  }
-
-  showToast(
-    'Não foi possível conectar ao servidor. Para demonstração local, use uma conta de teste e a senha 12345678.',
-    'error'
-  );
-}
-
-function logout() {
-  db.currentUser = null;
-  localStorage.removeItem('usuarioLogado');
-
-  mostrarLogin();
-
-  const email = document.getElementById('email');
-  const senha = document.getElementById('password');
-
-  if (email) email.value = '';
-  if (senha) senha.value = '';
-
-  setRole('aluno');
-  showToast('Você saiu da conta.', 'info');
-}
-
-// ============================================================
-// MENU LATERAL
-// ============================================================
-
-function setupSidebarForRole(role) {
-  const nav = document.getElementById('sidebar-menu');
-  const badge = document.getElementById('role-badge');
-
-  if (!nav || !badge) return;
-
-  if (role === 'aluno') {
-    badge.innerText = 'Portal do Aluno';
-
-    nav.innerHTML = `
-      <button class="nav-item active" onclick="switchTab('dashboard')">
-        <i class="fa-solid fa-house"></i> Dashboard
-      </button>
-      <button class="nav-item" onclick="switchTab('atividades')">
-        <i class="fa-solid fa-clipboard-check"></i> Atividades
-      </button>
-      <button class="nav-item" onclick="switchTab('boletim')">
-        <i class="fa-solid fa-file-lines"></i> Boletim de Notas
-      </button>
-      <button class="nav-item" onclick="switchTab('progresso')">
-        <i class="fa-solid fa-chart-line"></i> Progresso
-      </button>
-      <button class="nav-item" onclick="switchTab('offline')">
-        <i class="fa-solid fa-wifi"></i> Offline
-      </button>
-      <button class="nav-item" onclick="switchTab('perfil')">
-        <i class="fa-solid fa-user"></i> Meu perfil
-      </button>
-    `;
-
-    switchTab('dashboard');
-    return;
-  }
-
-  if (role === 'professor') {
-    badge.innerText = 'Painel do Professor';
-
-    nav.innerHTML = `
-      <button class="nav-item active" onclick="switchTab('prof-atividades')">
-        <i class="fa-solid fa-file-circle-plus"></i> Atividades e entregas
-      </button>
-      <button class="nav-item" onclick="switchTab('prof-notas')">
-        <i class="fa-solid fa-chart-column"></i> Notas e frequência
-      </button>
-      <button class="nav-item" onclick="switchTab('perfil')">
-        <i class="fa-solid fa-user"></i> Meu perfil
-      </button>
-    `;
-
-    switchTab('prof-atividades');
-    return;
-  }
-
-  if (role === 'coordenador') {
-    badge.innerText = 'Coordenação';
-
-    nav.innerHTML = `
-      <button class="nav-item active" onclick="switchTab('coord-dashboard')">
-        <i class="fa-solid fa-chart-pie"></i> Visão Geral
-      </button>
-      <button class="nav-item" onclick="switchTab('coord-atividades')">
-        <i class="fa-solid fa-list-check"></i> Atividades
-      </button>
-      <button class="nav-item" onclick="switchTab('coord-usuarios')">
-        <i class="fa-solid fa-users-gear"></i> Usuários
-      </button>
-      <button class="nav-item" onclick="switchTab('coord-materias')">
-        <i class="fa-solid fa-layer-group"></i> Matérias
-      </button>
-      <button class="nav-item" onclick="switchTab('perfil')">
-        <i class="fa-solid fa-user"></i> Meu perfil
-      </button>
-    `;
-
-    switchTab('coord-dashboard');
-  }
-}
-
-// ============================================================
-// NAVEGAÇÃO ENTRE ABAS
-// ============================================================
-
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(tab => {
-    tab.classList.remove('active');
-  });
-
-  document.querySelectorAll('.nav-item').forEach(button => {
-    button.classList.remove('active');
-  });
-
-  const target = document.getElementById(`tab-${tabId}`);
-
-  if (!target) {
-    console.warn(`Aba não encontrada: tab-${tabId}`);
-    showToast('Esta área ainda não está disponível no HTML.', 'info');
-    return;
-  }
-
-  target.classList.add('active');
-
-  document.querySelectorAll('.nav-item').forEach(button => {
-    const onclick = button.getAttribute('onclick') || '';
-
-    if (onclick.includes(`'${tabId}'`) || onclick.includes(`"${tabId}"`)) {
-      button.classList.add('active');
-    }
-  });
-
-  switch (tabId) {
-    case 'dashboard':
-      renderDashboard();
-      break;
-    case 'atividades':
-      renderAtividadesTab();
-      break;
-    case 'boletim':
-      renderBoletim();
-      break;
-    case 'progresso':
-      renderProgressoTab();
-      break;
-    case 'offline':
-      renderOfflineTab();
-      break;
-    case 'perfil':
-      renderPerfilTab();
-      break;
-    case 'prof-atividades':
-      renderProfAtividades();
-      break;
-    case 'prof-notas':
-      renderProfNotas();
-      break;
-    case 'coord-dashboard':
-      renderCoordDashboard();
-      break;
-    case 'coord-atividades':
-      renderCoordAtividades();
-      break;
-    case 'coord-usuarios':
-      renderCoordDashboard();
-      break;
-    case 'coord-materias':
-      renderCoordDashboard();
-      break;
-  }
-}
-
-// ============================================================
-// DASHBOARD
-// ============================================================
-
-function renderDashboard() {
-  const total = db.atividades.length;
-  const concluidas = db.atividades.filter(ativ => ativ.completed).length;
-  const pendentes = total - concluidas;
-
-  const mediaItens = db.boletim
-    .map(obterNotaMedia)
-    .filter(nota => nota !== null);
-
-  const mediaGeral = mediaItens.length
-    ? mediaItens.reduce((soma, nota) => soma + nota, 0) / mediaItens.length
-    : null;
-
-  const setTexto = (id, valor) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = valor;
-  };
-
-  setTexto('stat-aulas-val', total);
-  setTexto('stat-media-val', mediaGeral === null ? '—' : formatarNota(mediaGeral));
-  setTexto('stat-materias-val', db.subjects.length);
-  setTexto('stat-ativ-val', total);
-  setTexto('stat-concluidas-val', concluidas);
-  setTexto('stat-pendentes-val', pendentes);
-
-  const container = document.getElementById('dashboard-atividades');
-
-  if (container) {
-    const recentes = db.atividades.slice(0, 4);
-
-    container.innerHTML = recentes.map(ativ => `
-      <div class="card">
-        <div class="stat-icon ${ativ.completed ? 'green' : 'orange'}">
-          <i class="fa-solid fa-clipboard-list"></i>
+function renderizarOficinasPartituras() {
+  const divHarmonia = document.getElementById('lista-partituras-harmonia');
+  const divPercussao = document.getElementById('lista-partituras-percussao');
+
+  if (divHarmonia) {
+    divHarmonia.innerHTML = oficinasPartiturasGerais.harmonia.map(p => `
+      <div style="padding:0.75rem 0; border-top:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; gap:0.75rem;">
+        <div>
+          <strong>${p.titulo}</strong>
+          <div class="text-muted" style="font-size:0.8rem;">${p.compasso}</div>
         </div>
-        <h3 class="card-subtitle mt-4">${escaparHTML(ativ.title)}</h3>
-        <p>${escaparHTML(ativ.subject)} · ${escaparHTML(ativ.date)}</p>
-        <p>${ativ.completed ? 'Resposta enviada' : 'Aguardando sua resposta'}</p>
-        <button class="btn-primary mt-4" onclick="selecionarAtividadeParaResposta(${ativ.id})">
-          ${ativ.completed ? 'Ver atividade' : 'Responder'}
+        <button type="button" class="btn-quick" onclick="abrirPartituraEstudoGeral(${p.id})">
+          <i class="fa-solid fa-file-lines"></i> Abrir Partitura
+        </button>
+      </div>
+    `).join('');
+  }
+
+  if (divPercussao) {
+    divPercussao.innerHTML = oficinasPartiturasGerais.percussao.map(p => `
+      <div style="padding:0.75rem 0; border-top:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; gap:0.75rem;">
+        <div>
+          <strong>${p.titulo}</strong>
+          <div class="text-muted" style="font-size:0.8rem;">${p.compasso}</div>
+        </div>
+        <button type="button" class="btn-quick" onclick="abrirPartituraEstudoGeral(${p.id})">
+          <i class="fa-solid fa-file-lines"></i> Abrir Partitura
         </button>
       </div>
     `).join('');
   }
 }
 
-// ============================================================
-// ATIVIDADES DO ALUNO
-// ============================================================
+// =====================================================
+// CADERNOS DE CIFRAS & PARTITURAS (SAMBA & PAGODE - 400+)
+// =====================================================
 
-function renderAtividadesTab() {
-  const container = document.getElementById('atividades-lista');
-  if (!container) return;
+function obterFontePartituras() {
+  if (!Array.isArray(appState.partituras) || appState.partituras.length === 0) {
+    appState.partituras = cadernosRepertorioPadrao;
+  }
+  return appState.partituras;
+}
 
-  const materia = document.getElementById('filtro-atividade-materia')?.value || '';
-  const status = document.getElementById('filtro-atividade-status')?.value || '';
+function obterListaCaderno() {
+  const base = obterFontePartituras();
+  const termo = (filtroTextoCaderno || '').toLowerCase().trim();
 
-  const lista = db.atividades.filter(ativ => {
-    const entrega = obterEntregaDoAluno(ativ.id);
-    const situacao = !entrega ? 'pendente' : entrega.graded ? 'corrigida' : 'entregue';
+  return base.filter(item => {
+    const matchCaderno = cadernoSelecionado === 'todos' || (item.caderno || 'samba') === cadernoSelecionado;
+    if (!matchCaderno) return false;
+    if (!termo) return true;
 
-    return (!materia || ativ.subject === materia) &&
-      (!status || status === situacao);
+    const titulo = (item.titulo || '').toLowerCase();
+    const tom = (item.tom || '').toLowerCase();
+    return titulo.includes(termo) || tom.includes(termo);
   });
-
-  const concluidas = lista.filter(ativ => obterEntregaDoAluno(ativ.id)).length;
-
-  const setTexto = (id, valor) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = valor;
-  };
-
-  setTexto('ativ-total', lista.length);
-  setTexto('ativ-concluidas', concluidas);
-  setTexto('ativ-pendentes', lista.length - concluidas);
-
-  if (!lista.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <i class="fa-solid fa-folder-open"></i>
-        <h3>Nenhuma atividade encontrada</h3>
-        <p>Tente mudar os filtros selecionados.</p>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = lista.map(ativ => {
-    const entrega = obterEntregaDoAluno(ativ.id);
-    const situacao = !entrega ? 'Pendente' : entrega.graded ? 'Corrigida' : 'Entregue';
-
-    return `
-      <div class="activity-item">
-        <div class="act-left">
-          <div class="act-icon ${getSubjectTagClass(ativ.subject)}">
-            <i class="fa-solid fa-clipboard-check"></i>
-          </div>
-          <div>
-            <div class="act-title">${escaparHTML(ativ.title)}</div>
-            <div class="act-meta">
-              ${escaparHTML(ativ.subject)} · ${escaparHTML(ativ.type)} · Prazo: ${escaparHTML(ativ.date)}
-            </div>
-            <p>${escaparHTML(ativ.description || 'Consulte as instruções da atividade.')}</p>
-            <small>Turma: ${escaparHTML(ativ.turma || 'Não informada')} · Valor: ${ativ.points} pontos</small>
-          </div>
-        </div>
-        <div class="act-right">
-          <span class="act-badge">${situacao}</span>
-          <button class="btn-primary" onclick="selecionarAtividadeParaResposta(${ativ.id})">
-            ${entrega ? 'Ver entrega' : 'Responder'}
-          </button>
-          ${entrega?.graded ? `<p>Nota: ${formatarNota(entrega.grade)}</p>` : ''}
-        </div>
-      </div>
-    `;
-  }).join('');
 }
 
-function obterEntregaDoAluno(atividadeId) {
-  const alunoId = obterIdAlunoAtual();
-
-  return db.submissions.find(sub =>
-    sub.atividadeId === atividadeId &&
-    (
-      alunoId !== null
-        ? String(sub.studentId) === String(alunoId)
-        : sub.studentName === obterAlunoAtual()
-    )
-  );
+function selecionarCaderno(tipo) {
+  cadernoSelecionado = tipo;
+  paginaAtualCaderno = 1;
+  const label = document.getElementById('caderno-ativo-label');
+  if (label) {
+    if (tipo === 'samba') label.textContent = 'Caderno: Samba Tradicional';
+    else if (tipo === 'pagode') label.textContent = 'Caderno: Pagode Tradicional';
+    else label.textContent = 'Caderno: Todos (Samba & Pagode Tradicionais)';
+  }
+  renderizarTabelaPartituras();
+  if (cifraAbertaAtual) abrirCifraCaderno(cifraAbertaAtual);
 }
 
-function selecionarAtividadeParaResposta(id) {
-  const ativ = db.atividades.find(item => item.id === id);
-  if (!ativ) return;
-
-  const entrega = obterEntregaDoAluno(id);
-
-  const campoId = document.getElementById('resposta-atividade-id');
-  const campoTitulo = document.getElementById('resposta-atividade-titulo');
-  const campoTexto = document.getElementById('resposta-atividade-texto');
-
-  if (campoId) campoId.value = ativ.id;
-  if (campoTitulo) campoTitulo.value = ativ.title;
-  if (campoTexto) campoTexto.value = entrega?.text || '';
-
-  const card = document.getElementById('atividade-resposta-card');
-  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  if (entrega?.graded) {
-    showToast(`Esta atividade já foi corrigida. Nota: ${formatarNota(entrega.grade)}.`, 'info');
+function alternarModoUsoCaderno(modo) {
+  modoUsoCaderno = modo;
+  const desc = document.getElementById('modo-uso-descricao');
+  if (desc) {
+    desc.textContent = modo === 'estudo'
+      ? 'Modo Estudo: mostra dica de prática, harmonia e partitura rítmica.'
+      : 'Modo Tocar / Roda / Outros: foco direto na cifra e partitura para execução e ensaios.';
   }
+  renderizarTabelaPartituras();
+  if (cifraAbertaAtual) abrirCifraCaderno(cifraAbertaAtual);
 }
 
-function handleResponderAtividade(event) {
-  event.preventDefault();
-
-  const id = Number(document.getElementById('resposta-atividade-id')?.value);
-  const texto = document.getElementById('resposta-atividade-texto')?.value.trim();
-  const arquivo = document.getElementById('resposta-atividade-arquivo')?.files?.[0];
-
-  const ativ = db.atividades.find(item => item.id === id);
-
-  if (!ativ) {
-    showToast('Selecione uma atividade antes de enviar.', 'info');
-    return;
-  }
-
-  if (!texto) {
-    showToast('Digite sua resposta antes de enviar.', 'info');
-    return;
-  }
-
-  const entregaExistente = obterEntregaDoAluno(id);
-
-  if (entregaExistente?.graded) {
-    showToast('Esta atividade já foi corrigida e não pode ser alterada nesta demonstração.', 'info');
-    return;
-  }
-
-  const entrega = entregaExistente || {
-    id: Date.now(),
-    studentId: obterIdAlunoAtual(),
-    studentName: obterAlunoAtual(),
-    atividadeId: ativ.id,
-    ativTitle: ativ.title,
-    date: new Date().toLocaleDateString('pt-BR'),
-    graded: false,
-    grade: null
-  };
-
-  entrega.text = texto;
-  entrega.ativTitle = ativ.title;
-  entrega.studentName = obterAlunoAtual();
-  entrega.studentId = obterIdAlunoAtual();
-  entrega.date = new Date().toLocaleDateString('pt-BR');
-  entrega.arquivoNome = arquivo?.name || null;
-
-  if (!entregaExistente) {
-    db.submissions.unshift(entrega);
-  }
-
-  ativ.completed = true;
-  ativ.answer = texto;
-
-  salvarDados();
-
-  showToast(
-    arquivo
-      ? 'Resposta registrada. O nome do arquivo foi anotado para demonstração; o arquivo ainda não foi enviado ao servidor.'
-      : 'Resposta enviada para avaliação!'
-  );
-
-  renderAtividadesTab();
-  renderDashboard();
-  renderProgressoTab();
-  renderOfflineTab();
-  renderProfAtividades();
+function filtrarCadernoTabela(valor) {
+  filtroTextoCaderno = valor || '';
+  paginaAtualCaderno = 1;
+  renderizarTabelaPartituras();
 }
 
-// Compatibilidade com a função antiga do modal.
-function handleEnviarResposta(event) {
-  handleResponderAtividade(event);
+function mudarPaginaCaderno(delta) {
+  const totalItens = obterListaCaderno().length;
+  const totalPaginas = Math.max(1, Math.ceil(totalItens / ITENS_POR_PAGINA_CADERNO));
+  paginaAtualCaderno = Math.min(totalPaginas, Math.max(1, paginaAtualCaderno + delta));
+  renderizarTabelaPartituras();
 }
 
-function openAtividadeModal(id) {
-  selecionarAtividadeParaResposta(id);
-  switchTab('atividades');
-}
-
-// ============================================================
-// BOLETIM DO ALUNO
-// ============================================================
-
-function renderBoletim() {
-  const tbody = document.getElementById('boletim-notas-list');
+function renderizarTabelaPartituras() {
+  const tbody = document.getElementById('tabela-partituras-body');
   if (!tbody) return;
 
-  const materias = [...new Set([
-    ...db.subjects,
-    ...db.boletim.map(item => item.subject)
-  ])];
+  const itens = obterListaCaderno();
+  const totalPaginas = Math.max(1, Math.ceil(itens.length / ITENS_POR_PAGINA_CADERNO));
+  if (paginaAtualCaderno > totalPaginas) paginaAtualCaderno = totalPaginas;
 
-  let somaMedias = 0;
-  let quantidadeMedias = 0;
-  let aprovadas = 0;
-  let recuperacao = 0;
+  const inicio = (paginaAtualCaderno - 1) * ITENS_POR_PAGINA_CADERNO;
+  const paginaItens = itens.slice(inicio, inicio + ITENS_POR_PAGINA_CADERNO);
 
-  tbody.innerHTML = materias.map(materia => {
-    const item = obterBoletimMateria(materia);
-    const media = obterNotaMedia(item);
-
-    let situacao = 'Sem notas';
-    let classe = '';
-
-    if (media !== null) {
-      somaMedias += media;
-      quantidadeMedias++;
-
-      if (media >= 7) {
-        situacao = 'Aprovado';
-        classe = 'tag-green';
-        aprovadas++;
-      } else {
-        situacao = 'Em recuperação';
-        classe = 'tag-orange';
-        recuperacao++;
-      }
-    }
-
-    return `
-      <tr>
-        <td>${escaparHTML(materia)}</td>
-        <td>${formatarNota(item.b1)}</td>
-        <td>${formatarNota(item.b2)}</td>
-        <td>${formatarNota(item.b3)}</td>
-        <td>${formatarNota(item.b4)}</td>
-        <td><strong>${formatarNota(media)}</strong></td>
-        <td><span class="tag ${classe}">${situacao}</span></td>
-      </tr>
-    `;
-  }).join('');
-
-  const mediaGeral = quantidadeMedias ? somaMedias / quantidadeMedias : null;
-
-  const setTexto = (id, valor) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = valor;
-  };
-
-  setTexto('boletim-media-geral', mediaGeral === null ? '—' : formatarNota(mediaGeral));
-  setTexto('boletim-aprovadas', aprovadas);
-  setTexto('boletim-recuperacao', recuperacao);
-}
-
-// ============================================================
-// PROGRESSO
-// ============================================================
-
-function renderProgressoTab() {
-  const total = db.atividades.length;
-  const concluidas = db.atividades.filter(ativ => Boolean(obterEntregaDoAluno(ativ.id))).length;
-  const pct = total ? Math.round((concluidas / total) * 100) : 0;
-
-  const setTexto = (id, valor) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = valor;
-  };
-
-  setTexto('progress-percent-lbl', `${pct}%`);
-  setTexto('prog-stat-aulas', total);
-  setTexto('prog-stat-concluidas', db.subjects.length);
-  setTexto('prog-stat-pendentes', db.boletim.filter(item =>
-    [item.b1, item.b2, item.b3, item.b4].some(nota => nota !== null && nota !== undefined)
-  ).length);
-
-  const donut = document.getElementById('donut-circle');
-  if (donut) donut.setAttribute('stroke-dasharray', `${pct}, 100`);
-
-  const grid = document.getElementById('progresso-materias-grid');
-  if (!grid) return;
-
-  grid.innerHTML = db.subjects.map(materia => {
-    const atividades = db.atividades.filter(ativ => ativ.subject === materia);
-    const feitas = atividades.filter(ativ => Boolean(obterEntregaDoAluno(ativ.id))).length;
-    const percentual = atividades.length ? Math.round(feitas / atividades.length * 100) : 0;
-
-    const nota = db.boletim.find(item => item.subject === materia);
-    const media = nota ? obterNotaMedia(nota) : null;
-
-    return `
-      <div class="card subject-progress-card">
-        <div class="sub-prog-top">
-          <span class="tag ${getSubjectTagClass(materia)}">${escaparHTML(materia)}</span>
-          <strong>${percentual}%</strong>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" style="width:${percentual}%"></div>
-        </div>
-        <p>${feitas} de ${atividades.length} atividades entregues</p>
-        <p>Média: ${formatarNota(media)}</p>
-      </div>
-    `;
-  }).join('');
-}
-
-// ============================================================
-// ACESSO OFFLINE - DEMONSTRAÇÃO
-// ============================================================
-
-function atualizarConexaoOffline() {
-  const titulo = document.getElementById('wifi-status-title');
-  const icone = document.getElementById('wifi-status-icon');
-
-  if (titulo) {
-    titulo.textContent = navigator.onLine ? 'Conexão disponível' : 'Você está offline';
-  }
-
-  if (icone) {
-    icone.innerHTML = navigator.onLine
-      ? '<i class="fa-solid fa-wifi"></i>'
-      : '<i class="fa-solid fa-wifi-slash"></i>';
-  }
-}
-
-window.addEventListener('online', atualizarConexaoOffline);
-window.addEventListener('offline', atualizarConexaoOffline);
-
-function renderOfflineTab() {
-  atualizarConexaoOffline();
-
-  const contador = document.getElementById('off-count-ativ');
-  const container = document.getElementById('offline-list-container');
-
-  const pendentes = db.atividades.filter(ativ => !obterEntregaDoAluno(ativ.id));
-
-  if (contador) contador.textContent = `(${pendentes.length})`;
-  if (!container) return;
-
-  container.innerHTML = pendentes.length
-    ? pendentes.map(ativ => `
-        <div class="activity-item">
-          <div class="act-left">
-            <div class="act-icon ${getSubjectTagClass(ativ.subject)}">
-              <i class="fa-solid fa-book"></i>
-            </div>
-            <div>
-              <div class="act-title">${escaparHTML(ativ.title)}</div>
-              <div class="act-meta">${escaparHTML(ativ.subject)} · ${escaparHTML(ativ.date)}</div>
-            </div>
+  let html = `
+    <tr>
+      <td colspan="3">
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:space-between; align-items:center;">
+          <input
+            type="text"
+            class="input-styled"
+            style="max-width:320px; padding:0.45rem 0.75rem; padding-left:0.75rem;"
+            placeholder="Pesquisar música ou tom (${itens.length} disponíveis)..."
+            value="${filtroTextoCaderno.replace(/"/g, '"')}"
+            oninput="filtrarCadernoTabela(this.value)"
+          >
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <button type="button" class="btn-quick" onclick="mudarPaginaCaderno(-1)" ${paginaAtualCaderno <= 1 ? 'disabled' : ''}>Anterior</button>
+            <span class="text-muted" style="font-size:0.85rem;">Pág. ${paginaAtualCaderno} de ${totalPaginas}</span>
+            <button type="button" class="btn-quick" onclick="mudarPaginaCaderno(1)" ${paginaAtualCaderno >= totalPaginas ? 'disabled' : ''}>Próxima</button>
           </div>
-          <button class="btn-primary" onclick="selecionarAtividadeParaResposta(${ativ.id}); switchTab('atividades')">
-            Abrir atividade
-          </button>
         </div>
-      `).join('')
-    : '<p class="text-muted">Não há atividades pendentes.</p>';
-}
-
-function switchOfflineSubTab() {
-  renderOfflineTab();
-}
-
-function sincronizarOffline() {
-  salvarDados();
-
-  const agora = new Date();
-  const horario = agora.toLocaleTimeString('pt-BR', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-
-  const texto = document.getElementById('wifi-last-sync');
-  if (texto) texto.textContent = `Dados locais salvos às ${horario}`;
-
-  showToast('Dados locais sincronizados no navegador.', 'info');
-}
-
-function limparOffline() {
-  const confirmar = confirm(
-    'Esta ação limpa os dados de demonstração guardados no navegador. Deseja continuar?'
-  );
-
-  if (!confirmar) return;
-
-  localStorage.removeItem(CHAVE_DADOS);
-  showToast('Os dados locais foram removidos. Recarregue a página para restaurar os exemplos.', 'info');
-}
-
-// ============================================================
-// PERFIL
-// ============================================================
-
-function renderPerfilTab() {
-  const user = db.currentUser;
-  if (!user) return;
-
-  const setTexto = (id, valor) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = valor;
-  };
-
-  setTexto('profile-avatar-box', user.initials || gerarIniciais(user.name));
-  setTexto('profile-name-text', user.name);
-  setTexto('profile-email-text', user.email);
-  setTexto('profile-ra-text', user.ra ? `RM: ${user.ra}` : 'RM: ');
-  setTexto('profile-role-tag', formatRole(user.role));
-
-  const materias = document.getElementById('profile-subjects-container');
-  if (materias) {
-    materias.innerHTML = db.subjects.map(materia =>
-      `<span class="tag ${getSubjectTagClass(materia)}">${escaparHTML(materia)}</span>`
-    ).join('');
-  }
-
-  const total = db.atividades.length;
-  const feitas = db.atividades.filter(ativ => Boolean(obterEntregaDoAluno(ativ.id))).length;
-  const pct = total ? Math.round(feitas / total * 100) : 0;
-
-  setTexto('profile-general-pct-text', `${pct}%`);
-
-  const barra = document.getElementById('profile-general-bar-fill');
-  if (barra) barra.style.width = `${pct}%`;
-
-  setTexto('profile-general-subtext', `${feitas} de ${total} atividades entregues`);
-}
-
-function openEditProfileModal() {
-  if (!db.currentUser) return;
-
-  const nome = document.getElementById('edit-profile-name');
-  const email = document.getElementById('edit-profile-email');
-
-  if (nome) nome.value = db.currentUser.name;
-  if (email) email.value = db.currentUser.email;
-
-  document.getElementById('modal-edit-profile')?.classList.remove('hidden');
-}
-
-function handleSaveProfile(event) {
-  event.preventDefault();
-
-  if (!db.currentUser) return;
-
-  const name = document.getElementById('edit-profile-name')?.value.trim();
-  const email = document.getElementById('edit-profile-email')?.value.trim();
-
-  if (!name || !email) {
-    showToast('Preencha o nome e o e-mail.', 'info');
-    return;
-  }
-
-  const duplicado = db.users.some(user =>
-    user.id !== db.currentUser.id &&
-    user.email.toLowerCase() === email.toLowerCase()
-  );
-
-  if (duplicado) {
-    showToast('Este e-mail já está sendo usado por outra conta.', 'error');
-    return;
-  }
-
-  db.currentUser.name = name;
-  db.currentUser.email = email;
-  db.currentUser.initials = gerarIniciais(name);
-
-  const usuarioLista = db.users.find(user =>
-    String(user.id) === String(db.currentUser.id)
-  );
-
-  if (usuarioLista) Object.assign(usuarioLista, db.currentUser);
-
-  localStorage.setItem('usuarioLogado', JSON.stringify(db.currentUser));
-  salvarDados();
-
-  closeModal('modal-edit-profile');
-  renderPerfilTab();
-
-  showToast('Perfil atualizado no navegador!');
-}
-
-// ============================================================
-// PROFESSOR - MATÉRIAS E ATIVIDADES
-// ============================================================
-
-function populateSubjectSelects() {
-  const selects = [
-    document.getElementById('nova-atividade-materia'),
-    document.getElementById('filtro-atividade-materia'),
-    document.getElementById('coord-filtro-materia')
-  ];
-
-  selects.forEach(select => {
-    if (!select) return;
-
-    const valorAtual = select.value;
-    const primeiraOpcao = select.options[0]?.outerHTML || '';
-
-    const opcoes = db.subjects.map(materia =>
-      `<option value="${escaparHTML(materia)}">${escaparHTML(materia)}</option>`
-    ).join('');
-
-    select.innerHTML = primeiraOpcao + opcoes;
-
-    if (db.subjects.includes(valorAtual)) {
-      select.value = valorAtual;
-    }
-  });
-}
-
-function formatarData(data) {
-  if (!data) return 'Sem data';
-
-  const partes = data.split('-');
-
-  if (partes.length === 3) {
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-  }
-
-  return data;
-}
-
-
-function handleNovaAtividadeSubmit(event) {
-  if (event) event.preventDefault();
-
-  const titulo = document.getElementById('new-ativ-title')?.value.trim();
-  const materia = document.getElementById('new-ativ-subject')?.value;
-  const tipo = document.getElementById('new-ativ-type')?.value;
-  const dataEntrega = document.getElementById('new-ativ-date')?.value;
-  const pontuacao = Number(
-    document.getElementById('new-ativ-points')?.value
-  );
-  const descricao = document
-    .getElementById('new-ativ-description')?.value.trim();
-
-  if (!titulo || !materia || !tipo || !dataEntrega || !descricao) {
-    showToast('Preencha todos os campos da atividade.', 'error');
-    return;
-  }
-
-  if (!pontuacao || pontuacao < 1 || pontuacao > 100) {
-    showToast('A pontuação deve estar entre 1 e 100.', 'error');
-    return;
-  }
-
-  const novaAtividade = {
-    id: Date.now(),
-    title: titulo,
-    subject: materia,
-    type: tipo,
-    date: dataEntrega.split('-').reverse().join('/'),
-    dueDate: dataEntrega,
-    points: pontuacao,
-    description: descricao,
-    completed: false,
-    answer: null,
-    professorId: db.currentUser?.id ?? null,
-    professorName: db.currentUser?.nome || db.currentUser?.name || 'Professor',
-    createdAt: new Date().toISOString()
-  };
-
-  db.atividades.unshift(novaAtividade);
-
-  // Guarda as atividades criadas no navegador.
-  try {
-    localStorage.setItem(
-      'escolaConectadaDados',
-      JSON.stringify({
-        atividades: db.atividades,
-        submissions: db.submissions || [],
-        boletim: db.boletim || [],
-        users: db.users || []
-      })
-    );
-  } catch (erro) {
-    console.error('Erro ao salvar atividade:', erro);
-    showToast('Não foi possível salvar a atividade.', 'error');
-    return;
-  }
-
-  const formulario = document.getElementById('form-nova-atividade');
-  if (formulario) formulario.reset();
-
-  const pontuacaoInput = document.getElementById('new-ativ-points');
-  if (pontuacaoInput) pontuacaoInput.value = 100;
-
-  // Atualiza as telas que já existem no site.
-  if (typeof renderAtividadesTab === 'function') {
-    renderAtividadesTab();
-  }
-
-  if (typeof renderDashboard === 'function') {
-    renderDashboard();
-  }
-
-  if (typeof renderProfSubmissions === 'function') {
-    renderProfSubmissions();
-  }
-
-  showToast('Atividade publicada com sucesso!', 'success');
-}
-
-
-function renderProfAtividades() {
-  const lista = document.getElementById('prof-atividades-lista');
-  const tbody = document.getElementById('prof-respostas-lista');
-
-  const total = document.getElementById('prof-ativ-total');
-  const entregas = document.getElementById('prof-ativ-entregas');
-  const corrigidas = document.getElementById('prof-ativ-corrigidas');
-
-  if (total) total.textContent = db.atividades.length;
-  if (entregas) entregas.textContent = db.submissions.length;
-  if (corrigidas) corrigidas.textContent = db.submissions.filter(sub => sub.graded).length;
-
-  if (lista) {
-    lista.innerHTML = db.atividades.length
-      ? db.atividades.map(ativ => {
-          const totalEntregas = db.submissions.filter(sub =>
-            sub.atividadeId === ativ.id || sub.ativTitle === ativ.title
-          ).length;
-
-          return `
-            <div class="activity-item">
-              <div class="act-left">
-                <div class="act-icon ${getSubjectTagClass(ativ.subject)}">
-                  <i class="fa-solid fa-book-open"></i>
-                </div>
-                <div>
-                  <div class="act-title">${escaparHTML(ativ.title)}</div>
-                  <div class="act-meta">
-                    ${escaparHTML(ativ.subject)} · ${escaparHTML(ativ.turma || 'Turma não informada')} · Prazo: ${escaparHTML(ativ.date)}
-                  </div>
-                  <p>${escaparHTML(ativ.description || '')}</p>
-                  <small>${totalEntregas} entrega(s) · Valor: ${ativ.points}</small>
-                </div>
-              </div>
-              <button class="btn-outline" onclick="excluirAtividade(${ativ.id})">Excluir</button>
-            </div>
-          `;
-        }).join('')
-      : '<p class="text-muted">Nenhuma atividade cadastrada.</p>';
-  }
-
-  if (tbody) {
-    tbody.innerHTML = db.submissions.length
-      ? db.submissions.map(sub => `
-          <tr>
-            <td>${escaparHTML(sub.studentName)}</td>
-            <td>${escaparHTML(sub.ativTitle)}</td>
-            <td>${escaparHTML(sub.date || '—')}</td>
-            <td>
-              <button class="btn-outline" onclick="verResposta(${sub.id})">Ver resposta</button>
-            </td>
-            <td>${sub.graded ? formatarNota(sub.grade) : '—'}</td>
-            <td>
-              ${sub.graded
-                ? '<span class="tag tag-green">Corrigida</span>'
-                : `<button class="btn-primary" onclick="darNota(${sub.id})">Corrigir</button>`
-              }
-            </td>
-          </tr>
-        `).join('')
-      : '<tr><td colspan="6">Nenhuma resposta recebida.</td></tr>';
-  }
-}
-
-function verResposta(id) {
-  const sub = db.submissions.find(item => item.id === id);
-  if (!sub) return;
-
-  alert(
-    `Aluno: ${sub.studentName}\n` +
-    `Atividade: ${sub.ativTitle}\n` +
-    `Data: ${sub.date || 'Não informada'}\n\n` +
-    `Resposta:\n${sub.text}\n\n` +
-    `Arquivo: ${sub.arquivoNome || 'Nenhum arquivo registrado'}`
-  );
-}
-
-// ============================================================
-// NOTAS E FREQUÊNCIA DO PROFESSOR
-// ============================================================
-
-function renderProfNotas() {
-  const container = document.getElementById('prof-notas-container');
-  if (!container) return;
-
-  const alunos = db.users.filter(user => user.role === 'aluno');
-
-  container.innerHTML = `
-    <div class="form-group">
-      <label for="nota-aluno-select">Aluno</label>
-      <select id="nota-aluno-select" class="input-styled" onchange="renderTabelaNotasProfessor()">
-        ${alunos.map(aluno => `
-          <option value="${aluno.id}">${escaparHTML(aluno.name)}</option>
-        `).join('')}
-      </select>
-    </div>
-
-    <div id="tabela-notas-professor"></div>
-
-    <hr style="margin:2rem 0;">
-
-    <h3 class="card-subtitle">Registro de frequência</h3>
-    <p>Marque a situação do aluno na data da aula.</p>
-
-    <div class="form-row">
-      <div class="form-group flex-1">
-        <label for="frequencia-aluno">Aluno</label>
-        <select id="frequencia-aluno" class="input-styled">
-          ${alunos.map(aluno => `
-            <option value="${aluno.id}">${escaparHTML(aluno.name)}</option>
-          `).join('')}
-        </select>
-      </div>
-
-      <div class="form-group flex-1">
-        <label for="frequencia-data">Data da aula</label>
-        <input type="date" id="frequencia-data" class="input-styled" value="${new Date().toISOString().slice(0, 10)}">
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group flex-1">
-        <label for="frequencia-materia">Matéria</label>
-        <select id="frequencia-materia" class="input-styled">
-          ${db.subjects.map(materia => `
-            <option value="${escaparHTML(materia)}">${escaparHTML(materia)}</option>
-          `).join('')}
-        </select>
-      </div>
-
-      <div class="form-group flex-1">
-        <label for="frequencia-status">Situação</label>
-        <select id="frequencia-status" class="input-styled">
-          <option value="presente">Presente</option>
-          <option value="falta">Falta</option>
-          <option value="justificada">Falta justificada</option>
-        </select>
-      </div>
-    </div>
-
-    <button class="btn-primary" onclick="registrarFrequencia()">
-      <i class="fa-solid fa-calendar-check"></i> Registrar frequência
-    </button>
-
-    <div class="table-responsive mt-4">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Aluno</th>
-            <th>Data</th>
-            <th>Matéria</th>
-            <th>Situação</th>
-          </tr>
-        </thead>
-        <tbody id="frequencia-lista"></tbody>
-      </table>
-    </div>
+      </td>
+    </tr>
   `;
 
-  renderTabelaNotasProfessor();
-  renderListaFrequencia();
-}
-
-function renderTabelaNotasProfessor() {
-  const container = document.getElementById('tabela-notas-professor');
-  const alunoSelect = document.getElementById('nota-aluno-select');
-
-  if (!container || !alunoSelect) return;
-
-  const alunoId = alunoSelect.value;
-
-  container.innerHTML = `
-    <h3 class="card-subtitle mt-4">Notas por bimestre</h3>
-    <p>As notas são registradas de 0 a 10.</p>
-
-    <div class="table-responsive">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Matéria</th>
-            <th>1º Bim.</th>
-            <th>2º Bim.</th>
-            <th>3º Bim.</th>
-            <th>4º Bim.</th>
-            <th>Ação</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${db.subjects.map((materia, indice) => {
-            const item = obterBoletimMateria(materia);
-            const id = `nota-${indice}`;
-
-            return `
-              <tr>
-                <td>${escaparHTML(materia)}</td>
-                <td><input class="input-styled" type="number" min="0" max="10" step="0.1" id="${id}-b1" value="${item.b1 ?? ''}" placeholder="—"></td>
-                <td><input class="input-styled" type="number" min="0" max="10" step="0.1" id="${id}-b2" value="${item.b2 ?? ''}" placeholder="—"></td>
-                <td><input class="input-styled" type="number" min="0" max="10" step="0.1" id="${id}-b3" value="${item.b3 ?? ''}" placeholder="—"></td>
-                <td><input class="input-styled" type="number" min="0" max="10" step="0.1" id="${id}-b4" value="${item.b4 ?? ''}" placeholder="—"></td>
-                <td>
-                  <button class="btn-primary" onclick="salvarNotasMateria('${escaparHTML(materia)}', '${id}')">Salvar</button>
-                </td>
-              </tr>
-            `;
-          }).join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  // Guarda o aluno selecionado para futura integração por aluno.
-  container.dataset.alunoId = alunoId;
-}
-
-function salvarNotasMateria(materia, prefixo) {
-  const item = obterBoletimMateria(materia);
-  const campos = ['b1', 'b2', 'b3', 'b4'];
-  const novasNotas = {};
-
-  for (const campo of campos) {
-    const input = document.getElementById(`${prefixo}-${campo}`);
-    const valor = input?.value.trim() ?? '';
-
-    if (valor === '') {
-      novasNotas[campo] = null;
-      continue;
-    }
-
-    const nota = Number(valor);
-
-    if (!Number.isFinite(nota) || nota < 0 || nota > 10) {
-      showToast('As notas precisam estar entre 0 e 10.', 'error');
-      return;
-    }
-
-    novasNotas[campo] = nota;
-  }
-
-  Object.assign(item, novasNotas);
-  salvarDados();
-
-  renderBoletim();
-  renderDashboard();
-  renderProgressoTab();
-
-  showToast(`Notas de ${materia} salvas no navegador!`);
-}
-
-function registrarFrequencia() {
-  const alunoId = Number(document.getElementById('frequencia-aluno')?.value);
-  const data = document.getElementById('frequencia-data')?.value;
-  const materia = document.getElementById('frequencia-materia')?.value;
-  const status = document.getElementById('frequencia-status')?.value;
-
-  const aluno = db.users.find(user => Number(user.id) === alunoId);
-
-  if (!aluno || !data || !materia || !status) {
-    showToast('Preencha os dados da frequência.', 'info');
-    return;
-  }
-
-  const existente = db.frequencia.find(item =>
-    Number(item.alunoId) === alunoId &&
-    item.data === data &&
-    item.materia === materia
-  );
-
-  if (existente) {
-    existente.status = status;
+  if (paginaItens.length === 0) {
+    html += `<tr><td colspan="3" class="text-muted">Nenhuma música encontrada para esse filtro.</td></tr>`;
   } else {
-    db.frequencia.push({
-      id: Date.now(),
-      alunoId,
-      alunoNome: aluno.name,
-      data,
-      materia,
-      status
-    });
-  }
-
-  salvarDados();
-  renderListaFrequencia();
-
-  showToast('Frequência registrada!');
-}
-
-function renderListaFrequencia() {
-  const tbody = document.getElementById('frequencia-lista');
-  if (!tbody) return;
-
-  const frequencias = [...db.frequencia].reverse();
-
-  tbody.innerHTML = frequencias.length
-    ? frequencias.map(item => `
-        <tr>
-          <td>${escaparHTML(item.alunoNome)}</td>
-          <td>${formatarData(item.data)}</td>
-          <td>${escaparHTML(item.materia)}</td>
-          <td>${formatarSituacaoFrequencia(item.status)}</td>
-        </tr>
-      `).join('')
-    : '<tr><td colspan="4">Nenhuma frequência registrada.</td></tr>';
-}
-
-function formatarSituacaoFrequencia(status) {
-  const nomes = {
-    presente: 'Presente',
-    falta: 'Falta',
-    justificada: 'Falta justificada'
-  };
-
-  return nomes[status] || status;
-}
-
-// ============================================================
-// CORRIGIR ENTREGA E ATRIBUIR NOTA
-// ============================================================
-
-function darNota(subId) {
-  const sub = db.submissions.find(item => item.id === subId);
-  if (!sub) return;
-
-  const entrada = prompt('Digite a nota de 0 a 10:');
-
-  if (entrada === null) return;
-
-  const nota = Number(entrada);
-
-  if (!Number.isFinite(nota) || nota < 0 || nota > 10) {
-    showToast('Digite uma nota válida entre 0 e 10.', 'error');
-    return;
-  }
-
-  sub.grade = nota;
-  sub.graded = true;
-
-  const atividade = db.atividades.find(item =>
-    item.id === sub.atividadeId || item.title === sub.ativTitle
-  );
-
-  if (atividade) {
-    const materia = obterBoletimMateria(atividade.subject);
-
-    // A nota da atividade fica registrada na entrega.
-    // Não altera automaticamente um bimestre para evitar
-    // substituir uma nota bimestral sem confirmação.
-  }
-
-  salvarDados();
-  renderProfAtividades();
-  renderProfNotas();
-  renderBoletim();
-
-  showToast(`Nota ${formatarNota(nota)} registrada para ${sub.studentName}!`);
-}
-
-// ============================================================
-// COORDENAÇÃO
-// ============================================================
-
-function renderCoordDashboard() {
-  const alunos = db.users.filter(user => user.role === 'aluno').length;
-  const professores = db.users.filter(user => user.role === 'professor').length;
-
-  const valores = {
-    'coord-total-alunos': alunos,
-    'coord-total-professores': professores,
-    'coord-total-aulas': db.atividades.length + db.aulas.length,
-    'coord-total-materias': db.subjects.length,
-    'coord-total-atividades': db.atividades.length,
-    'coord-ativ-pendentes': db.atividades.filter(ativ =>
-      !db.submissions.some(sub => sub.atividadeId === ativ.id)
-    ).length,
-    'coord-ativ-entregues': db.submissions.length,
-    'coord-stat-alunos': alunos,
-    'coord-stat-profs': professores,
-    'coord-stat-aulas': db.atividades.length + db.aulas.length,
-    'coord-stat-materias': db.subjects.length
-  };
-
-  Object.entries(valores).forEach(([id, valor]) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = valor;
-  });
-
-  const tbodyUsers = document.querySelector('#table-coord-users tbody');
-
-  if (tbodyUsers) {
-    tbodyUsers.innerHTML = db.users.map(user => `
+    html += paginaItens.map(m => `
       <tr>
-        <td>${escaparHTML(user.name)}</td>
-        <td>${escaparHTML(user.email)}</td>
-        <td><span class="badge-role">${formatRole(user.role)}</span></td>
+        <td><strong>${m.titulo}</strong></td>
+        <td>${m.tom}</td>
         <td>
-          <button class="btn-sm-danger" onclick="excluirUsuario(${Number(user.id)})">
-            <i class="fa-solid fa-user-xmark"></i> Remover
+          <button type="button" class="btn-quick" onclick="abrirCifraCaderno(${m.id})">
+            <i class="fa-solid fa-music"></i> ${modoUsoCaderno === 'estudo' ? 'Estudar' : 'Tocar'}
           </button>
         </td>
       </tr>
     `).join('');
   }
 
-  const materias = document.getElementById('coord-materias-list');
+  tbody.innerHTML = html;
+}
 
-  if (materias) {
-    materias.innerHTML = db.subjects.map(materia => `
-      <span class="tag ${getSubjectTagClass(materia)}">${escaparHTML(materia)}</span>
+function abrirCifraCaderno(id) {
+  const base = obterFontePartituras();
+  const musica = base.find(m => Number(m.id) === Number(id));
+  const box = document.getElementById('visualizador-cifra');
+  if (!musica || !box) return;
+
+  cifraAbertaAtual = musica.id;
+
+  const detalhesEstudo = modoUsoCaderno === 'estudo'
+    ? `
+      <p class="mt-2"><strong>Partitura / Levada:</strong> ${musica.partitura || 'Compasso 2/4 tradicional'}</p>
+      <p class="mt-2"><strong>Dica de Estudo:</strong> ${musica.estudo || 'Pratica o ritmo antes de acelerar.'}</p>
+    `
+    : `
+      <p class="mt-2"><strong>Partitura / Levada:</strong> ${musica.partitura || 'Compasso 2/4 tradicional'}</p>
+    `;
+
+  box.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+      <div>
+        <h3>${musica.titulo}</h3>
+        <small class="text-muted">Tom: ${musica.tom} • Uso: ${modoUsoCaderno === 'estudo' ? 'Estudo' : 'Tocar / Roda / Outros'}</small>
+      </div>
+      <button type="button" class="btn-quick" onclick="fecharCifraCaderno()"><i class="fa-solid fa-xmark"></i> Fechar</button>
+    </div>
+    ${detalhesEstudo}
+    <pre style="margin-top:0.85rem; white-space:pre-wrap; font-family:inherit; line-height:1.6;">${musica.cifra}</pre>
+  `;
+  box.classList.remove('hidden');
+}
+
+function fecharCifraCaderno() {
+  cifraAbertaAtual = null;
+  document.getElementById('visualizador-cifra')?.classList.add('hidden');
+}
+
+// =====================================================
+// SISTEMA DE CHAT PRIVADO & PESQUISA DE MÚSICOS
+// =====================================================
+
+function abrirChatComUsuario(outroId) {
+  const outroUsuario = (appState.perfisComunidade || []).find(p => Number(p.id) === Number(outroId));
+  if (!outroUsuario) return;
+
+  usuarioConversandoId = Number(outroId);
+  switchTab('chat');
+  renderizarListaConversas();
+  renderizarMensagensChatPrivado(usuarioConversandoId);
+}
+
+function filtrarConversasChat() {
+  const termo = (document.getElementById('chat-busca-musico')?.value || '').toLowerCase().trim();
+  renderizarListaConversas(termo);
+}
+
+function renderizarListaConversas(filtroTexto = '') {
+  const listaDiv = document.getElementById('lista-conversas');
+  if (!listaDiv || !appState.currentUser) return;
+
+  if (filtroTexto === '' && document.getElementById('chat-busca-musico')) {
+    filtroTexto = document.getElementById('chat-busca-musico').value.toLowerCase().trim();
+  }
+
+  const meuId = Number(appState.currentUser.id);
+  let outrosUsuarios = (appState.perfisComunidade || []).filter(p => Number(p.id) !== meuId);
+
+  if (filtroTexto) {
+    outrosUsuarios = outrosUsuarios.filter(u => {
+      const nome = (u.nome || u.name || '').toLowerCase();
+      const instrumento = (u.instrumento || '').toLowerCase();
+      return nome.includes(filtroTexto) || instrumento.includes(filtroTexto);
+    });
+  }
+
+  if (outrosUsuarios.length === 0) {
+    listaDiv.innerHTML = `<p class="text-muted" style="padding: 1rem; font-size: 0.85rem; text-align: center;">Nenhum músico encontrado.</p>`;
+    return;
+  }
+
+  listaDiv.innerHTML = outrosUsuarios.map(u => {
+    const nome = u.nome || u.name || 'Músico';
+    const ativoClass = usuarioConversandoId === Number(u.id) ? 'active' : '';
+
+    const msgs = (appState.mensagensPrivadas || []).filter(m => {
+      const rem = Number(m.remetenteId);
+      const dest = Number(m.destinatarioId);
+      const outroId = Number(u.id);
+      return (rem === meuId && dest === outroId) || (rem === outroId && dest === meuId);
+    });
+
+    const ultimaMsg = msgs.length > 0 ? msgs[msgs.length - 1].texto : (u.instrumento || 'Clica para conversar...');
+
+    return `
+      <div class="conversa-item ${ativoClass}" onclick="abrirChatComUsuario(${u.id})">
+        <div class="perfil-mini-avatar sm">${u.iniciais || 'MG'}</div>
+        <div style="flex:1; overflow:hidden;">
+          <h4 style="font-size:0.9rem; margin-bottom:0.1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${nome}</h4>
+          <p class="text-muted" style="font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ultimaMsg}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderizarMensagensChatPrivado(outroId) {
+  const vazioBox = document.getElementById('chat-vazio-placeholder');
+  const conteudoBox = document.getElementById('chat-ativo-conteudo');
+  const mensagensBox = document.getElementById('chat-mensagens-box');
+
+  if (!appState.currentUser) return;
+  const meuId = Number(appState.currentUser.id);
+  const outroIdNum = Number(outroId);
+
+  const outroUsuario = (appState.perfisComunidade || []).find(p => Number(p.id) === outroIdNum);
+  if (!outroUsuario) return;
+
+  if (vazioBox) vazioBox.classList.add('hidden');
+  if (conteudoBox) conteudoBox.classList.remove('hidden');
+
+  if (document.getElementById('chat-ativo-nome')) document.getElementById('chat-ativo-nome').textContent = outroUsuario.nome || outroUsuario.name;
+  if (document.getElementById('chat-ativo-avatar')) document.getElementById('chat-ativo-avatar').textContent = outroUsuario.iniciais || 'MG';
+  if (document.getElementById('chat-ativo-sub')) document.getElementById('chat-ativo-sub').textContent = outroUsuario.instrumento || 'Músico';
+
+  const msgs = (appState.mensagensPrivadas || []).filter(m => {
+    const rem = Number(m.remetenteId);
+    const dest = Number(m.destinatarioId);
+    return (rem === meuId && dest === outroIdNum) || (rem === outroIdNum && dest === meuId);
+  });
+
+  if (mensagensBox) {
+    if (msgs.length === 0) {
+      mensagensBox.innerHTML = `<div style="text-align:center; color:var(--text-muted); margin-top:2rem; font-size:0.85rem;">Nenhuma mensagem nesta conversa ainda. Envia uma mensagem!</div>`;
+    } else {
+      mensagensBox.innerHTML = msgs.map(m => {
+        const souEu = Number(m.remetenteId) === meuId;
+        const nomeAutor = souEu ? 'Tu' : (outroUsuario.nome || outroUsuario.name);
+
+        return `
+          <div class="chat-msg-item ${souEu ? 'meu-msg' : ''}">
+            <div class="chat-msg-header">
+              <strong>${nomeAutor}</strong>
+              <span>${m.hora || ''}</span>
+            </div>
+            <div class="chat-msg-body">${m.texto}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    mensagensBox.scrollTop = mensagensBox.scrollHeight;
+  }
+}
+
+function enviarMensagemPrivada() {
+  const input = document.getElementById('chat-input-texto');
+  if (!input || !usuarioConversandoId || !appState.currentUser) return;
+  const texto = input.value.trim();
+  if (!texto) return;
+
+  const agora = new Date();
+  const horaFormatada = agora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const novaMsg = {
+    id: Date.now(),
+    remetenteId: Number(appState.currentUser.id),
+    destinatarioId: Number(usuarioConversandoId),
+    texto: texto,
+    hora: horaFormatada
+  };
+
+  if (!appState.mensagensPrivadas) {
+    appState.mensagensPrivadas = [];
+  }
+
+  appState.mensagensPrivadas.push(novaMsg);
+  salvarEstado();
+  input.value = '';
+
+  renderizarMensagensChatPrivado(usuarioConversandoId);
+  renderizarListaConversas();
+}
+
+// =====================================================
+// CARROSSEL DE INSTRUMENTOS
+// =====================================================
+function abrirDetalhesInstrumento(chave) {
+  const info = dadosInstrumentos[chave];
+  if (!info) return;
+
+  document.getElementById('detalhe-inst-titulo').textContent = info.titulo;
+  document.getElementById('detalhe-inst-historia').textContent = info.historia;
+
+  const musicosFiltrados = appState.perfisComunidade.filter(p =>
+    (p.instrumento || '').toLowerCase().includes(info.instrumentoFiltro.toLowerCase())
+  );
+
+  const containerMusicos = document.getElementById('detalhe-inst-musicos');
+  if (musicosFiltrados.length === 0) {
+    containerMusicos.innerHTML = `<p class="text-muted">Nenhum músico registado com este instrumento de momento.</p>`;
+  } else {
+    containerMusicos.innerHTML = musicosFiltrados.map(m => `
+      <div style="background:var(--cream); padding:1rem; border-radius:12px; border:1px solid var(--border-color); display:flex; align-items:center; gap:1rem;">
+        <div class="perfil-mini-avatar">${m.iniciais || 'MG'}</div>
+        <div style="flex:1;">
+          <h4 style="margin-bottom:0.2rem;">${m.nome || m.name}</h4>
+          <p class="text-muted" style="font-size:0.82rem;"><strong>Toca:</strong> ${m.instrumento}</p>
+          <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+            <button type="button" class="btn-quick" style="padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="abrirModalProposta(${m.id})">Contratar</button>
+            <button type="button" class="btn-primary" style="padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="abrirChatComUsuario(${m.id})"><i class="fa-solid fa-comment"></i> Mensagem</button>
+          </div>
+        </div>
+      </div>
     `).join('');
   }
 
-  renderCoordAtividades();
+  const painel = document.getElementById('painel-detalhe-instrumento');
+  painel.classList.remove('hidden');
+  painel.scrollIntoView({ behavior: 'smooth' });
 }
 
-function renderCoordAtividades() {
-  const container = document.getElementById('coord-atividades-lista');
-  if (!container) return;
-
-  const filtro = document.getElementById('coord-filtro-materia')?.value || '';
-
-  const lista = db.atividades.filter(ativ =>
-    !filtro || ativ.subject === filtro
-  );
-
-  container.innerHTML = lista.length
-    ? lista.map(ativ => {
-        const entregas = db.submissions.filter(sub =>
-          sub.atividadeId === ativ.id || sub.ativTitle === ativ.title
-        ).length;
-
-        return `
-          <div class="activity-item">
-            <div class="act-left">
-              <div class="act-icon ${getSubjectTagClass(ativ.subject)}">
-                <i class="fa-solid fa-clipboard-list"></i>
-              </div>
-              <div>
-                <div class="act-title">${escaparHTML(ativ.title)}</div>
-                <div class="act-meta">
-                  ${escaparHTML(ativ.subject)} · ${escaparHTML(ativ.turma || 'Turma não informada')} · ${escaparHTML(ativ.date)}
-                </div>
-                <small>${entregas} entrega(s) registrada(s)</small>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('')
-    : '<p class="text-muted">Nenhuma atividade encontrada.</p>';
+function fecharDetalhesInstrumento() {
+  document.getElementById('painel-detalhe-instrumento').classList.add('hidden');
 }
 
-function handleNovoUsuarioSubmit(event) {
-  event.preventDefault();
+// =====================================================
+// CONTRATAÇÃO E PROPOSTAS
+// =====================================================
+function abrirModalProposta(artistaId) {
+  const artista = appState.perfisComunidade.find(p => Number(p.id) === Number(artistaId));
+  if (!artista) return;
 
-  const name = document.getElementById('new-user-name')?.value.trim();
-  const email = document.getElementById('new-user-email')?.value.trim();
-  const role = document.getElementById('new-user-role')?.value;
-  const password = document.getElementById('new-user-password')?.value;
-  const ra = document.getElementById('new-user-ra')?.value.trim();
+  artistaAlvoProposta = artista;
+  document.getElementById('modal-proposta-titulo').textContent = `Contratar ${artista.nome || artista.name}`;
+  document.getElementById('prop-evento').value = '';
+  document.getElementById('prop-data').value = '';
+  document.getElementById('prop-requisitos').value = '';
+  document.getElementById('prop-cache').value = '';
+  document.getElementById('modal-proposta').classList.remove('hidden');
+}
 
-  if (!name || !email || !role) {
-    showToast('Preencha os campos obrigatórios.', 'info');
-    return;
+function fecharModalProposta() {
+  document.getElementById('modal-proposta').classList.add('hidden');
+  artistaAlvoProposta = null;
+}
+
+function enviarPropostaContratacao() {
+  const evento = document.getElementById('prop-evento').value.trim();
+  const data = document.getElementById('prop-data').value.trim();
+  const requisitos = document.getElementById('prop-requisitos').value.trim();
+  const cache = document.getElementById('prop-cache').value.trim();
+
+  if (!evento || !data || !cache) {
+    return showToast('Preenche os campos obrigatórios da proposta.', 'error');
   }
 
-  if (password && password.length < 8) {
-    showToast('A senha precisa ter pelo menos 8 caracteres.', 'info');
-    return;
-  }
+  const nomeArtista = artistaAlvoProposta.nome || artistaAlvoProposta.name;
+  const nomeContratante = appState.currentUser ? (appState.currentUser.name || appState.currentUser.nome) : 'Contratante';
 
-  if (role === 'aluno' && !ra) {
-    showToast('Informe o RM do aluno.', 'info');
-    return;
-  }
-
-  if (db.users.some(user => user.email.toLowerCase() === email.toLowerCase())) {
-    showToast('Este e-mail já está cadastrado.', 'error');
-    return;
-  }
-
-  db.users.push({
+  const novaProposta = {
     id: Date.now(),
-    name,
-    email,
-    role,
-    initials: gerarIniciais(name),
-    ra: role === 'aluno' ? ra : ''
-  });
-
-  salvarDados();
-  event.target.reset();
-  atualizarCampoRM();
-  renderCoordDashboard();
-
-  showToast('Usuário adicionado à demonstração local!');
-}
-
-function atualizarCampoRM() {
-  const role = document.getElementById('new-user-role')?.value;
-  const grupo = document.getElementById('new-user-ra-group');
-  const campo = document.getElementById('new-user-ra');
-
-  if (!grupo || !campo) return;
-
-  const ehAluno = role === 'aluno';
-
-  grupo.style.display = ehAluno ? '' : 'none';
-  campo.required = ehAluno;
-}
-
-function handleNovaMateriaSubmit(event) {
-  event.preventDefault();
-
-  const input = document.getElementById('new-subject-name');
-  const materia = input?.value.trim();
-
-  if (!materia) {
-    showToast('Digite o nome da matéria.', 'info');
-    return;
-  }
-
-  if (db.subjects.some(item => item.toLowerCase() === materia.toLowerCase())) {
-    showToast('Esta matéria já existe.', 'info');
-    return;
-  }
-
-  db.subjects.push(materia);
-  salvarDados();
-  if (input) input.value = '';
-
-  populateSubjectSelects();
-  renderCoordDashboard();
-
-  showToast('Matéria adicionada!');
-}
-
-function excluirAtividade(id) {
-  if (!confirm('Deseja realmente excluir esta atividade?')) return;
-
-  db.atividades = db.atividades.filter(ativ => ativ.id !== id);
-  db.submissions = db.submissions.filter(sub => sub.atividadeId !== id);
-
-  salvarDados();
-  renderProfAtividades();
-  renderCoordDashboard();
-  renderAtividadesTab();
-  renderDashboard();
-  renderProgressoTab();
-  renderOfflineTab();
-
-  showToast('Atividade removida.', 'info');
-}
-
-function excluirUsuario(id) {
-  if (db.currentUser && String(db.currentUser.id) === String(id)) {
-    showToast('Você não pode remover a conta que está usando.', 'error');
-    return;
-  }
-
-  if (!confirm('Deseja realmente remover este usuário?')) return;
-
-  db.users = db.users.filter(user => String(user.id) !== String(id));
-  db.frequencia = db.frequencia.filter(item => String(item.alunoId) !== String(id));
-
-  salvarDados();
-  renderCoordDashboard();
-
-  showToast('Usuário removido da demonstração local.', 'info');
-}
-
-// ============================================================
-// CADASTRO DO ALUNO
-// ============================================================
-
-function openCadastroAluno() {
-  document.getElementById('modal-cadastro-aluno')?.classList.remove('hidden');
-}
-
-function handleCadastroAlunoSubmit(event) {
-  event.preventDefault();
-
-  const nome = document.getElementById('cadastro-nome')?.value.trim();
-  const email = document.getElementById('cadastro-email')?.value.trim();
-  const senha = document.getElementById('cadastro-senha')?.value;
-  const ra = document.getElementById('cadastro-ra')?.value.trim();
-
-  if (!nome || !email || !senha || !ra) {
-    showToast('Preencha todos os campos.', 'info');
-    return;
-  }
-
-  if (senha.length < 8) {
-    showToast('A senha precisa ter pelo menos 8 caracteres.', 'info');
-    return;
-  }
-
-  if (db.users.some(user => user.email.toLowerCase() === email.toLowerCase())) {
-    showToast('Este e-mail já está cadastrado.', 'error');
-    return;
-  }
-
-  if (db.users.some(user => user.role === 'aluno' && user.ra && user.ra.toLowerCase() === ra.toLowerCase())) {
-    showToast('Este RM já está cadastrado.', 'error');
-    return;
-  }
-
-  const user = {
-    id: Date.now(),
-    name: nome,
-    email,
-    role: 'aluno',
-    initials: gerarIniciais(nome),
-    ra
+    contratante: nomeContratante,
+    artistaId: Number(artistaAlvoProposta.id),
+    artistaNome: nomeArtista,
+    evento,
+    data,
+    requisitos,
+    cache,
+    status: 'Pendente'
   };
 
-  db.users.push(user);
-  salvarDados();
-
-  closeModal('modal-cadastro-aluno');
-  event.target.reset();
-
-  doLogin(user);
-
-  showToast('Conta de demonstração criada! O cadastro definitivo será conectado ao backend depois.', 'info');
+  appState.propostas.push(novaProposta);
+  salvarEstado();
+  fecharModalProposta();
+  atualizarTudoNaTela();
+  showToast(`Proposta enviada para ${nomeArtista}!`, 'success');
 }
 
-// ============================================================
-// MODAIS
-// ============================================================
-
-function closeModal(modalId) {
-  document.getElementById(modalId)?.classList.add('hidden');
+function responderProposta(propostaId, novoStatus) {
+  const prop = appState.propostas.find(p => Number(p.id) === Number(propostaId));
+  if (prop) {
+    prop.status = novoStatus;
+    salvarEstado();
+    atualizarTudoNaTela();
+    showToast(novoStatus === 'Aceita' ? 'Proposta aceita! Espetáculo confirmado.' : 'Proposta recusada.', novoStatus === 'Aceita' ? 'success' : 'info');
+  }
 }
 
-document.addEventListener('click', event => {
-  if (event.target.classList.contains('modal-overlay')) {
-    event.target.classList.add('hidden');
+// =====================================================
+// AVALIAÇÕES
+// =====================================================
+function abrirModalAvaliacaoArtista(artistaId) {
+  perfilSelecionadoParaAvaliar = Number(artistaId);
+  const artista = appState.perfisComunidade.find(p => Number(p.id) === Number(artistaId));
+  const nomeArt = artista ? (artista.nome || artista.name) : 'Músico';
+  document.getElementById('modal-avaliar-titulo').textContent = `Avaliar ${nomeArt}`;
+  document.getElementById('avaliacao-comentario').value = '';
+  selecionarEstrela(5);
+  document.getElementById('modal-avaliar').classList.remove('hidden');
+}
+
+function fecharModalAvaliacao() {
+  document.getElementById('modal-avaliar').classList.add('hidden');
+  perfilSelecionadoParaAvaliar = null;
+}
+
+function selecionarEstrela(nota) {
+  notaSelecionada = nota;
+  document.querySelectorAll('#star-selector i').forEach(star => {
+    const val = Number(star.getAttribute('data-val'));
+    star.classList.toggle('active', val <= nota);
+  });
+}
+
+function confirmarAvaliacaoPerfil() {
+  const perfil = appState.perfisComunidade.find(p => Number(p.id) === Number(perfilSelecionadoParaAvaliar));
+  if (!perfil) return;
+
+  const soma = (perfil.notaMedia || 5.0) * (perfil.totalAvaliacoes || 1);
+  perfil.totalAvaliacoes = (perfil.totalAvaliacoes || 1) + 1;
+  perfil.notaMedia = (soma + notaSelecionada) / perfil.totalAvaliacoes;
+
+  if (appState.currentUser && Number(appState.currentUser.id) === Number(perfil.id)) {
+    appState.currentUser.notaMedia = perfil.notaMedia;
+    appState.currentUser.totalAvaliacoes = perfil.totalAvaliacoes;
+    localStorage.setItem('usuarioLogado', JSON.stringify(appState.currentUser));
   }
-});
 
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') {
-    document.querySelectorAll('.modal-overlay').forEach(modal => {
-      modal.classList.add('hidden');
-    });
+  salvarEstado();
+  fecharModalAvaliacao();
+  atualizarTudoNaTela();
+  showToast(`Avaliação enviada para ${perfil.nome || perfil.name}!`, 'success');
+}
+
+// =====================================================
+// NAVEGAÇÃO E MENU LATERAL RETRÁTIL
+// =====================================================
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  if (!sidebar) return;
+  if (window.innerWidth <= 900) {
+    sidebar.classList.toggle('mobile-open');
+  } else {
+    sidebar.classList.toggle('collapsed');
   }
-});
+}
 
-// ============================================================
-// BUSCA GLOBAL: compatibilidade com versões anteriores
-// ============================================================
+function mostrarPortal() {
+  document.getElementById('login-screen')?.classList.add('hidden');
+  document.getElementById('login-screen')?.classList.remove('active');
+  document.getElementById('cadastro-screen')?.classList.add('hidden');
+  document.getElementById('app-layout')?.classList.remove('hidden');
+}
 
-function handleGlobalSearch(query) {
-  const texto = String(query || '').trim().toLowerCase();
+function mostrarLogin() {
+  document.getElementById('login-screen')?.classList.remove('hidden');
+  document.getElementById('login-screen')?.classList.add('active');
+  document.getElementById('cadastro-screen')?.classList.add('hidden');
+  document.getElementById('app-layout')?.classList.add('hidden');
+}
 
-  switchTab('atividades');
+function quickLoginMusicon() {
+  document.getElementById('email').value = 'miguel@musicon.com';
+  document.getElementById('password').value = '123';
+}
 
-  const campoMateria = document.getElementById('filtro-atividade-materia');
-  if (campoMateria) campoMateria.value = '';
+function toggleCadastroView() {
+  const login = document.getElementById('login-screen');
+  const cadastro = document.getElementById('cadastro-screen');
+  login?.classList.toggle('hidden');
+  login?.classList.toggle('active');
+  cadastro?.classList.toggle('hidden');
+  cadastro?.classList.toggle('active');
+}
 
-  const campoStatus = document.getElementById('filtro-atividade-status');
-  if (campoStatus) campoStatus.value = '';
+function logout() {
+  localStorage.removeItem('usuarioLogado');
+  appState.currentUser = null;
+  mostrarLogin();
+  showToast('Saíste da roda.', 'info');
+}
 
-  if (!texto) {
-    renderAtividadesTab();
-    return;
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
+  document.getElementById(`tab-${tabId}`)?.classList.add('active');
+
+  document.querySelectorAll('#main-nav .nav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+  });
+
+  if (window.innerWidth <= 900) {
+    document.getElementById('sidebar')?.classList.remove('mobile-open');
   }
 
-  const container = document.getElementById('atividades-lista');
-  if (!container) return;
+  if (tabId === 'dashboard') {
+    renderizarSlideHistoria(false);
+    configurarArrasteHistoria();
+    iniciarPassagemAutomaticaHistoria();
+    renderizarVideosPagode();
+  }
 
-  const resultados = db.atividades.filter(ativ =>
-    `${ativ.title} ${ativ.subject} ${ativ.type} ${ativ.description || ''}`
-      .toLowerCase()
-      .includes(texto)
-  );
+  if (tabId === 'atividades') {
+    renderizarOficinasPartituras();
+  }
 
-  container.innerHTML = resultados.length
-    ? resultados.map(ativ => `
-        <div class="activity-item">
-          <div class="act-left">
-            <div class="act-icon ${getSubjectTagClass(ativ.subject)}">
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
-            <div>
-              <div class="act-title">${escaparHTML(ativ.title)}</div>
-              <div class="act-meta">${escaparHTML(ativ.subject)} · ${escaparHTML(ativ.date)}</div>
-            </div>
+  if (tabId === 'boletim') {
+    renderizarTabelaPartituras();
+  }
+
+  if (tabId === 'chat') {
+    renderizarListaConversas();
+    if (typeof usuarioConversandoId !== 'undefined' && usuarioConversandoId) {
+      renderizarMensagensChatPrivado(usuarioConversandoId);
+    } else {
+      document.getElementById('chat-vazio-placeholder')?.classList.remove('hidden');
+      document.getElementById('chat-ativo-conteudo')?.classList.add('hidden');
+    }
+  }
+}
+
+function filtrarPerfis() {
+  const termo = (document.getElementById('busca-perfil-input')?.value || '').toLowerCase();
+  const filtrados = appState.perfisComunidade.filter(p => {
+    const nome = (p.nome || p.name || '').toLowerCase();
+    const inst = (p.instrumento || '').toLowerCase();
+    return nome.includes(termo) || inst.includes(termo);
+  });
+  renderizarCardsPerfis(filtrados);
+}
+
+function renderizarCardsPerfis(lista) {
+  const grid = document.getElementById('perfis-grid');
+  if (!grid || !appState.currentUser) return;
+
+  grid.innerHTML = lista.map(p => {
+    const nome = p.nome || p.name || 'Batuqueiro';
+    const souEu = appState.currentUser && Number(appState.currentUser.id) === Number(p.id);
+    return `
+      <div class="card">
+        <div class="perfil-card-top">
+          <div class="perfil-mini-avatar">${p.iniciais || 'MG'}</div>
+          <div>
+            <h3>${nome}</h3>
+            <span style="font-size:0.82rem; color:var(--warning); font-weight:600;">${p.area || 'Músico'}</span>
           </div>
-          <button class="btn-primary" onclick="selecionarAtividadeParaResposta(${ativ.id})">Abrir</button>
         </div>
-      `).join('')
-    : '<p class="text-muted">Nenhuma atividade encontrada.</p>';
+        <p class="text-muted mb-2"><strong>Toca:</strong> ${p.instrumento || 'Não informado'}</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <span class="portal-badge">${p.estilo || 'Samba'}</span>
+          <span class="rating-badge"><i class="fa-solid fa-star"></i> ${(p.notaMedia || 5.0).toFixed(1)} (${p.totalAvaliacoes || 1})</span>
+        </div>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          ${!souEu ? `
+            <button type="button" class="btn-quick" style="flex:1; justify-content:center;" onclick="abrirModalProposta(${p.id})">Contratar</button>
+            <button type="button" class="btn-primary" style="padding:0.4rem 0.8rem; font-size:0.8rem;" onclick="abrirChatComUsuario(${p.id})"><i class="fa-solid fa-comment"></i> Mensagem</button>
+          ` : `
+            <span style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Este é o teu perfil</span>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function atualizarTudoNaTela() {
+  const user = appState.currentUser;
+  if (!user) return;
+
+  const nomeUser = user.name || user.nome || 'Batuqueiro';
+
+  if (document.getElementById('dashboard-user-name')) document.getElementById('dashboard-user-name').textContent = nomeUser;
+  if (document.getElementById('perfil-nome')) document.getElementById('perfil-nome').textContent = nomeUser;
+  if (document.getElementById('perfil-email')) document.getElementById('perfil-email').textContent = user.email;
+  if (document.getElementById('perfil-avatar')) document.getElementById('perfil-avatar').textContent = user.initials || 'MG';
+  if (document.getElementById('perfil-badge-area')) document.getElementById('perfil-badge-area').textContent = user.area || 'Músico';
+  if (document.getElementById('perfil-nota-exibicao')) document.getElementById('perfil-nota-exibicao').textContent = (user.notaMedia || 5.0).toFixed(1);
+  if (document.getElementById('perfil-total-avaliacoes')) document.getElementById('perfil-total-avaliacoes').textContent = user.totalAvaliacoes || 1;
+  if (document.getElementById('stat-nota-geral')) document.getElementById('stat-nota-geral').textContent = (user.notaMedia || 5.0).toFixed(1);
+
+  if (document.getElementById('edit-perfil-nome')) document.getElementById('edit-perfil-nome').value = nomeUser;
+  if (document.getElementById('edit-perfil-area')) document.getElementById('edit-perfil-area').value = user.area || '';
+  if (document.getElementById('edit-perfil-inst')) document.getElementById('edit-perfil-inst').value = user.instrumento || '';
+  if (document.getElementById('edit-perfil-estilo')) document.getElementById('edit-perfil-estilo').value = user.estilo || '';
+
+  const minhasPropostas = appState.propostas.filter(p => Number(p.artistaId) === Number(user.id));
+  const pendentesCount = minhasPropostas.filter(p => p.status === 'Pendente').length;
+
+  const badge = document.getElementById('badge-propostas');
+  if (badge) {
+    badge.textContent = pendentesCount;
+    badge.classList.toggle('hidden', pendentesCount === 0);
+  }
+  if (document.getElementById('stat-propostas-ativas')) {
+    document.getElementById('stat-propostas-ativas').textContent = minhasPropostas.length;
+  }
+
+  const gridProp = document.getElementById('propostas-grid');
+  if (gridProp) {
+    if (minhasPropostas.length === 0) {
+      gridProp.innerHTML = `<div class="card"><p class="text-muted">Nenhuma proposta de contratação recebida de momento.</p></div>`;
+    } else {
+      gridProp.innerHTML = minhasPropostas.map(p => `
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <span class="portal-badge">Evento: ${p.evento}</span>
+            <span style="font-weight:700; color:${p.status === 'Aceita' ? 'var(--success)' : p.status === 'Recusada' ? 'var(--danger)' : 'var(--warning)'};">${p.status}</span>
+          </div>
+          <p class="text-muted mb-2"><strong>Contratante:</strong> ${p.contratante}</p>
+          <p class="text-muted mb-2"><strong>Data e Horário:</strong> ${p.data}</p>
+          <p class="text-muted mb-2"><strong>Requisitos:</strong> ${p.requisitos}</p>
+          <p class="text-muted mb-4"><strong>Cachê Oferecido:</strong> ${p.cache}</p>
+
+          ${p.status === 'Pendente' ? `
+            <div style="display:flex; gap:0.75rem;">
+              <button type="button" class="btn-primary" style="flex:1;" onclick="responderProposta(${p.id}, 'Aceita')"><i class="fa-solid fa-check"></i> Aceitar e Tocar</button>
+              <button type="button" class="btn-quick" style="flex:1; color:var(--danger); border-color:var(--danger);" onclick="responderProposta(${p.id}, 'Recusada')"><i class="fa-solid fa-xmark"></i> Recusar</button>
+            </div>
+          ` : `
+            <p style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Proposta ${p.status.toLowerCase()} com sucesso.</p>
+          `}
+        </div>
+      `).join('');
+    }
+  }
+
+  renderizarSlideHistoria(false);
+  configurarArrasteHistoria();
+  renderizarVideosPagode();
+  renderizarCardsPerfis(appState.perfisComunidade);
+  renderizarListaConversas();
+  renderizarTabelaPartituras();
+  renderizarOficinasPartituras();
+}
+
+function salvarEdicaoPerfil() {
+  if (!appState.currentUser) return;
+  const novoNome = document.getElementById('edit-perfil-nome').value.trim();
+  appState.currentUser.name = novoNome;
+  appState.currentUser.nome = novoNome;
+  appState.currentUser.initials = novoNome.substring(0, 2).toUpperCase();
+  appState.currentUser.area = document.getElementById('edit-perfil-area').value.trim();
+  appState.currentUser.instrumento = document.getElementById('edit-perfil-inst').value.trim();
+  appState.currentUser.estilo = document.getElementById('edit-perfil-estilo').value.trim();
+
+  let perfilComunidade = appState.perfisComunidade.find(p => Number(p.id) === Number(appState.currentUser.id));
+  if (perfilComunidade) {
+    perfilComunidade.name = novoNome;
+    perfilComunidade.nome = novoNome;
+    perfilComunidade.area = appState.currentUser.area;
+    perfilComunidade.instrumento = appState.currentUser.instrumento;
+    perfilComunidade.estilo = appState.currentUser.estilo;
+  }
+
+  localStorage.setItem('usuarioLogado', JSON.stringify(appState.currentUser));
+  salvarEstado();
+  atualizarTudoNaTela();
+  showToast('Perfil atualizado com sucesso!', 'success');
+}
+
+function toggleTheme() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('musicon-theme', isDark ? 'dark' : 'light');
+}
+
+function aplicarTemaSalvo() {
+  if (localStorage.getItem('musicon-theme') === 'dark') document.documentElement.classList.add('dark');
+}
+
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${msg}</span>`;
+  container.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
 }

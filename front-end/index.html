@@ -1,1058 +1,743 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Escola Conectada - Portal Escolar</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Musicon — Portal da Roda, Músicos, Oficinas e Cifras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="mensagens.css" />
 </head>
-
 <body>
   <div id="toast-container" class="toast-container"></div>
 
-  <!-- LOGIN -->
-  <div id="login-screen" class="screen active">
-    <div class="login-left">
-      <div class="login-left-content">
-        <div class="app-icon">
-          <i class="fa-solid fa-book-open"></i>
+  <!-- =====================================================
+       ECRÃ DE ACESSO SPLIT-SCREEN (FOTO FULL + PAINEL LATERAL)
+       ===================================================== -->
+  <section id="login-screen" class="auth-split active">
+    <!-- LADO ESQUERDO: FOTO EM ECRÃ INTEIRO + DEGRADÊ + NOME DO SITE -->
+    <div class="auth-split-visual">
+      <div class="auth-split-overlay"></div>
+      <div class="auth-split-brand">
+        <div class="auth-logo-mark">
+          <i class="fa-solid fa-drum"></i>
+          <span>MUSICON</span>
         </div>
-
-        <h1 class="serif-title">Escola<br><em>Conectada.</em></h1>
-        <p class="login-subtitle">Conectando conhecimento, escola e oportunidades.</p>
-        <p class="login-subtext">Aprender fica mais fácil quando todos têm acesso ao conhecimento.</p>
-
-        <div class="subject-tags-login">
-          <span class="tag"><i class="fa-solid fa-calculator"></i> Matemática</span>
-          <span class="tag"><i class="fa-solid fa-book"></i> Português</span>
-          <span class="tag"><i class="fa-solid fa-flask"></i> Ciências</span>
-          <span class="tag"><i class="fa-solid fa-earth-americas"></i> Geografia</span>
-        </div>
+        <h1 class="auth-split-title serif-title">O ponto de encontro <em>da roda.</em></h1>
+        <p class="auth-split-desc">
+          Músicos, propostas de espetáculo, oficinas de batucada e cifras de samba e pagode em um só lugar.
+        </p>
       </div>
     </div>
 
-    <div class="login-right">
-      <div class="login-form-container">
-        <h2 class="serif-title">Bem-vindo de volta</h2>
-        <p class="form-desc">Selecione seu perfil para acessar o portal escolar.</p>
-
-        <div class="role-selector mb-4">
-          <button type="button" class="role-btn active" data-role="aluno" onclick="setRole('aluno')">
-            <i class="fa-solid fa-user-graduate"></i> Aluno
-          </button>
-
-          <button type="button" class="role-btn" data-role="professor" onclick="setRole('professor')">
-            <i class="fa-solid fa-chalkboard-user"></i> Professor
-          </button>
-
-          <button type="button" class="role-btn" data-role="coordenador" onclick="setRole('coordenador')">
-            <i class="fa-solid fa-user-tie"></i> Coordenador
-          </button>
-        </div>
-
-        <div class="quick-login-box">
-          <small class="text-muted d-block mb-2">Preencher dados de demonstração:</small>
-
-          <div class="quick-btns">
-            <button type="button" class="btn-quick" onclick="quickLogin('aluno')">João — Aluno</button>
-            <button type="button" class="btn-quick" onclick="quickLogin('professor')">Miguel — Professor</button>
-            <button type="button" class="btn-quick" onclick="quickLogin('coordenador')">Ana — Coordenação</button>
+    <!-- LADO DIREITO: PAINEL CONTÍNUO COM LOGO 3D E FORMULÁRIOS -->
+    <div class="auth-split-panel">
+      <div class="auth-panel-inner">
+        <!-- EMBLEMA 3D INTERATIVO MUSICON -->
+        <div class="logo-3d-stage" id="logo-3d-stage" title="Arraste ou passe o mouse para girar em 3D">
+          <div class="logo-3d-card" id="logo-3d-card">
+            <img src="1.png" alt="Logo 3D Musicon" class="logo-3d-img" />
+            <div class="logo-3d-shine" id="logo-3d-shine"></div>
           </div>
+          <span class="logo-3d-hint">
+            <i class="fa-solid fa-arrows-rotate"></i> Passe o mouse ou arraste para girar em 3D
+          </span>
         </div>
 
-        <div class="divider"><span>ou digite seus dados</span></div>
+        <!-- ABAS ENTRAR / CRIAR CONTA -->
+        <div class="auth-switch-tabs">
+          <button type="button" id="tab-btn-login" class="auth-switch-tab active" onclick="mostrarAbaAuth('login')">
+            Entrar
+          </button>
+          <button type="button" id="tab-btn-cadastro" class="auth-switch-tab" onclick="mostrarAbaAuth('cadastro')">
+            Criar Conta
+          </button>
+        </div>
 
-        <form id="form-login" onsubmit="handleLoginSubmit(event)">
-          <div class="form-group">
+        <!-- FORMULÁRIO DE INÍCIO DE SESSÃO -->
+        <form id="form-login" class="auth-clean-form">
+          <h2 class="serif-title">Bem-vindo de volta</h2>
+          <p class="text-muted mb-4">Entre com o seu e-mail e palavra-passe para acessar o portal.</p>
+
+          <div class="clean-field">
             <label for="email">E-mail</label>
-            <div class="input-wrapper">
-              <i class="fa-regular fa-envelope input-icon"></i>
-              <input type="email" id="email" autocomplete="email" required>
-            </div>
+            <input type="email" id="email" placeholder="miguel@musicon.com" required />
           </div>
 
-          <div class="form-group">
-            <div class="label-row">
-              <label for="password">Senha</label>
-
-              <a href="#" class="forgot-pass"
-                 onclick="event.preventDefault(); showToast('A recuperação de senha precisa ser configurada no sistema.', 'info')">
-                Esqueci minha senha
-              </a>
-            </div>
-
-            <div class="input-wrapper">
-              <i class="fa-solid fa-lock input-icon"></i>
-              <input type="password" id="password" autocomplete="current-password" required>
-            </div>
+          <div class="clean-field mt-3">
+            <label for="password">Palavra-passe</label>
+            <input type="password" id="password" placeholder="••••••••" required />
           </div>
 
-          <button type="submit" class="btn-primary btn-block">
-            <i class="fa-solid fa-right-to-bracket"></i> Entrar no Portal
+          <button type="submit" class="btn-primary auth-submit-btn mt-4">
+            Entrar na Roda <i class="fa-solid fa-arrow-right"></i>
+          </button>
+
+          <button type="button" class="auth-ghost-btn mt-2" onclick="quickLoginMusicon()">
+            <i class="fa-solid fa-bolt"></i> Preencher acesso rápido (Miguel)
           </button>
         </form>
 
-        <div class="divider"><span>novo aluno?</span></div>
+        <!-- FORMULÁRIO DE CADASTRO -->
+        <form id="form-cadastro" class="auth-clean-form hidden">
+          <h2 class="serif-title">Junte-se à roda</h2>
+          <p class="text-muted mb-4">Crie o seu perfil para receber propostas e conversar com outros músicos.</p>
 
-        <button type="button" class="btn-outline btn-block" onclick="openCadastroAluno()">
-          <i class="fa-solid fa-user-plus"></i> Criar conta de aluno
-        </button>
+          <div class="clean-field">
+            <label for="cadastro-nome">Nome artístico ou completo</label>
+            <input type="text" id="cadastro-nome" placeholder="Ex: Miguel Silva" required />
+          </div>
+
+          <div class="clean-field mt-3">
+            <label for="cadastro-email">E-mail</label>
+            <input type="email" id="cadastro-email" placeholder="voce@email.com" required />
+          </div>
+
+          <div class="clean-field mt-3">
+            <label for="cadastro-senha">Palavra-passe</label>
+            <input type="password" id="cadastro-senha" placeholder="Crie uma palavra-passe" required />
+          </div>
+
+          <button type="submit" class="btn-primary auth-submit-btn mt-4">
+            Criar Conta e Entrar <i class="fa-solid fa-check"></i>
+          </button>
+        </form>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- PORTAL -->
+  <!-- =====================================================
+       ESTRUTURA PRINCIPAL DO PORTAL (MENU LATERAL RETRÁTIL)
+       ===================================================== -->
   <div id="app-layout" class="app-layout hidden">
-
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo">
-          <div class="app-icon sm">
-            <i class="fa-solid fa-book-open"></i>
-          </div>
-
-          <div>
-            <h2 class="serif-title logo-text">Escola<br>Conectada</h2>
-            <span class="portal-badge" id="role-badge">Portal Escolar</span>
+          <div class="app-icon sm"><i class="fa-solid fa-drum"></i></div>
+          <div class="sidebar-brand-text">
+            <div class="logo-text serif-title">Musicon</div>
+            <span class="portal-badge">PORTAL DA RODA</span>
           </div>
         </div>
+        <button
+          type="button"
+          class="btn-toggle-sidebar"
+          id="btn-toggle-sidebar"
+          onclick="toggleSidebar()"
+          aria-label="Recolher ou expandir menu"
+          title="Recolher ou expandir menu"
+        >
+          <i class="fa-solid fa-bars"></i>
+        </button>
       </div>
 
-      <nav class="sidebar-nav" id="sidebar-menu"></nav>
+      <nav class="sidebar-nav" id="main-nav">
+        <button type="button" class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+          <i class="fa-solid fa-house"></i>
+          <span>Início</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="perfis" onclick="switchTab('perfis')">
+          <i class="fa-solid fa-users"></i>
+          <span>Músicos</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="propostas" onclick="switchTab('propostas')">
+          <i class="fa-solid fa-handshake"></i>
+          <span>Propostas</span>
+          <span id="badge-propostas" class="badge-count hidden">0</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="chat" onclick="switchTab('chat')">
+          <i class="fa-solid fa-comments"></i>
+          <span>Chat</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="atividades" onclick="switchTab('atividades')">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Oficinas</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="boletim" onclick="switchTab('boletim')">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Cifras & Partituras</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="perfil" onclick="switchTab('perfil')">
+          <i class="fa-solid fa-id-card"></i>
+          <span>Meu Perfil</span>
+        </button>
+      </nav>
 
       <div class="sidebar-footer">
+        <button type="button" class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
+          <span class="theme-toggle-left">
+            <i class="fa-solid fa-circle-half-stroke"></i>
+            <span>Tema</span>
+          </span>
+        </button>
         <button type="button" class="btn-logout" onclick="logout()">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair / Trocar Conta
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Sair</span>
         </button>
       </div>
     </aside>
 
     <main class="main-content">
-
-      <!-- DASHBOARD -->
-      <section id="tab-dashboard" class="tab-content">
-        <div class="hero-banner">
+      <!-- ===================================================
+           ABA 1: INÍCIO (DASHBOARD)
+           =================================================== -->
+      <section id="tab-dashboard" class="tab-content active">
+        <div class="hero-banner-custom mb-4">
+          <div class="hero-banner-overlay"></div>
           <div class="hero-content">
-            <span class="hero-label">PORTAL ESCOLAR</span>
-            <h1 class="serif-title">Seu aprendizado,<br><em>sempre conectado.</em></h1>
-            <p>Acompanhe suas aulas, consulte suas notas e mantenha seus dados escolares organizados.</p>
+            <span class="hero-label portal-badge"><i class="fa-solid fa-music"></i> CONEXÃO MUSICAL & RODA VIVA</span>
+            <h1 class="serif-title">Olá, <span id="dashboard-user-name">Batuqueiro</span>!</h1>
+            <p>Encontre músicos disponíveis, envie propostas de apresentação, converse no chat privado e estude harmonia, percussão e cifras de samba e pagode.</p>
           </div>
         </div>
 
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
-            <div class="stat-val" id="stat-aulas-val">0</div>
-            <div class="stat-lbl">Aulas disponíveis</div>
+        <div class="historia-vitrine-secao mb-4" id="carrossel-historia-musicon">
+          <div class="historia-vitrine-cabecalho">
+            <span class="section-kicker">HISTÓRIA E PROPÓSITO DO MUSICON</span>
+            <h2 class="serif-title">Por que o Musicon Nasceu</h2>
+            <p class="text-muted">Arraste com o mouse ou clique nas setas para navegar pela história.</p>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-icon green"><i class="fa-solid fa-chart-line"></i></div>
-            <div class="stat-val" id="stat-media-val">—</div>
-            <div class="stat-lbl">Média escolar</div>
+          <div class="historia-vitrine-palco">
+            <button type="button" class="historia-seta prev" onclick="slideAnteriorHistoriaManual()" aria-label="Slide anterior">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <div class="historia-vitrine-trilha" id="historia-vitrine-trilha"></div>
+
+            <button type="button" class="historia-seta next" onclick="proximoSlideHistoriaManual()" aria-label="Próximo slide">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-icon orange"><i class="fa-solid fa-bookmark"></i></div>
-            <div class="stat-val" id="stat-materias-val">0</div>
-            <div class="stat-lbl">Matérias</div>
+          <div class="historia-vitrine-legenda" id="historia-vitrine-legenda">
+            <span class="portal-badge" id="historia-kicker">1 / 3 • RODA E RAIZ</span>
+            <h3 id="historia-titulo" class="mt-2">Da mesa de bar para o palco</h3>
+            <div id="historia-subtitulo" class="text-muted" style="font-size:0.9rem;"></div>
+            <p id="historia-texto" class="text-muted"></p>
           </div>
+
+          <div class="historia-indicadores" id="historia-indicadores"></div>
         </div>
 
-        <div class="section-header">
-          <div>
-            <span class="section-kicker">ROTINA ESCOLAR</span>
-            <h2 class="serif-title">Atividades recentes</h2>
+        <div class="pagode-videos-secao mt-4 mb-4" id="secao-videos-pagode">
+          <div class="pagode-videos-cabecalho">
+            <span class="section-kicker">CLIMA DE RODA E MESA</span>
+            <h2 class="serif-title">Pagodes para Sentir a Levada</h2>
+            <p class="text-muted">Referências rápidas de roda, samba e pagode para pegar o balanço.</p>
           </div>
-
-          <button type="button" class="btn-outline" onclick="switchTab('atividades')">
-            Ver atividades <i class="fa-solid fa-arrow-right"></i>
-          </button>
+          <div class="pagode-videos-grid" id="pagode-videos-grid"></div>
         </div>
 
-        <div class="cards-grid grid-2" id="dashboard-atividades">
-          <div class="card">
-            <div class="stat-icon orange">
-              <i class="fa-solid fa-clipboard-list"></i>
+        <div class="stats-grid mb-4">
+          <div class="card stat-card">
+            <div class="stat-icon-wrap" style="background:rgba(34,197,94,0.14); color:var(--primary-color, #22c55e);">
+              <i class="fa-solid fa-music"></i>
             </div>
-            <h3 class="card-subtitle mt-4">Suas atividades</h3>
-            <p>Consulte as atividades publicadas pelos professores, confira os prazos e acompanhe suas entregas.</p>
-            <button type="button" class="btn-primary mt-4" onclick="switchTab('atividades')">
-              <i class="fa-solid fa-book-open"></i> Acessar atividades
-            </button>
+            <h2 class="mt-2">6</h2>
+            <span class="text-muted" style="font-size:0.85rem;">Oficinas de batucada</span>
           </div>
-
-          <div class="card">
-            <div class="stat-icon green">
-              <i class="fa-solid fa-check-double"></i>
+          <div class="card stat-card">
+            <div class="stat-icon-wrap" style="background:rgba(34,197,94,0.14); color:var(--primary-color, #22c55e);">
+              <i class="fa-solid fa-award"></i>
             </div>
-            <h3 class="card-subtitle mt-4">Acompanhe suas entregas</h3>
-            <p>Organize sua rotina e verifique quais atividades ainda precisam ser concluídas.</p>
-            <button type="button" class="btn-outline mt-4" onclick="switchTab('atividades')">
-              Ver pendências
-            </button>
+            <h2 id="stat-nota-geral" class="mt-2">5.0</h2>
+            <span class="text-muted" style="font-size:0.85rem;">A sua avaliação na roda</span>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon-wrap" style="background:rgba(245,158,11,0.16); color:var(--warning, #f59e0b);">
+              <i class="fa-solid fa-file-lines"></i>
+            </div>
+            <h2 id="stat-propostas-ativas" class="mt-2">0</h2>
+            <span class="text-muted" style="font-size:0.85rem;">Propostas recebidas</span>
           </div>
         </div>
 
-        <div class="section-header mt-6">
+        <div class="mb-4">
+          <h2 class="serif-title mb-3">Instrumentos da Roda</h2>
+          <div class="cards-grid">
+            <div class="card" onclick="abrirDetalhesInstrumento('pandeiro')" style="cursor:pointer;">
+              <h3><i class="fa-solid fa-compact-disc"></i> Pandeiro</h3>
+              <p class="text-muted mt-1">Balanço, platinelas e condução rítmica essencial.</p>
+            </div>
+            <div class="card" onclick="abrirDetalhesInstrumento('cavaquinho')" style="cursor:pointer;">
+              <h3><i class="fa-solid fa-guitar"></i> Cavaquinho</h3>
+              <p class="text-muted mt-1">Levada cortante e ponte entre ritmo e melodia.</p>
+            </div>
+            <div class="card" onclick="abrirDetalhesInstrumento('violao7')" style="cursor:pointer;">
+              <h3><i class="fa-solid fa-music"></i> Violão de 7 Cordas</h3>
+              <p class="text-muted mt-1">Baixarias, contraponto e elegância no samba e choro.</p>
+            </div>
+            <div class="card" onclick="abrirDetalhesInstrumento('surdo')" style="cursor:pointer;">
+              <h3><i class="fa-solid fa-drum"></i> Surdo</h3>
+              <p class="text-muted mt-1">A pulsação grave que sustenta o compasso da roda.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="painel-detalhe-instrumento" class="card hidden mb-4">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;">
+            <div>
+              <h2 id="detalhe-inst-titulo" class="serif-title"></h2>
+              <p id="detalhe-inst-historia" class="text-muted mt-2"></p>
+            </div>
+            <button type="button" class="btn-quick" onclick="fecharDetalhesInstrumento()">
+              <i class="fa-solid fa-xmark"></i> Fechar
+            </button>
+          </div>
+          <div id="detalhe-inst-musicos" class="cards-grid mt-4"></div>
+        </div>
+      </section>
+
+      <!-- ===================================================
+           ABA 2: MÚSICOS
+           =================================================== -->
+      <section id="tab-perfis" class="tab-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
           <div>
-            <span class="section-kicker">ACOMPANHAMENTO ESCOLAR</span>
-            <h2 class="serif-title">Resumo acadêmico</h2>
+            <h1 class="serif-title">Músicos da Comunidade</h1>
+            <p class="text-muted">Pesquise por nome ou instrumento para contratar ou mandar mensagem.</p>
           </div>
+          <input
+            type="text"
+            id="busca-perfil-input"
+            class="input-styled"
+            style="max-width:300px;"
+            placeholder="Pesquisar músico ou instrumento..."
+            oninput="filtrarPerfis()"
+          />
+        </div>
+        <div id="perfis-grid" class="cards-grid"></div>
+      </section>
+
+      <!-- ===================================================
+           ABA 3: PROPOSTAS
+           =================================================== -->
+      <section id="tab-propostas" class="tab-content">
+        <div class="mb-4">
+          <h1 class="serif-title">Propostas Recebidas</h1>
+          <p class="text-muted">Acompanhe convites para rodas, espetáculos e eventos.</p>
+        </div>
+        <div id="propostas-grid" class="cards-grid"></div>
+      </section>
+
+      <!-- ===================================================
+           ABA 4: CHAT PRIVADO
+           =================================================== -->
+      <section id="tab-chat" class="tab-content">
+        <div class="mb-4">
+          <h1 class="serif-title">Chat com Músicos</h1>
+          <p class="text-muted">Combine repertório, datas e detalhes da apresentação diretamente.</p>
         </div>
 
-        <div class="cards-grid grid-2">
-          <div class="card">
-            <h3 class="card-subtitle">Meu boletim</h3>
-            <p>Consulte suas notas e médias por disciplina.</p>
-            <button type="button" class="btn-primary mt-4" onclick="switchTab('boletim')">
-              <i class="fa-solid fa-chart-column"></i> Consultar notas
-            </button>
-          </div>
+        <div class="chat-layout card" style="padding:0; overflow:hidden;">
+          <aside class="chat-sidebar">
+            <div class="chat-search-box" style="padding:1rem; border-bottom:1px solid var(--border-color);">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                id="chat-busca-musico"
+                class="input-styled"
+                style="padding:0.5rem 0.75rem 0.5rem 2.2rem;"
+                placeholder="Buscar músico ou instrumento..."
+                oninput="filtrarConversasChat()"
+              />
+            </div>
+            <div id="lista-conversas" class="conversas-list"></div>
+          </aside>
 
-          <div class="card">
-            <h3 class="card-subtitle">Meu progresso</h3>
-            <p>Acompanhe seu desempenho acadêmico no portal.</p>
-            <button type="button" class="btn-primary mt-4" onclick="switchTab('progresso')">
-              <i class="fa-solid fa-arrow-trend-up"></i> Ver progresso
-            </button>
+          <div class="chat-main">
+            <div id="chat-vazio-placeholder" class="chat-vazio" style="padding:3rem 1.5rem; text-align:center;">
+              <i class="fa-solid fa-comments" style="font-size:2rem; color:var(--primary-color);"></i>
+              <h3 class="mt-2">Selecione um músico ao lado</h3>
+              <p class="text-muted mt-1">Escolha uma conversa para enviar mensagens privadas.</p>
+            </div>
+
+            <div id="chat-ativo-conteudo" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+              <div class="chat-header" style="padding:1rem 1.25rem; border-bottom:1px solid var(--border-color); display:flex; align-items:center; gap:0.75rem;">
+                <div id="chat-ativo-avatar" class="perfil-mini-avatar sm">MG</div>
+                <div>
+                  <h3 id="chat-ativo-nome" style="margin:0; font-size:1rem;"></h3>
+                  <small id="chat-ativo-sub" class="text-muted"></small>
+                </div>
+              </div>
+
+              <div id="chat-mensagens-box" class="chat-mensagens" style="flex:1; padding:1.25rem; overflow-y:auto; max-height:360px;"></div>
+
+              <div class="chat-input-area" style="padding:0.9rem 1.25rem; border-top:1px solid var(--border-color); display:flex; gap:0.6rem;">
+                <input
+                  type="text"
+                  id="chat-input-texto"
+                  class="input-styled"
+                  placeholder="Escreva a sua mensagem..."
+                  onkeydown="if (event.key === 'Enter') enviarMensagemPrivada();"
+                />
+                <button type="button" class="btn-primary" onclick="enviarMensagemPrivada()">
+                  <i class="fa-solid fa-paper-plane"></i> Enviar
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- ATIVIDADES DO ALUNO -->
+      <!-- ===================================================
+           ABA 5: OFICINAS & BATUCADA
+           =================================================== -->
       <section id="tab-atividades" class="tab-content">
-        <div class="page-header">
-          <span class="section-kicker">ENSINO E APRENDIZAGEM</span>
-          <h1 class="serif-title">Atividades escolares</h1>
-          <p>Consulte propostas, organize seus prazos e acompanhe o andamento das atividades.</p>
+        <div class="mb-4">
+          <h1 class="serif-title">Oficinas de Harmonia & Percussão</h1>
+          <p class="text-muted">Partituras gerais de estudo para evoluir leitura, harmonia e levada.</p>
         </div>
 
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon purple"><i class="fa-solid fa-clipboard-list"></i></div>
-            <div class="stat-val" id="ativ-total">0</div>
-            <div class="stat-lbl">Total de atividades</div>
+        <div id="oficinas-secao-dupla" class="cards-grid mb-4">
+          <div class="card">
+            <h3><i class="fa-solid fa-layer-group"></i> Harmonia</h3>
+            <p class="text-muted mt-1 mb-2">Campos harmônicos, dominantes, II-V-I e condução de vozes.</p>
+            <div id="lista-partituras-harmonia"></div>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-icon orange"><i class="fa-solid fa-clock"></i></div>
-            <div class="stat-val" id="ativ-pendentes">0</div>
-            <div class="stat-lbl">Pendentes</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
-            <div class="stat-val" id="ativ-concluidas">0</div>
-            <div class="stat-lbl">Concluídas</div>
+          <div class="card">
+            <h3><i class="fa-solid fa-drum"></i> Percussão</h3>
+            <p class="text-muted mt-1 mb-2">Subdivisão, síncope, dinâmica e semicolcheias.</p>
+            <div id="lista-partituras-percussao"></div>
           </div>
         </div>
 
-        <div class="card mt-6">
-          <div class="card-header">
-            <div>
-              <h2>Lista de atividades</h2>
-              <p>Filtre as atividades por matéria ou situação.</p>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group flex-1">
-              <label for="filtro-atividade-materia">Matéria</label>
-              <select id="filtro-atividade-materia" class="input-styled">
-                <option value="">Todas as matérias</option>
-                <option value="Matemática">Matemática</option>
-                <option value="Português">Português</option>
-                <option value="Ciências">Ciências</option>
-                <option value="História">História</option>
-                <option value="Geografia">Geografia</option>
-                <option value="Inglês">Inglês</option>
-                <option value="Artes">Artes</option>
-                <option value="Educação Física">Educação Física</option>
-                <option value="Biologia">Biologia</option>
-                <option value="Física">Física</option>
-                <option value="Química">Química</option>
-              </select>
-            </div>
-
-            <div class="form-group flex-1">
-              <label for="filtro-atividade-status">Situação</label>
-              <select id="filtro-atividade-status" class="input-styled">
-                <option value="">Todas as situações</option>
-                <option value="pendente">Pendente</option>
-                <option value="entregue">Entregue</option>
-                <option value="corrigida">Corrigida</option>
-              </select>
-            </div>
-          </div>
-
-          <div id="atividades-lista" class="list-container">
-            <div class="empty-state">
-              <i class="fa-solid fa-folder-open"></i>
-              <h3>Nenhuma atividade carregada</h3>
-              <p>Quando as atividades forem cadastradas, elas aparecerão nesta área.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- RESPOSTA DO ALUNO -->
-        <div class="card mt-6" id="atividade-resposta-card">
-          <div class="card-header">
-            <div>
-              <h2>Responder atividade</h2>
-              <p>Selecione uma atividade para visualizar as instruções e registrar sua resposta.</p>
-            </div>
-          </div>
-
-          <form id="form-responder-atividade" onsubmit="handleResponderAtividade(event)">
-            <input type="hidden" id="resposta-atividade-id">
-
-            <div class="form-group">
-              <label for="resposta-atividade-titulo">Atividade selecionada</label>
-              <input
-                type="text"
-                id="resposta-atividade-titulo"
-                class="input-styled"
-                placeholder="Selecione uma atividade na lista"
-                readonly
-              >
-            </div>
-
-            <div class="form-group">
-              <label for="resposta-atividade-texto">Sua resposta</label>
-              <textarea
-                id="resposta-atividade-texto"
-                class="input-styled"
-                rows="6"
-                placeholder="Escreva sua resposta aqui..."
-                required
-              ></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="resposta-atividade-arquivo">Anexar arquivo (opcional)</label>
-              <input
-                type="file"
-                id="resposta-atividade-arquivo"
-                class="input-styled"
-                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-              >
-              <small>O envio permanente do arquivo dependerá da integração com o servidor.</small>
-            </div>
-
-            <button type="submit" class="btn-primary">
-              <i class="fa-solid fa-paper-plane"></i> Enviar resposta
-            </button>
-          </form>
-        </div>
+        <div id="detalhe-oficina-box" class="card hidden"></div>
       </section>
 
-      <!-- BOLETIM DO ALUNO -->
+      <!-- ===================================================
+           ABA 6: CADERNOS DE CIFRAS & PARTITURAS
+           =================================================== -->
       <section id="tab-boletim" class="tab-content">
-        <div class="page-header">
-          <span class="section-kicker">DESEMPENHO ACADÊMICO</span>
-          <h1 class="serif-title">Meu Boletim</h1>
-          <p>Consulte suas notas e acompanhe seu desempenho nas matérias escolares.</p>
+        <div class="mb-4">
+          <h1 class="serif-title">Cadernos de Cifras & Partituras</h1>
+          <p class="text-muted" id="caderno-ativo-label">Caderno: Todos (Samba & Pagode Tradicionais)</p>
         </div>
 
-        <div class="stats-grid boletim-stats">
-          <div class="stat-card">
-            <div class="stat-icon purple"><i class="fa-solid fa-chart-line"></i></div>
-            <div class="stat-val" id="boletim-media-geral">0,0</div>
-            <div class="stat-lbl">Média geral</div>
+        <div id="cadernos-selecao" class="cards-grid mb-4">
+          <div class="card" onclick="selecionarCaderno('todos')" style="cursor:pointer;">
+            <h3>Todos os Cadernos</h3>
+            <p class="text-muted mt-1">Samba tradicional e pagode de roda reunidos.</p>
           </div>
-
-          <div class="stat-card">
-            <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
-            <div class="stat-val" id="boletim-aprovadas">0</div>
-            <div class="stat-lbl">Matérias aprovadas</div>
+          <div class="card" onclick="selecionarCaderno('samba')" style="cursor:pointer;">
+            <h3>Caderno de Samba</h3>
+            <p class="text-muted mt-1">Sambas tradicionais e partido-alto.</p>
           </div>
-
-          <div class="stat-card">
-            <div class="stat-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <div class="stat-val" id="boletim-recuperacao">0</div>
-            <div class="stat-lbl">Em recuperação</div>
+          <div class="card" onclick="selecionarCaderno('pagode')" style="cursor:pointer;">
+            <h3>Caderno de Pagode</h3>
+            <p class="text-muted mt-1">Pagode tradicional e rodas de mesa.</p>
           </div>
         </div>
 
-        <div class="card mt-6">
-          <div class="card-header">
-            <div>
-              <h2>Notas por matéria</h2>
-              <p>As notas devem ser lançadas pelos professores responsáveis.</p>
-            </div>
+        <div class="card mb-4" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <strong>Modo de Uso:</strong>
+            <p id="modo-uso-descricao" class="text-muted mt-1" style="margin:0; font-size:0.88rem;">
+              Modo Estudo: mostra dica de prática, harmonia e partitura rítmica.
+            </p>
           </div>
-
-          <div class="table-responsive">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Matéria</th>
-                  <th>1º Bimestre</th>
-                  <th>2º Bimestre</th>
-                  <th>3º Bimestre</th>
-                  <th>4º Bimestre</th>
-                  <th>Média</th>
-                  <th>Situação</th>
-                </tr>
-              </thead>
-
-              <tbody id="boletim-notas-list">
-                <tr>
-                  <td colspan="7">As notas aparecerão aqui quando forem carregadas pelo sistema.</td>
-                </tr>
-              </tbody>
-            </table>
+          <div style="display:flex; gap:0.5rem;">
+            <button type="button" class="btn-quick" onclick="alternarModoUsoCaderno('estudo')">Estudo</button>
+            <button type="button" class="btn-primary" onclick="alternarModoUsoCaderno('tocar')">Tocar / Roda</button>
           </div>
         </div>
 
-        <div class="card mt-6">
-          <h3 class="card-subtitle">Como funciona o boletim?</h3>
-          <p>O boletim apresenta as notas por bimestre, a média calculada e a situação de cada matéria.</p>
+        <div id="visualizador-cifra" class="card hidden mb-4"></div>
+
+        <div class="card" style="overflow-x:auto;">
+          <table class="data-table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="text-align:left; padding:0.75rem;">Música</th>
+                <th style="text-align:left; padding:0.75rem;">Tom</th>
+                <th style="text-align:left; padding:0.75rem;">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-partituras-body"></tbody>
+          </table>
         </div>
       </section>
 
-      <!-- PROGRESSO -->
-      <section id="tab-progresso" class="tab-content">
-        <div class="page-header">
-          <span class="section-kicker">SEU DESEMPENHO</span>
-          <h1 class="serif-title">Meu Progresso</h1>
-          <p>Acompanhe seu desempenho acadêmico e suas matérias.</p>
-        </div>
-
-        <div class="card progress-overview-card">
-          <div class="donut-container">
-            <svg class="donut-chart" viewBox="0 0 36 36">
-              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-              <path class="circle" id="donut-circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-            </svg>
-
-            <div class="donut-center">
-              <span class="percentage" id="progress-percent-lbl">0%</span>
-              <span class="label">progresso</span>
-            </div>
-          </div>
-
-          <div class="progress-stats">
-            <div class="stat-item">
-              <i class="fa-solid fa-book icon-purple"></i>
-              <div class="val" id="prog-stat-aulas">0</div>
-              <div class="lbl">Aulas</div>
-            </div>
-
-            <div class="stat-item">
-              <i class="fa-solid fa-bookmark icon-green"></i>
-              <div class="val" id="prog-stat-concluidas">0</div>
-              <div class="lbl">Matérias</div>
-            </div>
-
-            <div class="stat-item">
-              <i class="fa-solid fa-chart-line icon-orange"></i>
-              <div class="val" id="prog-stat-pendentes">0</div>
-              <div class="lbl">Notas lançadas</div>
-            </div>
-          </div>
-        </div>
-
-        <h2 class="serif-title mt-6">Desempenho por matéria</h2>
-        <div class="cards-grid grid-2 mt-4" id="progresso-materias-grid"></div>
-      </section>
-
-      <!-- ACESSO OFFLINE -->
-      <section id="tab-offline" class="tab-content">
-        <div class="page-header">
-          <span class="section-kicker">ACESSIBILIDADE</span>
-          <h1 class="serif-title">Acesso offline</h1>
-          <p>Consulte os conteúdos escolares salvos mesmo quando a conexão estiver limitada.</p>
-        </div>
-
-        <div class="offline-status-card">
-          <div class="status-left">
-            <div class="wifi-icon" id="wifi-status-icon">
-              <i class="fa-solid fa-wifi"></i>
-            </div>
-
-            <div>
-              <div class="status-title" id="wifi-status-title">Verificando conexão</div>
-              <div class="status-subtitle" id="wifi-last-sync">Última sincronização: ainda não realizada</div>
-            </div>
-          </div>
-
-          <div class="status-right">
-            <button type="button" class="btn-outline-red" onclick="limparOffline()">
-              <i class="fa-solid fa-trash"></i> Limpar dados
-            </button>
-
-            <button type="button" class="btn-dark" onclick="sincronizarOffline()">
-              <i class="fa-solid fa-rotate"></i> Sincronizar
-            </button>
-          </div>
-        </div>
-
-        <div class="offline-tabs">
-          <button type="button" class="off-tab active" onclick="switchOfflineSubTab('conteudos', this)">
-            Conteúdos salvos <span id="off-count-ativ">(0)</span>
-          </button>
-        </div>
-
-        <div class="list-container" id="offline-list-container"></div>
-      </section>
-
-      <!-- PERFIL -->
+      <!-- ===================================================
+           ABA 7: MEU PERFIL
+           =================================================== -->
       <section id="tab-perfil" class="tab-content">
-        <div class="page-header">
-          <span class="section-kicker">CONTA</span>
-          <h1 class="serif-title">Meu Perfil</h1>
-          <p>Consulte suas informações de conta e dados acadêmicos.</p>
-        </div>
-
-        <div class="card profile-header-card">
-          <div class="avatar-lg" id="profile-avatar-box">AC</div>
-
-          <div class="profile-info">
-            <div class="name-row">
-              <h2 class="serif-title" id="profile-name-text">Usuário</h2>
-              <i class="fa-solid fa-pen edit-icon" onclick="openEditProfileModal()" title="Editar dados"></i>
-            </div>
-
-            <div class="email-row">
-              <i class="fa-regular fa-envelope"></i>
-              <span id="profile-email-text">—</span>
-            </div>
-
-            <span class="badge-role" id="profile-role-tag">Aluno</span>
-            <p id="profile-ra-text">RM: 386952</p>
-          </div>
-        </div>
-
-        <div class="card mt-6">
-          <div class="progress-title-row">
-            <span class="bold">Progresso acadêmico</span>
-            <span class="bold text-muted" id="profile-general-pct-text">0%</span>
-          </div>
-
-          <div class="progress-bar-bg mt-2">
-            <div class="progress-bar-fill" id="profile-general-bar-fill" style="width:0%"></div>
-          </div>
-
-          <div class="subtext mt-2" id="profile-general-subtext">Consulte seu boletim para acompanhar suas notas.</div>
-        </div>
-
-        <div class="card mt-6">
-          <h3 class="card-subtitle">Matérias do portal</h3>
-          <div class="subject-tags-profile mt-4" id="profile-subjects-container"></div>
-        </div>
-      </section>
-
-      <!-- PROFESSOR: ATIVIDADES -->
-      <section id="tab-prof-atividades" class="tab-content">
-
-        <div class="page-header">
-          <span class="section-kicker">ENSINO E APRENDIZAGEM</span>
-          <h1 class="serif-title">Gerenciar atividades</h1>
-          <p>Publique atividades, acompanhe as entregas e corrija as respostas dos estudantes.</p>
-        </div>
-
-        <!-- RESUMO -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon purple">
-              <i class="fa-solid fa-clipboard-list"></i>
-            </div>
-            <div class="stat-val" id="prof-ativ-total">0</div>
-            <div class="stat-lbl">Atividades publicadas</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon orange">
-              <i class="fa-solid fa-clock"></i>
-            </div>
-            <div class="stat-val" id="prof-ativ-entregas">0</div>
-            <div class="stat-lbl">Entregas recebidas</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon green">
-              <i class="fa-solid fa-check-circle"></i>
-            </div>
-            <div class="stat-val" id="prof-ativ-corrigidas">0</div>
-            <div class="stat-lbl">Atividades corrigidas</div>
-          </div>
-        </div>
-
-        <!-- PUBLICAR ATIVIDADE -->
-        <div class="card mt-6">
-          <div class="card-header">
-            <div>
-              <h2>Publicar nova atividade</h2>
-              <p>Preencha os dados abaixo para disponibilizar a atividade aos alunos.</p>
-            </div>
-          </div>
-
-          <form id="form-nova-atividade" onsubmit="handleNovaAtividadeSubmit(event)">
-
-            <div class="form-group">
-              <label for="new-ativ-title">Título da atividade</label>
-              <input
-                type="text"
-                id="new-ativ-title"
-                class="input-styled"
-                maxlength="150"
-                placeholder="Ex.: Exercícios de revisão"
-                required
-              >
-            </div>
-
-            <div class="form-group">
-              <label for="new-ativ-description">Descrição e instruções</label>
-              <textarea
-                id="new-ativ-description"
-                class="input-styled"
-                rows="5"
-                placeholder="Explique o que os alunos precisam fazer..."
-                required
-              ></textarea>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group flex-1">
-                <label for="new-ativ-subject">Matéria</label>
-                <select id="new-ativ-subject" class="input-styled" required>
-                  <option value="">Selecione a matéria</option>
-                  <option value="Matemática">Matemática</option>
-                  <option value="Português">Português</option>
-                  <option value="Ciências">Ciências</option>
-                  <option value="História">História</option>
-                  <option value="Geografia">Geografia</option>
-                  <option value="Inglês">Inglês</option>
-                  <option value="Artes">Artes</option>
-                  <option value="Educação Física">Educação Física</option>
-                  <option value="Biologia">Biologia</option>
-                  <option value="Física">Física</option>
-                  <option value="Química">Química</option>
-                </select>
-              </div>
-
-              <div class="form-group flex-1">
-                <label for="new-ativ-type">Tipo de atividade</label>
-                <select id="new-ativ-type" class="input-styled" required>
-                  <option value="">Selecione o tipo</option>
-                  <option value="Exercício">Exercício</option>
-                  <option value="Trabalho">Trabalho</option>
-                  <option value="Pesquisa">Pesquisa</option>
-                  <option value="Projeto">Projeto</option>
-                  <option value="Avaliação">Avaliação</option>
-                </select>
+        <div class="card mb-4">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <div style="display:flex; align-items:center; gap:1rem;">
+              <div id="perfil-avatar" class="perfil-mini-avatar" style="width:64px; height:64px; font-size:1.3rem;">MG</div>
+              <div>
+                <h1 id="perfil-nome" class="serif-title" style="font-size:1.6rem;">Músico</h1>
+                <p id="perfil-email" class="text-muted"></p>
+                <div style="display:flex; align-items:center; gap:0.6rem; margin-top:0.35rem;">
+                  <span id="perfil-badge-area" class="portal-badge">Músico</span>
+                  <span class="rating-badge">
+                    <i class="fa-solid fa-star"></i>
+                    <span id="perfil-nota-exibicao">5.0</span>
+                    (<span id="perfil-total-avaliacoes">1</span>)
+                  </span>
+                </div>
               </div>
             </div>
-
-            <div class="form-row">
-              <div class="form-group flex-1">
-                <label for="new-ativ-date">Data de entrega</label>
-                <input
-                  type="date"
-                  id="new-ativ-date"
-                  class="input-styled"
-                  required
-                >
-              </div>
-             <div class="form-group flex-1">
-                <label for="new-ativ-turma">turma</label>
-                <input
-                  type="turma"
-                  id="new-ativ-turma"
-                  class="input-styled"
-                  
-                >
-              <div class="form-group flex-1">
-                <label for="new-ativ-points">Pontuação máxima</label>
-                <input
-                  type="number"
-                  id="new-ativ-points"
-                  class="input-styled"
-                  min="0"
-                  max="10"
-                  step="0.5"
-                  value="10"
-                  required
-                >
-              </div>
-            </div>
-
-            <button type="submit" class="btn-primary">
-              <i class="fa-solid fa-plus"></i>
-              Publicar atividade
-            </button>
-
-          </form>
-        </div>
-
-        <!-- ATIVIDADES PUBLICADAS -->
-        <div class="card mt-6">
-          <div class="card-header">
-            <div>
-              <h2>Atividades publicadas</h2>
-              <p>Consulte as atividades cadastradas nesta demonstração.</p>
-            </div>
-          </div>
-
-          <div id="prof-atividades-lista" class="list-container">
-            <div class="empty-state">
-              <i class="fa-solid fa-clipboard-list"></i>
-              <h3>Nenhuma atividade cadastrada</h3>
-              <p>As atividades publicadas aparecerão aqui.</p>
-            </div>
           </div>
         </div>
 
-        <!-- RESPOSTAS DOS ALUNOS -->
-        <div class="card mt-6">
-          <div class="card-header">
-            <div>
-              <h2>Entregas dos alunos</h2>
-              <p>Visualize as respostas recebidas e confira quais precisam de correção.</p>
+        <div class="stats-grid mb-4">
+          <div class="card stat-card">
+            <div class="stat-icon-wrap" style="background:rgba(34,197,94,0.14); color:var(--primary-color, #22c55e);">
+              <i class="fa-solid fa-percent"></i>
             </div>
+            <h2 id="perfil-pct-trabalhos" class="mt-2">0%</h2>
+            <span class="text-muted" style="font-size:0.85rem;">Trabalhos desenvolvidos</span>
           </div>
 
-          <div class="table-responsive">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Aluno</th>
-                  <th>Atividade</th>
-                  <th>Data de entrega</th>
-                  <th>Resposta</th>
-                  <th>Nota</th>
-                  <th>Situação</th>
-                </tr>
-              </thead>
+          <div class="card stat-card">
+            <div class="stat-icon-wrap" style="background:rgba(34,197,94,0.14); color:var(--primary-color, #22c55e);">
+              <i class="fa-solid fa-file-signature"></i>
+            </div>
+            <h2 id="perfil-qtd-contratos-aceitos" class="mt-2">0</h2>
+            <span class="text-muted" style="font-size:0.85rem;">Contratos aceitos</span>
+          </div>
 
-              <tbody id="prof-respostas-lista">
-                <tr>
-                  <td colspan="6">
-                    As respostas aparecerão aqui quando os alunos enviarem suas atividades.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="card stat-card">
+            <div class="stat-icon-wrap" style="background:rgba(245,158,11,0.16); color:var(--warning, #f59e0b);">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <h2 id="perfil-resumo-nota" class="mt-2">5.0</h2>
+            <span class="text-muted" style="font-size:0.85rem;">Avaliação média</span>
           </div>
         </div>
 
-      </section>
+        <div class="cards-grid mb-4">
+          <div class="card">
+            <h2 class="serif-title mb-3"><i class="fa-solid fa-rocket"></i> Desenvolvimentos no App</h2>
+            <div id="perfil-desenvolvimentos-app"></div>
+          </div>
 
-      <!-- PROFESSOR: NOTAS -->
-      <section id="tab-prof-notas" class="tab-content">
+          <div class="card">
+            <h2 class="serif-title mb-3"><i class="fa-solid fa-handshake"></i> Contratos Aceitos</h2>
+            <div id="perfil-contratos-aceitos"></div>
+          </div>
+        </div>
 
-        <div class="page-header">
-          <span class="section-kicker">ÁREA DO PROFESSOR</span>
-          <h1 class="serif-title">Acompanhamento de notas</h1>
-          <p>Consulte e acompanhe o desempenho acadêmico dos estudantes.</p>
+        <div class="card mb-4">
+          <h2 class="serif-title mb-3"><i class="fa-solid fa-comments"></i> Minhas Avaliações e Comentários sobre Mim</h2>
+          <div id="perfil-comentarios-lista"></div>
         </div>
 
         <div class="card">
-          <div class="card-header">
-            <div>
-              <h2>Registro de notas e frequência</h2>
-              <p>Consulte os dados acadêmicos disponíveis no sistema.</p>
+          <h2 class="serif-title mb-3">Editar Informações do Perfil</h2>
+          <div class="cards-grid">
+            <div class="form-group">
+              <label for="edit-perfil-nome">Nome</label>
+              <input type="text" id="edit-perfil-nome" class="input-styled" style="padding-left:0.85rem;" />
+            </div>
+            <div class="form-group">
+              <label for="edit-perfil-area">Atuação</label>
+              <input type="text" id="edit-perfil-area" class="input-styled" style="padding-left:0.85rem;" />
+            </div>
+            <div class="form-group">
+              <label for="edit-perfil-inst">Instrumentos</label>
+              <input type="text" id="edit-perfil-inst" class="input-styled" style="padding-left:0.85rem;" />
+            </div>
+            <div class="form-group">
+              <label for="edit-perfil-estilo">Estilo Musical</label>
+              <input type="text" id="edit-perfil-estilo" class="input-styled" style="padding-left:0.85rem;" />
             </div>
           </div>
-
-          <div id="prof-notas-container" class="table-responsive mt-4">
-            <p>Os alunos e as disciplinas aparecerão aqui conforme os dados disponíveis no sistema.</p>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- COORDENAÇÃO: DASHBOARD -->
-      <section id="tab-coord-dashboard" class="tab-content">
-        <div class="page-header">
-          <span class="section-kicker">COORDENAÇÃO</span>
-          <h1 class="serif-title">Painel da Coordenação</h1>
-          <p>Acompanhe usuários, matérias, atividades e a estrutura escolar.</p>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon purple"><i class="fa-solid fa-users"></i></div>
-            <div class="stat-val" id="coord-total-alunos">0</div>
-            <div class="stat-lbl">Alunos ativos</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon green"><i class="fa-solid fa-chalkboard-user"></i></div>
-            <div class="stat-val" id="coord-total-professores">0</div>
-            <div class="stat-lbl">Professores</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon orange"><i class="fa-solid fa-book-open"></i></div>
-            <div class="stat-val" id="coord-total-aulas">0</div>
-            <div class="stat-lbl">Aulas cadastradas</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon purple"><i class="fa-solid fa-layer-group"></i></div>
-            <div class="stat-val" id="coord-total-materias">0</div>
-            <div class="stat-lbl">Matérias</div>
-          </div>
-        </div>
-
-        <div class="card mt-6">
-          <div class="card-header">
-            <div>
-              <h2>Acompanhamento de atividades</h2>
-              <p>Consulte a quantidade de atividades e o andamento das entregas.</p>
-            </div>
-          </div>
-
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon purple"><i class="fa-solid fa-clipboard-list"></i></div>
-              <div class="stat-val" id="coord-total-atividades">0</div>
-              <div class="stat-lbl">Atividades cadastradas</div>
-            </div>
-
-            <div class="stat-card">
-              <div class="stat-icon orange"><i class="fa-solid fa-clock"></i></div>
-              <div class="stat-val" id="coord-ativ-pendentes">0</div>
-              <div class="stat-lbl">Entregas pendentes</div>
-            </div>
-
-            <div class="stat-card">
-              <div class="stat-icon green"><i class="fa-solid fa-check-circle"></i></div>
-              <div class="stat-val" id="coord-ativ-entregues">0</div>
-              <div class="stat-lbl">Entregas realizadas</div>
-            </div>
-          </div>
-
-          <button type="button" class="btn-primary mt-4" onclick="switchTab('coord-atividades')">
-            <i class="fa-solid fa-list-check"></i> Acompanhar atividades
-          </button>
-        </div>
-
-        <div class="card mt-6">
-          <div class="card-header">
-            <div>
-              <h2>Resumo dos usuários</h2>
-              <p>Acesse a área de gerenciamento para consultar os cadastros.</p>
-            </div>
-          </div>
-
-          <button type="button" class="btn-primary mt-4" onclick="switchTab('coord-usuarios')">
-            <i class="fa-solid fa-users-gear"></i> Gerenciar usuários
+          <button type="button" class="btn-primary mt-4" onclick="salvarEdicaoPerfil()">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Alterações
           </button>
         </div>
       </section>
-
-      <!-- COORDENAÇÃO: ATIVIDADES -->
-      <section id="tab-coord-atividades" class="tab-content">
-        <div class="page-header">
-          <span class="section-kicker">GESTÃO PEDAGÓGICA</span>
-          <h1 class="serif-title">Acompanhamento de atividades</h1>
-          <p>Visualize as atividades cadastradas e acompanhe as entregas.</p>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <h2>Atividades da escola</h2>
-              <p>Filtre e consulte as atividades disponíveis.</p>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group flex-1">
-              <label for="coord-filtro-materia">Filtrar por matéria</label>
-              <select id="coord-filtro-materia" class="input-styled">
-                <option value="">Todas as matérias</option>
-                <option value="Matemática">Matemática</option>
-                <option value="Português">Português</option>
-                <option value="Ciências">Ciências</option>
-                <option value="História">História</option>
-                <option value="Geografia">Geografia</option>
-                <option value="Inglês">Inglês</option>
-                <option value="Artes">Artes</option>
-                <option value="Educação Física">Educação Física</option>
-                <option value="Biologia">Biologia</option>
-                <option value="Física">Física</option>
-                <option value="Química">Química</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="list-container" id="coord-atividades-lista">
-            <div class="empty-state">
-              <i class="fa-solid fa-folder-open"></i>
-              <h3>Nenhuma atividade carregada</h3>
-              <p>As atividades cadastradas serão listadas aqui.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- COORDENAÇÃO: MATÉRIAS -->
-      <section id="tab-coord-materias" class="tab-content">
-        <div class="page-header">
-          <span class="section-kicker">CURRÍCULO</span>
-          <h1 class="serif-title">Matérias</h1>
-          <p>Componentes curriculares disponíveis no portal.</p>
-        </div>
-
-        <div class="card">
-          <div class="subjects-grid" id="coord-materias-list"></div>
-        </div>
-      </section>
-
-      <!-- COORDENAÇÃO: USUÁRIOS -->
-      <section id="tab-coord-usuarios" class="tab-content">
-        <div class="page-header">
-          <span class="section-kicker">ADMINISTRAÇÃO</span>
-          <h1 class="serif-title">Gerenciar usuários</h1>
-          <p>Consulte os usuários cadastrados na plataforma.</p>
-        </div>
-
-        <div class="card mb-6">
-          <h3 class="card-subtitle mb-4">Adicionar usuário</h3>
-
-          <form id="form-novo-usuario" onsubmit="handleNovoUsuarioSubmit(event)">
-            <div class="form-row">
-              <div class="form-group flex-1">
-                <label for="new-user-name">Nome completo</label>
-                <input type="text" id="new-user-name" required class="input-styled" placeholder="Nome do usuário">
-              </div>
-
-              <div class="form-group flex-1">
-                <label for="new-user-email">E-mail</label>
-                <input type="email" id="new-user-email" required class="input-styled" placeholder="email@escola.com">
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group flex-1">
-                <label for="new-user-role">Função</label>
-                <select id="new-user-role" class="input-styled" required>
-                  <option value="aluno">Aluno</option>
-                  <option value="professor">Professor</option>
-                </select>
-              </div>
-
-              <div class="form-group flex-1">
-                <label for="new-user-password">Senha temporária</label>
-                <input type="password" id="new-user-password" class="input-styled" minlength="8" autocomplete="new-password" placeholder="Mínimo de 8 caracteres">
-              </div>
-            </div>
-
-            <div class="form-group" id="new-user-ra-group">
-              <label for="new-user-ra">RM do aluno</label>
-              <input type="text" id="new-user-ra" class="input-styled" placeholder="Registro de matrícula">
-            </div>
-
-            <button type="submit" class="btn-primary">
-              <i class="fa-solid fa-user-plus"></i> Cadastrar usuário
-            </button>
-          </form>
-        </div>
-
-        <div class="card">
-          <h3 class="card-subtitle mb-4">Usuários cadastrados</h3>
-
-          <div class="table-responsive">
-            <table class="styled-table" id="table-coord-users">
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>E-mail</th>
-                  <th>Função</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
     </main>
   </div>
 
-  <!-- MODAL: CADASTRO DO ALUNO -->
-  <div id="modal-cadastro-aluno" class="modal-overlay hidden">
-    <div class="modal-card">
-      <button type="button" class="modal-close" onclick="closeModal('modal-cadastro-aluno')">&times;</button>
-
-      <div class="modal-header">
-        <h2 class="serif-title">Criar conta de aluno</h2>
-        <p>Preencha seus dados para criar sua conta no portal.</p>
+  <!-- =====================================================
+       MODAL DE PROPOSTA DE CONTRATAÇÃO
+       ===================================================== -->
+  <div id="modal-proposta" class="modal-backdrop hidden">
+    <div class="modal-card card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 id="modal-proposta-titulo" class="serif-title">Enviar Proposta</h2>
+        <button type="button" class="btn-quick" onclick="fecharModalProposta()"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div class="modal-body">
-        <form id="form-cadastro-aluno" onsubmit="handleCadastroAlunoSubmit(event)">
-          <div class="form-group">
-            <label for="cadastro-nome">Nome completo</label>
-            <input type="text" id="cadastro-nome" class="input-styled" required autocomplete="name">
-          </div>
+      <div class="form-group mt-3">
+        <label for="prop-evento">Evento / Roda *</label>
+        <input type="text" id="prop-evento" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Roda de Pagode de Domingo" />
+      </div>
 
-          <div class="form-group">
-            <label for="cadastro-email">E-mail</label>
-            <input type="email" id="cadastro-email" class="input-styled" required autocomplete="email">
-          </div>
+      <div class="form-group mt-3">
+        <label for="prop-data">Data e Horário *</label>
+        <input type="text" id="prop-data" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: 29/11 às 16h" />
+      </div>
 
-          <div class="form-group">
-            <label for="cadastro-senha">Senha</label>
-            <input type="password" id="cadastro-senha" class="input-styled" required minlength="8" autocomplete="new-password">
-            <small>Use pelo menos 8 caracteres.</small>
-          </div>
+      <div class="form-group mt-3">
+        <label for="prop-requisitos">Requisitos / Repertório</label>
+        <input type="text" id="prop-requisitos" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: Samba tradicional e pagode 90" />
+      </div>
 
-          <div class="form-group">
-            <label for="cadastro-ra">RM (Registro de Matrícula)</label>
-            <input type="text" id="cadastro-ra" class="input-styled" required>
-          </div>
+      <div class="form-group mt-3">
+        <label for="prop-cache">Cachê Oferecido *</label>
+        <input type="text" id="prop-cache" class="input-styled" style="padding-left:0.85rem;" placeholder="Ex: R$ 250,00" />
+      </div>
 
-          <button type="submit" class="btn-primary btn-block">
-            <i class="fa-solid fa-user-plus"></i> Criar minha conta
-          </button>
-        </form>
+      <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1.25rem;">
+        <button type="button" class="btn-quick" onclick="fecharModalProposta()">Cancelar</button>
+        <button type="button" class="btn-primary" onclick="enviarPropostaContratacao()">Enviar Proposta</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: EDITAR PERFIL -->
-  <div id="modal-edit-profile" class="modal-overlay hidden">
-    <div class="modal-card">
-      <button type="button" class="modal-close" onclick="closeModal('modal-edit-profile')">&times;</button>
-
-      <div class="modal-header">
-        <h2 class="serif-title">Editar meu perfil</h2>
+  <!-- =====================================================
+       MODAL DE AVALIAÇÃO
+       ===================================================== -->
+  <div id="modal-avaliar" class="modal-backdrop hidden">
+    <div class="modal-card card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 id="modal-avaliar-titulo" class="serif-title">Avaliar Músico</h2>
+        <button type="button" class="btn-quick" onclick="fecharModalAvaliacao()"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div class="modal-body">
-        <form id="form-edit-profile" onsubmit="handleSaveProfile(event)">
-          <div class="form-group">
-            <label for="edit-profile-name">Nome completo</label>
-            <input type="text" id="edit-profile-name" class="input-styled" required>
-          </div>
+      <div id="star-selector" class="mt-3" style="display:flex; gap:0.5rem; font-size:1.5rem; cursor:pointer;">
+        <i class="fa-solid fa-star active" data-val="1" onclick="selecionarEstrela(1)"></i>
+        <i class="fa-solid fa-star active" data-val="2" onclick="selecionarEstrela(2)"></i>
+        <i class="fa-solid fa-star active" data-val="3" onclick="selecionarEstrela(3)"></i>
+        <i class="fa-solid fa-star active" data-val="4" onclick="selecionarEstrela(4)"></i>
+        <i class="fa-solid fa-star active" data-val="5" onclick="selecionarEstrela(5)"></i>
+      </div>
 
-          <div class="form-group">
-            <label for="edit-profile-email">E-mail</label>
-            <input type="email" id="edit-profile-email" class="input-styled" required>
-          </div>
+      <div class="form-group mt-3">
+        <label for="avaliacao-comentario">Comentário</label>
+        <textarea id="avaliacao-comentario" class="input-styled" style="padding-left:0.85rem;" rows="3" placeholder="Conta como foi a experiência..."></textarea>
+      </div>
 
-          <div class="modal-footer px-0 pb-0">
-            <button type="button" class="btn-outline" onclick="closeModal('modal-edit-profile')">Cancelar</button>
-            <button type="submit" class="btn-primary">Salvar alterações</button>
-          </div>
-        </form>
+      <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1.25rem;">
+        <button type="button" class="btn-quick" onclick="fecharModalAvaliacao()">Cancelar</button>
+        <button type="button" class="btn-primary" onclick="confirmarAvaliacaoPerfil()">Confirmar Avaliação</button>
       </div>
     </div>
   </div>
+
+  <script>
+    // Funções de apoio para abas de login/cadastro e menu retrátil
+    if (typeof window.mostrarAbaAuth !== 'function') {
+      window.mostrarAbaAuth = function(aba) {
+        const formLogin = document.getElementById('form-login');
+        const formCadastro = document.getElementById('form-cadastro');
+        const btnLogin = document.getElementById('tab-btn-login');
+        const btnCadastro = document.getElementById('tab-btn-cadastro');
+
+        if (aba === 'cadastro') {
+          formLogin?.classList.add('hidden');
+          formCadastro?.classList.remove('hidden');
+          btnLogin?.classList.remove('active');
+          btnCadastro?.classList.add('active');
+        } else {
+          formCadastro?.classList.add('hidden');
+          formLogin?.classList.remove('hidden');
+          btnCadastro?.classList.remove('active');
+          btnLogin?.classList.add('active');
+        }
+      };
+    }
+
+    if (typeof window.toggleSidebar !== 'function') {
+      window.toggleSidebar = function() {
+        document.getElementById('sidebar')?.classList.toggle('collapsed');
+      };
+    }
+
+    // Interação 3D da logo Musicon
+    (function initLogo3DInterativa() {
+      const stage = document.getElementById('logo-3d-stage');
+      const card = document.getElementById('logo-3d-card');
+      const shine = document.getElementById('logo-3d-shine');
+      if (!stage || !card) return;
+
+      const maxTiltX = 24;
+      const maxTiltY = 34;
+
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let baseRotX = 0;
+      let baseRotY = 0;
+      let currentRotX = 0;
+      let currentRotY = 0;
+
+      function aplicarRotacao(rx, ry, scale = 1.05, mx = 50, my = 50) {
+        currentRotX = Math.max(-maxTiltX, Math.min(maxTiltX, rx));
+        currentRotY = Math.max(-maxTiltY, Math.min(maxTiltY, ry));
+
+        card.style.transform = `rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg) scale(${scale})`;
+
+        if (shine) {
+          shine.style.setProperty('--mx', `${mx}%`);
+          shine.style.setProperty('--my', `${my}%`);
+        }
+      }
+
+      function resetarPosicao() {
+        isDragging = false;
+        baseRotX = 0;
+        baseRotY = 0;
+        stage.classList.remove('dragging');
+        card.classList.add('resetting');
+        aplicarRotacao(0, 0, 1, 50, 50);
+      }
+
+      stage.addEventListener('pointermove', (e) => {
+        const rect = stage.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+
+        if (isDragging) {
+          const dx = e.clientX - dragStartX;
+          const dy = e.clientY - dragStartY;
+          const rx = baseRotX - (dy / rect.height) * (maxTiltX * 2.2);
+          const ry = baseRotY + (dx / rect.width) * (maxTiltY * 2.4);
+          const mx = Math.max(0, Math.min(100, ((ry / maxTiltY) + 1) * 50));
+          const my = Math.max(0, Math.min(100, ((-rx / maxTiltX) + 1) * 50));
+          aplicarRotacao(rx, ry, 1.08, mx, my);
+          return;
+        }
+
+        card.classList.remove('resetting');
+        const relX = (e.clientX - rect.left) / rect.width;
+        const relY = (e.clientY - rect.top) / rect.height;
+
+        const rotY = (relX - 0.5) * 2 * maxTiltY;
+        const rotX = (0.5 - relY) * 2 * maxTiltX;
+
+        aplicarRotacao(rotX, rotY, 1.05, (relX * 100).toFixed(1), (relY * 100).toFixed(1));
+      });
+
+      stage.addEventListener('pointerdown', (e) => {
+        isDragging = true;
+        baseRotX = currentRotX;
+        baseRotY = currentRotY;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        card.classList.remove('resetting');
+        stage.classList.add('dragging');
+        stage.setPointerCapture?.(e.pointerId);
+      });
+
+      stage.addEventListener('pointerup', resetarPosicao);
+      stage.addEventListener('pointercancel', resetarPosicao);
+      stage.addEventListener('pointerleave', () => {
+        if (!isDragging) resetarPosicao();
+      });
+    })();
+  </script>
 
   <script src="script.js"></script>
+  <script src="mensagens.js"></script>
 </body>
 </html>
